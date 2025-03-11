@@ -1,0 +1,12 @@
+{
+	"name": "more-enemies",
+	"version": "0.1.0",
+	"factorio_version": "2.0",
+	"title": "More Enemies",
+	"author": "TheEckelmonster",
+	"description": "Simply adds more enemy spawns per nest",
+	"dependencies": [
+		"base >= 2.0",
+		"? space-age >= 2.0"
+	]
+}
