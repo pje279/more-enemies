@@ -4,7 +4,7 @@
 	"factorio_version": "2.0",
 	"title": "More Enemies",
 	"author": "TheEckelmonster",
-	"description": "Simply adds more enemy spawns per nest",
+	"description": "Exposes several spawner settings to be configurable from within the game.",
 	"dependencies": [
 		"base >= 2.0",
 		"? space-age >= 2.0"
