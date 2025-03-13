@@ -40,5 +40,19 @@ data:extend({
       setting_type = "startup",
       default_value = 2,
       minimum_value = 0,
+  },
+  {
+      type = "int-setting",
+      name = "more-enemies-max-spawning-cooldown-gleba",
+      setting_type = "startup",
+      default_value = 360,
+      minimum_value = 1,
+  },
+  {
+      type = "int-setting",
+      name = "more-enemies-min-spawning-cooldown-gleba",
+      setting_type = "startup",
+      default_value = 150,
+      minimum_value = 1,
   }
 })

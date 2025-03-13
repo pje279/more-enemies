@@ -76,13 +76,13 @@ data:extend({
       name = "more-enemies-max-spawning-cooldown-spitter",
       setting_type = "startup",
       default_value = 360,
-      minimum_value = 0,
+      minimum_value = 1,
   },
   {
       type = "int-setting",
       name = "more-enemies-min-spawning-cooldown-spitter",
       setting_type = "startup",
       default_value = 150,
-      minimum_value = 0,
+      minimum_value = 1,
   }
 })
