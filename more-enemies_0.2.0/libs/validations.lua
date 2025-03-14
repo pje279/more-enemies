@@ -4,9 +4,8 @@ if (_validations) then
   return _validations
 end
 
-function Validations.validateNumericSetting(setting, expectedValue)
-  if (setting and setting.value
-      and setting.value ~= expectedValue) then
+function Validations.validateSettingNotEqualTo(setting, value)
+  if (setting and setting.value and setting.value ~= value) then
     return true
   else
     return false
