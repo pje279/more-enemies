@@ -60,5 +60,13 @@ constants.gleba.regular.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN = 2
 constants.gleba.regular.MAX_SPAWNING_COOLDOWN = 360
 constants.gleba.regular.MIN_SPAWNING_COOLDOWN = 150
 
+constants.difficulty = {
+  EASY = "Easy",
+  VANILLA = "Vanilla",
+  VANILLA_PLUS = "Vanilla+",
+  HARD = "Hard",
+  INSANITY = "Insanity"
+}
+
 _constants = constants
 return constants
