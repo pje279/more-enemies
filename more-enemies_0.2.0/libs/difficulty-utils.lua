@@ -93,8 +93,8 @@ function DifficultyUtils.setDifficulty(difficulty_setting, planet)
     cooldown_modifier = 1
     vanilla = true
   elseif (difficulty_setting == Constants.difficulty.VANILLA_PLUS) then
-    modifier = 2.5
-    cooldown_modifier = 2.5
+    modifier = 1.75
+    cooldown_modifier = 1.75
   elseif (difficulty_setting == Constants.difficulty.HARD) then
     modifer = 4
     cooldown_modifier = 4

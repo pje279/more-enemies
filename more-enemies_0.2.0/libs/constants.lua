@@ -53,7 +53,7 @@ constants.gleba.small.MIN_SPAWNING_COOLDOWN = 150
 --
 -- Regular
 constants.gleba.regular.MAX_COUNT_OF_OWNED_UNITS = 2
-constants.gleba.regular.MAX_OF_COUNT_OWNED_DEFENSIVE_UNITS = 1
+constants.gleba.regular.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS = 1
 constants.gleba.regular.MAX_FRIENDS_AROUND_TO_SPAWN = 3
 constants.gleba.regular.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN = 2
 

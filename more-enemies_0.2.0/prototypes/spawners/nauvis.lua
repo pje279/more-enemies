@@ -2,29 +2,29 @@ local Constants = require("libs.constants")
 local Validations = require("libs.validations")
 local DifficultyUtils = require("libs.difficulty-utils")
 
-local prefixes = {
-  "small",
-  "medium",
-  "big",
-  "behemoth"
-}
+-- local prefixes = {
+--   "small",
+--   "medium",
+--   "big",
+--   "behemoth"
+-- }
 
-for k,v in pairs(prefixes) do
-  data.raw["unit"][v .. "-biter"].ai_settings.size_in_group = 0.5
-  data.raw["unit"][v .. "-spitter"].ai_settings.size_in_group = 0.5
-end
+-- for k,v in pairs(prefixes) do
+--   data.raw["unit"][v .. "-biter"].ai_settings.size_in_group = 0.5
+--   data.raw["unit"][v .. "-spitter"].ai_settings.size_in_group = 0.5
+-- end
 
 --
 -- If each setting is valid, make appropriate change
-
---
--- Biters
 
 local nauvis_difficulty = settings.startup["more-enemies-nauvis-difficulty"]
 local difficulty = DifficultyUtils.initDifficulty("nauvis")
 if (nauvis_difficulty and nauvis_difficulty.value) then
   difficulty = DifficultyUtils.setDifficulty(nauvis_difficulty.value, "nauvis")
 end
+
+--
+-- Biters
 
 local max_count_of_owned_units_biter = settings.startup["more-enemies-spawner-nauvis-max-count-of-owned-units-biter"]
 if (Validations.validateSettingNotEqualTo(max_count_of_owned_units_biter, Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS)) then
