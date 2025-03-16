@@ -1,5 +1,5 @@
 -- If already defined, return
-if _constants then
+if _constants and _constants.more_enemies then
   return _constants
 end
 
@@ -92,5 +92,8 @@ constants.difficulty = {
   INSANITY = "Insanity"
 }
 
-_constants = constants
+constants.more_enemies = true
+
+local _constants = constants
+
 return constants
