@@ -6,9 +6,9 @@ local DifficultyUtils = require("libs.difficulty-utils")
 -- If each setting is valid, make appropriate change
 
 local gleba_difficulty = settings.startup["more-enemies-gleba-difficulty"]
-local difficulty = DifficultyUtils.initDifficulty("gleba")
+local difficulty = DifficultyUtils.init_difficulty("gleba")
 if (gleba_difficulty and gleba_difficulty.value) then
-  difficulty = DifficultyUtils.setDifficulty(gleba_difficulty.value, "gleba")
+  difficulty = DifficultyUtils.set_difficulty(gleba_difficulty.value, "gleba")
 end
 
 --

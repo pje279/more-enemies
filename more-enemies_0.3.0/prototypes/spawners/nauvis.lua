@@ -1,26 +1,31 @@
+log("importing")
+
 local Constants = require("libs.constants")
 local Validations = require("libs.validations")
 local DifficultyUtils = require("libs.difficulty-utils")
 
 -- local prefixes = {
---   "small",
---   "medium",
---   "big",
---   "behemoth"
--- }
-
--- for k,v in pairs(prefixes) do
---   data.raw["unit"][v .. "-biter"].ai_settings.size_in_group = 0.5
---   data.raw["unit"][v .. "-spitter"].ai_settings.size_in_group = 0.5
--- end
-
---
--- If each setting is valid, make appropriate change
-
+  --   "small",
+  --   "medium",
+  --   "big",
+  --   "behemoth"
+  -- }
+  
+  -- for k,v in pairs(prefixes) do
+  --   data.raw["unit"][v .. "-biter"].ai_settings.size_in_group = 0.5
+  --   data.raw["unit"][v .. "-spitter"].ai_settings.size_in_group = 0.5
+  -- end
+  
+  --
+  -- If each setting is valid, make appropriate change
+  
+log("getting nauvis_difficulty")
 local nauvis_difficulty = settings.startup["more-enemies-nauvis-difficulty"]
-local difficulty = DifficultyUtils.initDifficulty("nauvis")
+log("initializing difficulty with 'nauvis'")
+local difficulty = DifficultyUtils.init_difficulty("nauvis")
 if (nauvis_difficulty and nauvis_difficulty.value) then
-  difficulty = DifficultyUtils.setDifficulty(nauvis_difficulty.value, "nauvis")
+  log("setting the difficulty ")
+  difficulty = DifficultyUtils.set_difficulty(nauvis_difficulty.value, "nauvis")
 end
 
 --

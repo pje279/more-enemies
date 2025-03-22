@@ -7,11 +7,12 @@ end
 
 data:extend({character_explosion})
 
-local menu_simulations = {}
+-- local menu_simulations = {}
 
-data.raw["utility-constants"]["default"].main_menu_simulations = menu_simulations
+-- data.raw["utility-constants"]["default"].main_menu_simulations = menu_simulations
 
-menu_simulations.nauvis_biter_base_laser_defense =
+-- menu_simulations.nauvis_biter_base_laser_defense =
+data.raw["utility-constants"]["default"].main_menu_simulations.nauvis_biter_base_laser_defense =
 {
   checkboard = false,
   save = "__base__/menu-simulations/menu-simulation-biter-base.zip",

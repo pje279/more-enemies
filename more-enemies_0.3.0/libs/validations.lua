@@ -12,5 +12,9 @@ function Validations.validateSettingNotEqualTo(setting, value)
   end
 end
 
+function Validations.is_number(value)
+  return tonumber(value) and true or false
+end
+
 local _validations = Validations
 return Validations

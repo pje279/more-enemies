@@ -47,8 +47,8 @@ constants.nauvis.spitter.MIN_SPAWNING_COOLDOWN = 150
 --
 -- { Gleba } --
 
-if (mods["space-age"]) then
-  if (mods["behemoth-enemies"]) then
+if (mods and mods["space-age"]) then
+  if (mods and mods["behemoth-enemies"]) then
     constants.gleba.categories = {
       SMALL = "small",
       MEDIUM = "medium",
@@ -84,13 +84,35 @@ if (mods["space-age"]) then
   constants.gleba.regular.MIN_SPAWNING_COOLDOWN = 150
 end
 
-constants.difficulty = {
-  EASY = "Easy",
-  VANILLA = "Vanilla",
-  VANILLA_PLUS = "Vanilla+",
-  HARD = "Hard",
-  INSANITY = "Insanity"
-}
+constants.difficulty = {}
+
+constants.difficulty.EASY = {}
+constants.difficulty.EASY.value = 0.1
+constants.difficulty.EASY.name = "Easy"
+
+constants.difficulty.VANILLA = {}
+constants.difficulty.VANILLA.value = 1
+constants.difficulty.VANILLA.name = "Vanilla"
+
+constants.difficulty.VANILLA_PLUS = {}
+constants.difficulty.VANILLA_PLUS.value = 1.75
+constants.difficulty.VANILLA_PLUS.name = "Vanilla+"
+
+constants.difficulty.HARD = {}
+constants.difficulty.HARD.value = 4
+constants.difficulty.HARD.name = "Hard"
+
+constants.difficulty.INSANITY = {}
+constants.difficulty.INSANITY.value = 10
+constants.difficulty.INSANITY.name = "Insanity"
+
+-- constants.difficulty = {
+--   EASY = "Easy",
+--   VANILLA = "Vanilla",
+--   VANILLA_PLUS = "Vanilla+",
+--   HARD = "Hard",
+--   INSANITY = "Insanity"
+-- }
 
 constants.more_enemies = true
 

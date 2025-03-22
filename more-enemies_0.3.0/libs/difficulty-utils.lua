@@ -1,19 +1,24 @@
 -- If already defined, return
-local DifficultyUtils = {}
-if (_DifficultyUtils) then
-  return _DifficultyUtils
+if (_difficulty_utils and _difficulty_utils.more_enemies) then
+  return _difficulty_utils
 end
 
 local Constants = require("libs.constants")
+local Log = require("libs.log.log")
+local Log_Constants_Functions = require("libs.log.log-constants-functions")
 local Validations = require("libs.validations")
 
-function DifficultyUtils.initDifficulty(planet)
+local difficulty_utils = {}
+
+difficulty_utils.difficulty = {}
+
+function difficulty_utils.init_difficulty(planet)
   local difficulty = {
     valid = false
   }
 
   if (not planet) then
-    game.print("planet invalid")
+    Log.warn("planet invalid")
     return difficulty
   end
 
@@ -72,18 +77,21 @@ function DifficultyUtils.initDifficulty(planet)
   return difficulty
 end
 
-function DifficultyUtils.setDifficulty(difficulty_setting, planet)
+function difficulty_utils.set_difficulty(difficulty_setting, planet)
   local difficulty = {
     valid = false
   }
 
+  -- Log.warn(difficulty_setting)
+  -- Log.warn(planet)
+
   -- Validate inputs
   if (not difficulty_setting) then
-    game.print("difficulty_setting invalid")
+    Log.warn("difficulty_setting invalid")
     return difficulty
   end
   if (not planet) then
-    game.print("planet invalid")
+    Log.warn("planet invalid")
     return difficulty
   end
 
@@ -93,29 +101,30 @@ function DifficultyUtils.setDifficulty(difficulty_setting, planet)
   local selected_difficulty = nil
 
   -- Determine difficulty
-  if (difficulty_setting == Constants.difficulty.EASY) then
-    modifier = 0.1
-    cooldown_modifier = 0.1
+  -- for k,v in pairs(Log_Constants_Functions.get_names())
+  if (difficulty_setting == Constants.difficulty.EASY.name or difficulty_setting == Constants.difficulty.EASY.value) then
+    modifier = Constants.difficulty.EASY.value
+    cooldown_modifier = Constants.difficulty.EASY.value
     selected_difficulty = Constants.difficulty.EASY
-  elseif (difficulty_setting == Constants.difficulty.VANILLA) then
-    modifier = 1
-    cooldown_modifier = 1
+  elseif (difficulty_setting == Constants.difficulty.VANILLA.name or difficulty_setting == Constants.difficulty.VANILLA.value) then
+    modifier = Constants.difficulty.VANILLA.value
+    cooldown_modifier = Constants.difficulty.VANILLA.value
     vanilla = true
     selected_difficulty = Constants.difficulty.VANILLA
-  elseif (difficulty_setting == Constants.difficulty.VANILLA_PLUS) then
-    modifier = 1.75
-    cooldown_modifier = 1.75
+  elseif (difficulty_setting == Constants.difficulty.VANILLA_PLUS.name or difficulty_setting == Constants.difficulty.VANILLA_PLUS.value) then
+    modifier = Constants.difficulty.VANILLA_PLUS.value
+    cooldown_modifier = Constants.difficulty.VANILLA_PLUS.value
     selected_difficulty = Constants.difficulty.VANILLA_PLUS
-  elseif (difficulty_setting == Constants.difficulty.HARD) then
-    modifer = 4
-    cooldown_modifier = 4
+  elseif (difficulty_setting == Constants.difficulty.HARD.name or difficulty_setting == Constants.difficulty.HARD.value) then
+    modifer = Constants.difficulty.HARD.value
+    cooldown_modifier = Constants.difficulty.HARD.value
     selected_difficulty = Constants.difficulty.HARD
-  elseif (difficulty_setting == Constants.difficulty.INSANITY) then
-    modifier = 10
-    cooldown_modifier = 10
+  elseif (difficulty_setting == Constants.difficulty.INSANITY.name or difficulty_setting == Constants.difficulty.INSANITY.value) then
+    modifier = Constants.difficulty.INSANITY.value
+    cooldown_modifier = Constants.difficulty.INSANITY.value
     selected_difficulty = Constants.difficulty.INSANITY
   else
-    game.print("No difficulty detected - lolhwutand")
+    Log.error("No difficulty detected")
     modifier = -1
     cooldown_modifier = -1
   end
@@ -171,33 +180,41 @@ function DifficultyUtils.setDifficulty(difficulty_setting, planet)
           }
         }
       }
-    else
-      game.print("")
     end
   end
+
+  Log.info(difficulty)
 
   return difficulty
 end
 
-function DifficultyUtils.getDifficulty(planet)
+function difficulty_utils.get_difficulty(planet, reindex)
+  reindex = reindex or false
+
+  if (not reindex and difficulty_utils and difficulty_utils.difficulty) then return difficulty_utils.difficulty end
+
   local difficulty = {
     valid = false
   }
 
   if (not planet or planet == "") then
-    game.print("planet invalid")
+    Log.warn("planet invalid", true)
     return difficulty
   end
 
   local planet_difficulty = settings.startup["more-enemies-" .. planet .. "-difficulty"]
   if (planet_difficulty and planet_difficulty.value) then
-    difficulty = DifficultyUtils.setDifficulty(planet_difficulty.value, planet)
+    difficulty = difficulty_utils.set_difficulty(planet_difficulty.value, planet)
   else
-    difficulty = DifficultyUtils.initDifficulty(planet)
+    difficulty = difficulty_utils.init_difficulty(planet)
   end
+
+  difficulty_utils.difficulty = difficulty
 
   return difficulty
 end
 
-_DifficultyUtils = DifficultyUtils
-return DifficultyUtils
+_difficulty_utils.more_enemies = true
+
+_difficulty_utils = difficulty_utils
+return difficulty_utils

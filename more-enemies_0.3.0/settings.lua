@@ -1,3 +1,4 @@
+require("libs.log.log-settings")
 require("settings.nauvis")
 
 if mods ["space-age"] then
