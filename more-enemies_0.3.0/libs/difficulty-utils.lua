@@ -74,6 +74,8 @@ function difficulty_utils.init_difficulty(planet)
     }
   end
 
+  difficulty_utils.difficulty = difficulty
+
   return difficulty
 end
 
@@ -82,8 +84,9 @@ function difficulty_utils.set_difficulty(difficulty_setting, planet)
     valid = false
   }
 
-  -- Log.warn(difficulty_setting)
-  -- Log.warn(planet)
+  -- Log.debug(storage)
+  -- Log.debug(difficulty_setting)
+  -- Log.debug(planet)
 
   -- Validate inputs
   if (not difficulty_setting) then
@@ -183,6 +186,8 @@ function difficulty_utils.set_difficulty(difficulty_setting, planet)
     end
   end
 
+  difficulty_utils.difficulty = difficulty
+
   Log.info(difficulty)
 
   return difficulty
@@ -191,7 +196,7 @@ end
 function difficulty_utils.get_difficulty(planet, reindex)
   reindex = reindex or false
 
-  if (not reindex and difficulty_utils and difficulty_utils.difficulty) then return difficulty_utils.difficulty end
+  if (reindex and difficulty_utils and difficulty_utils.difficulty) then return difficulty_utils.difficulty end
 
   local difficulty = {
     valid = false
@@ -214,7 +219,7 @@ function difficulty_utils.get_difficulty(planet, reindex)
   return difficulty
 end
 
-_difficulty_utils.more_enemies = true
+difficulty_utils.more_enemies = true
 
 _difficulty_utils = difficulty_utils
 return difficulty_utils

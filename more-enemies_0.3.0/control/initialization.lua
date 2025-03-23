@@ -8,22 +8,18 @@ local initialization = {}
 local Log = require("libs.log.log")
 
 function initialization.init()
-  -- log("Initializing")
   Log.debug("Initializing More Enemies")
 
   initialize(true) -- from_scratch
 
-  -- log("Finished initializing")
   Log.debug("Finished initializing More Enemies")
 end
 
 function initialization.reinit()
-  -- log("Reinitializing")
   Log.debug("Reinitializing More Enemies")
 
   initialize(false) -- as is
 
-  -- log("Finished reinitializing")
   Log.debug("Finished reinitializing More Enemies")
 end
 
@@ -40,6 +36,7 @@ local user_setting = nil
 if (settings and settings.global and settings.global[Log_Constants.DEBUG_LEVEL.name]) then
   user_setting = settings.global[Log_Constants.DEBUG_LEVEL.name].value
   if (user_setting) then
+    -- log(serpent.block(user_setting))
     Log.set_log_level(user_setting)
   else
     error("user setting DEBUG_LEVEL is  nil")

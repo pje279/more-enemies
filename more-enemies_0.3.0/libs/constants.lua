@@ -114,6 +114,16 @@ constants.difficulty.INSANITY.name = "Insanity"
 --   INSANITY = "Insanity"
 -- }
 
+constants.DEFAULTS = {}
+constants.DEFAULTS.unit_group = {
+  max_group_radius = 30.0,
+  min_group_radius = 5.0,
+
+  -- Maximum size of an attack unit group. This only affects automatically-created unit groups;
+  -- manual groups created through the API are unaffected.
+  max_unit_group_size = 200
+}
+
 constants.more_enemies = true
 
 local _constants = constants

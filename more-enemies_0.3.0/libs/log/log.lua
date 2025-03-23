@@ -4,7 +4,6 @@ if _log and _log.more_enemies then
 end
 
 Log_Constants = require("libs.log.log-constants")
--- Validations = require("libs.validations")
 Log_Constants_Functions = require("libs.log.log-constants-functions")
 
 local Log = {}
@@ -87,8 +86,6 @@ function Log.get_log_level()
 end
 
 function Log.set_log_level(new_log_level)
-  -- log(serpent.block(new_log_level))
-
   local default_return_val = function ()
     log(debug.traceback())
     log("Setting storage.log_level to NONE")
@@ -98,8 +95,6 @@ function Log.set_log_level(new_log_level)
     }
     return
   end
-
-  -- log("if (not new_log_level or not new_log_level.valid)")
 
   if (not new_log_level or not new_log_level.valid) then return default_return_val() end
 
@@ -141,9 +136,10 @@ end
 function log_message(message, log_level, traceback)
   -- Do nothing if the game is not loaded yet
   if (not is_game_loaded()) then return end
+
   -- log(serpent.block(log_level))
   log_level = log_level or Log_Constants.levels[Log_Constants.NONE.num_val]
-  -- log(serpent.block(log_level))
+
   local _log_level = Log.get_log_level()
   if (not _log_level or not _log_level.valid) then
     log_print_message("Log level was invalid", { level = Log_Constants.levels[Log_Constants.NONE.num_val], valid = true })
@@ -167,38 +163,31 @@ function log_print_message(message, log_level, traceback)
 
   traceback = traceback or false
 
-  -- log(serpent.block(log_level))
-  if (game) then
-    game.print(serpent.block(log_level))
-  end
-
   -- Validate provided log_level
   if (not log_level or not log_level.valid) then
     -- Somethings really wrong if this is happening
-    -- log("log_level is nil or log_level is not valid")
     if (game) then
       game.print("log_level is nil or log_level is not valid")
     end
+    log("returning")
     return
   end
 
   if (not storage or not storage.log_level or not storage.log_level.valid) then
-    -- log("log_level is nil or log_level is not valid")
     if (game) then
       game.print("log_level is nil or log_level is not valid")
     end
     if (storage) then
+      log("log_level is nil or log_level is not valid")
       storage.log_level = Log_Constants.levels[Log_Constants.NONE.num_val]
     end
   end
-  
-  -- Check if provided log_level and log_level from storage match
-  if (  log_level.valid 
+
+  if (  log_level.valid
     and storage
     and storage.log_level
     and not storage.log_level.valid)
   then
-    -- log("log_level ~= storage.log_level")
     if (game) then
       game.print("log_level ~= storage.log_level")
     end
@@ -208,7 +197,7 @@ function log_print_message(message, log_level, traceback)
   -- Get the traceback setting
   local traceback_setting = nil
   if (not traceback and settings and settings.global) then traceback_setting = settings.global[Log_Constants.DO_TRACEBACK.name] end
-  if (traceback_setting and traceback_setting.value) then traceback = traceback_setting.value end 
+  if (traceback_setting and traceback_setting.value) then traceback = traceback_setting.value end
 
   -- Always print the traceback for a nil message
   if (not message and not traceback) then
@@ -216,29 +205,23 @@ function log_print_message(message, log_level, traceback)
   end
 
   -- Always traceback messages that were broadcasted via logging
-  -- log(serpent.block(log_level.level.num_val))
-  -- log(serpent.block(Log_Constants.levels[Log_Constants.NONE.num_val].level.num_val))
-  if (  traceback 
+  -- or anything that used the .none(..) method
+  if (  traceback
     or (  log_level
       and log_level.valid
       and log_level.level
-      and log_level.level.num_val 
+      and log_level.level.num_val
         >= Log_Constants.levels[Log_Constants.NONE.num_val].level.num_val))
   then
     log(debug.traceback())
   end
-  -- log(serpent.block(message))
-  
+
   local do_prefix = log_level.level.num_val < Log_Constants.levels[Log_Constants.NONE.num_val].level.num_val
-  -- log(do_prefix)
-  -- log(Log_Constants_Functions.levels.to_name(log_level.level))
-  -- log(log_level.level.string_val)
-  -- log(serpent.block(message))
-  -- log(Log_Constants_Functions.levels.to_name(log_level.level) .. ": " .. serpent.block(message))
   log(log_level.level.string_val .. ": " .. serpent.block(message))
   if (game) then
     game.print(
-      do_print_prefix(Log_Constants_Functions.levels.to_name(log_level.level), do_prefix)
+      -- do_print_prefix(Log_Constants_Functions.levels.to_name(log_level.level), do_prefix)
+      do_print_prefix(log_level.level.string_val, do_prefix)
         .. serpent.block(message))
   end
 end

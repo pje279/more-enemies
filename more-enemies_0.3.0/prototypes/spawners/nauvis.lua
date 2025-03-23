@@ -10,15 +10,15 @@ local DifficultyUtils = require("libs.difficulty-utils")
   --   "big",
   --   "behemoth"
   -- }
-  
+
   -- for k,v in pairs(prefixes) do
   --   data.raw["unit"][v .. "-biter"].ai_settings.size_in_group = 0.5
   --   data.raw["unit"][v .. "-spitter"].ai_settings.size_in_group = 0.5
   -- end
-  
+
   --
   -- If each setting is valid, make appropriate change
-  
+
 log("getting nauvis_difficulty")
 local nauvis_difficulty = settings.startup["more-enemies-nauvis-difficulty"]
 log("initializing difficulty with 'nauvis'")

@@ -3,6 +3,7 @@ if _spawn and _spawn.more_enemies then
   return _spawn
 end
 
+local Constants = require("libs.constants")
 local Log = require("libs.log.log")
 local Difficulty_Utils = require("libs.difficulty-utils")
 
@@ -52,24 +53,48 @@ end
 function spawn.duplicate_unit_group(group)
   if (not group or not group.valid or not group.surface) then return end
 
-  local selected_difficulty = Difficulty_Utils.get_difficulty(group.surface.name).selected_difficulty
-  Log.warn("selected_difficulty: " .. serpent.block(selected_difficulty))
+  local difficulty = Difficulty_Utils.get_difficulty(group.surface.name)
+  if (not difficulty or not difficulty.valid) then return end
+
+  local selected_difficulty = difficulty.selected_difficulty
+  Log.debug("selected_difficulty: " .. serpent.block(selected_difficulty))
 
   if (selected_difficulty.value > 1) then
-    for i=1, math.ceil(selected_difficulty.value - 1) do
-      for k,v in pairs(group.members) do
-        Log.warn("Cloning")
-        Log.info(v.force)
-        local clone = v.clone({
+
+    local len = #group.members
+    Log.debug("len:" .. serpent.block(len))
+
+    local clones = {}
+
+    for i=1, len do
+      local v = group.members[i]
+      Log.info(i)
+      Log.info(v)
+      -- Log.info(v.object_name)
+      local clone = nil
+      -- if (v.object_name ~= "LuaEntity") then
+        Log.debug("Cloning")
+        clone = v.clone({
           position = v.position,
           surface = group.surface.name,
           force = v.force
         })
-        Log.warn(clone)
+        Log.info(clone)
+      -- end
 
-        Log.info("Adding member")
-        group.add_member(clone)
-      end
+      clones[i] = clone
+
+      -- if (clone) then
+      --   Log.info("Adding member")
+      --   group.add_member(clone)
+      -- end
+
+      if (i > math.sqrt(selected_difficulty.value * Constants.DEFAULTS.unit_group.max_unit_group_size)) then break end
+    end
+
+    for i=1, #clones do
+      Log.info("Adding member")
+      group.add_member(clones[i])
     end
   end
 end
