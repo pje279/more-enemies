@@ -3,7 +3,7 @@ if _spawn and _spawn.more_enemies then
   return _spawn
 end
 
-local Constants = require("libs.constants")
+local Constants = require("libs.constants.constants")
 local Log = require("libs.log.log")
 local Difficulty_Utils = require("libs.difficulty-utils")
 

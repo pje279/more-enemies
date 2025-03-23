@@ -1,6 +1,6 @@
 log("importing")
 
-local Constants = require("libs.constants")
+local Constants = require("libs.constants.constants")
 local Validations = require("libs.validations")
 local DifficultyUtils = require("libs.difficulty-utils")
 

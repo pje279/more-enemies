@@ -85,7 +85,7 @@ function unit_group.unit_group_finished_gathering(event)
   if (not selected_difficulty) then return end
 
   -- local loop_len = math.floor(math.sqrt(selected_difficulty.value))
-  Log.warn(selected_difficulty)
+  Log.info(selected_difficulty)
   local difficulty_val = selected_difficulty.value
   local loop_len = 1
 
