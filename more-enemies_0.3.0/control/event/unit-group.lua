@@ -23,35 +23,25 @@ function unit_group.unit_group_created(event)
   if (not group.position) then return end
   Log.info(group.position)
 
-  local selected_difficulty = Difficulty_Utils.get_difficulty(group.surface.name).selected_difficulty
+  Log.info("Getting difficulty")
+  local difficulty = Difficulty_Utils.get_difficulty(group.surface.name)
+  if (not difficulty or not difficulty.valid) then return end
 
-  local surface_name = group.surface.name
+  Log.info("Getting selected_difficulty")
+  local selected_difficulty = difficulty.selected_difficulty
+  if (not selected_difficulty) then return end
 
-  -- local spawner = get_spawner(group)
-  -- Log.info(spawner)
-  -- if (not spawner) then
-  --   Log.warn("get_spawner(group) returned nil")
-  --   spawner = get_spawner(group, 4)
-  --   Log.info(spawner)
-  --   if (not spawner) then
-  --     Log.warn("get_spawner(group) returned nil")
-  --     return
-  --   end
-  -- end
+  if (selected_difficulty.name == "Vanilla" or selected_difficulty.value == 1) then
+    Log.info("Difficulty is vanilla; no need to process")
+    return
+  end
 
-  -- if (not storage.spawners) then
-  --   Log.warn("storage.spawners == nil")
-  --   storage.spawners = {}
-  -- end
   if (not storage.groups) then
     Log.warn("storage.groups == nil")
     storage.groups = {}
   end
   Log.debug("adding group: " .. serpent.block(group))
 
-  -- Log.info(group.parent_group)
-
-  -- storage.spawners[spawner.unit_number] = group
   storage.groups[group.unique_id] = {
     group = group,
     count = 1
@@ -69,8 +59,10 @@ function unit_group.unit_group_finished_gathering(event)
   Log.info(group.surface.name)
   if (not group.is_unit_group) then return end
   Log.info(group.is_unit_group)
-  if (not group.position) then return end
-  Log.info(group.position)
+  if (not group.force) then return end
+  Log.info(group.force)
+  -- if (not group.position) then return end
+  -- Log.info(group.position)
 
   difficulty = Difficulty_Utils.get_difficulty(group.surface.name)
   Log.info(group.surface.name)
@@ -84,15 +76,22 @@ function unit_group.unit_group_finished_gathering(event)
   local selected_difficulty = difficulty.selected_difficulty
   if (not selected_difficulty) then return end
 
-  -- local loop_len = math.floor(math.sqrt(selected_difficulty.value))
   Log.info(selected_difficulty)
+  if (selected_difficulty.name == "Vanilla" or selected_difficulty.value == 1) then
+    Log.info("Difficulty is vanilla; no need to process")
+    return
+  end
+
   local difficulty_val = selected_difficulty.value
   local loop_len = 1
 
+  local evolution_factor = group.force.get_evolution_factor()
+  Log.info(evolution_factor)
+
   if (difficulty_val > 1) then
-    loop_len = (math.ceil(selected_difficulty.value) / 2) + 1
+    loop_len = (math.ceil(selected_difficulty.value * evolution_factor) / 2) + 1
   else
-    loop_len = math.ceil(selected_difficulty.value)
+    loop_len = math.ceil(selected_difficulty.value * evolution_factor)
   end
 
   Log.debug("loop_len:" .. serpent.block(loop_len))

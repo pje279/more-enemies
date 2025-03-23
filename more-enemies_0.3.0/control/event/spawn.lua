@@ -24,9 +24,17 @@ function spawn.entity_spawned(event)
   if (not difficulty or not difficulty.valid) then return end
   Log.info("selected_difficulty: " .. serpent.block(difficulty.selected_difficulty))
 
-  if (difficulty.selected_difficulty.value > 1) then
-    for i=1, math.ceil(difficulty.selected_difficulty.value - 1) do
-      Log.info("Cloning")
+  Log.warn(entity)
+  Log.warn(entity.force)
+  Log.warn(entity.force.get_evolution_factor())
+
+  local evolution_factor = entity.force.get_evolution_factor()
+
+  if (  evolution_factor
+    and difficulty.selected_difficulty.value * evolution_factor > 1)
+  then
+    for i=1, math.ceil(difficulty.selected_difficulty.value) do
+      Log.debug("Cloning")
       Log.info(entity.force)
       local clone = entity.clone({
         position = entity.position,
@@ -35,17 +43,6 @@ function spawn.entity_spawned(event)
       })
 
       Log.info(clone)
-
-      Log.info("spawner: " .. serpent.block(spawner))
-      Log.info("spawner.unit_number: " .. serpent.block(spawner.unit_number))
-      Log.info(storage.spawners)
-      if (storage.spawners and storage.spawners[spawner.unit_number]) then
-        Log.info("Passed")
-        local unit_group = storage.spawners[spawner.unit_number]
-        if (not unit_group or not unit_group.valid) then return end
-        Log.info("Adding member")
-        unit_group.add_member(clone)
-      end
     end
   end
 end
@@ -70,9 +67,7 @@ function spawn.duplicate_unit_group(group)
       local v = group.members[i]
       Log.info(i)
       Log.info(v)
-      -- Log.info(v.object_name)
       local clone = nil
-      -- if (v.object_name ~= "LuaEntity") then
         Log.debug("Cloning")
         clone = v.clone({
           position = v.position,
@@ -84,11 +79,7 @@ function spawn.duplicate_unit_group(group)
 
       clones[i] = clone
 
-      -- if (clone) then
-      --   Log.info("Adding member")
-      --   group.add_member(clone)
-      -- end
-
+      -- This shouldn't be necessary, but just in case
       if (i > math.sqrt(selected_difficulty.value * Constants.DEFAULTS.unit_group.max_unit_group_size)) then break end
     end
 
