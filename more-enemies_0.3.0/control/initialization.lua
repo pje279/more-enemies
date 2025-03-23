@@ -26,27 +26,34 @@ end
 function initialize(from_scratch)
   from_scratch = from_scratch or false
 
-  storage.more_enemies = {}
+  if (from_scratch) then
+    storage.more_enemies = {}
+  end
+
+  local user_setting = nil
+  if (settings and settings.global and settings.global[Log_Constants.DEBUG_LEVEL.name]) then
+    user_setting = settings.global[Log_Constants.DEBUG_LEVEL.name].value
+    if (user_setting) then
+      Log.info(user_setting)
+      Log.set_log_level(user_setting)
+    else
+      Log.error("user setting DEBUG_LEVEL is  nil")
+      error("user setting DEBUG_LEVEL is  nil")
+    end
+  elseif (not settings) then
+    Log.error("settings is nil")
+    error("settings is nil")
+  elseif (not settings.global) then
+    Log.error("setting.global is nil")
+    error("setting.global is nil")
+  elseif (not settings.global[Log_Constants.DEBUG_LEVEL.name]) then
+    Log.error("settings.global[Log_Constants.DEBUG_LEVEL.name] is nil")
+    error("settings.global[Log_Constants.DEBUG_LEVEL.name] is nil")
+  end
+
   storage.more_enemies.valid = true
 
   Log.debug(storage)
-end
-
-local user_setting = nil
-if (settings and settings.global and settings.global[Log_Constants.DEBUG_LEVEL.name]) then
-  user_setting = settings.global[Log_Constants.DEBUG_LEVEL.name].value
-  if (user_setting) then
-    -- log(serpent.block(user_setting))
-    Log.set_log_level(user_setting)
-  else
-    error("user setting DEBUG_LEVEL is  nil")
-  end
-elseif (not settings) then
-  error("settings is nil")
-elseif (not settings.global) then
-  error("setting.global is nil")
-elseif (not settings.global[Log_Constants.DEBUG_LEVEL.name]) then
-  error("settings.global[Log_Constants.DEBUG_LEVEL.name] is nil")
 end
 
 initialization.more_enemies = true

@@ -1,9 +1,9 @@
-log("log-settings started")
+-- log("log-settings started")
 
 local Log_Constants = require("libs.log.log-constants")
 local Log_Constants_Functions = require("libs.log.log-constants-functions")
 
-log("imports done")
+-- log("imports done")
 
 data:extend({
   {
@@ -27,4 +27,4 @@ data:extend({
   },
 })
 
-log("added settings")
+-- log("added settings")

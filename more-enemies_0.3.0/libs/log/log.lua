@@ -88,7 +88,7 @@ end
 function Log.set_log_level(new_log_level)
   local default_return_val = function ()
     log(debug.traceback())
-    log("Setting storage.log_level to NONE")
+    log("Setting storage.log_level to NONE and invalid")
     storage.log_level = {
       level = Log_Constants.levels[Log_Constants.NONE.num_val],
       valid = false
@@ -96,18 +96,19 @@ function Log.set_log_level(new_log_level)
     return
   end
 
-  if (not new_log_level or not new_log_level.valid) then return default_return_val() end
+  log(serpent.block(new_log_level))
+  if (not new_log_level) then return default_return_val() end
 
   if (  new_log_level.level
-    and new_log_level.level.num_val
-    and new_log_level.level.num_val < 0)
+  and new_log_level.level.num_val
+  and new_log_level.level.num_val < 0)
   then
     return default_return_val()
   end
 
   if (  new_log_level.level
-    and new_log_level.level.num_val
-    and new_log_level.level.num_val >= 0)
+  and new_log_level.level.num_val
+  and new_log_level.level.num_val >= 0)
   then
     -- log("Setting log level")
     storage.log_level = {
@@ -117,9 +118,31 @@ function Log.set_log_level(new_log_level)
     return
   end
 
+  log(is_number(new_log_level))
+  log(is_string(new_log_level))
+  log(new_log_level.valid)
+
+  if (not is_number(new_log_level) and not is_string(new_log_level) and not new_log_level.valid) then return default_return_val() end
+
+  if (is_number(new_log_level) and new_log_level >= 0) then
+    storage.log_level = {
+      level = Log_Constants_Functions.levels.get_level_by_value({ num_val = new_log_level }),
+      valid = true
+    }
+    return
+  end
+
+  if (is_string(new_log_level)) then
+    storage.log_level = {
+      level = Log_Constants_Functions.levels.get_level_by_name({ string_val = new_log_level }),
+      valid = true
+    }
+    return
+  end
+
   local _new_log_level = Log_Constants_Functions.levels.get_level_by_name(new_log_level.level)
+  log(serpent.block(_new_log_level))
   if (storage.log_level and storage.log_level.valid) then
-    -- log("Setting log level")
     storage.log_level = {
       level = _new_log_level,
       valid = true
@@ -231,6 +254,14 @@ function do_print_prefix(prefix, do_prefix)
 end
 
 function is_game_loaded() return game end
+
+function is_number(value)
+  return tonumber(value) and true or false
+end
+
+function is_string(value)
+  return tostring(value) and true or false
+end
 
 Log.more_enemies = true
 

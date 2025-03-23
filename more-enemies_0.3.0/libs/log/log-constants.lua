@@ -91,7 +91,7 @@ log_constants.DO_TRACEBACK.value = false
 log_constants.DO_TRACEBACK.name = "more-enemies-do-traceback"
 
 log_constants.constants = {}
-log_constants.constants.EMPTY_STRING = " "
+log_constants.constants.EMPTY_STRING = ""
 
 log_constants.more_enemies = true
 

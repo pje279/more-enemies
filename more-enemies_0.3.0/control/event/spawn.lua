@@ -24,10 +24,8 @@ function spawn.entity_spawned(event)
   if (not difficulty or not difficulty.valid) then return end
   Log.info("selected_difficulty: " .. serpent.block(difficulty.selected_difficulty))
 
-  Log.warn(entity)
-  Log.warn(entity.force)
-  Log.warn(entity.force.get_evolution_factor())
-
+  Log.info(entity)
+  Log.info(entity.force.get_evolution_factor())
   local evolution_factor = entity.force.get_evolution_factor()
 
   if (  evolution_factor
