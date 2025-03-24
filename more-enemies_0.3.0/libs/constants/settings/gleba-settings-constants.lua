@@ -12,7 +12,7 @@ gleba_settings_constants.settings.CLONE_GLEBA_UNITS = {
   type = "double-setting",
   name = "more-enemies-clone-gleba-units",
   setting_type = "runtime-global",
-  order = "caa",
+  order = "cab",
   default_value = 1,
   maximum_value = 10,
   minimum_value = 0,
@@ -22,7 +22,7 @@ gleba_settings_constants.settings.CLONE_GLEBA_UNIT_GROUPS = {
   type = "double-setting",
   name = "more-enemies-clone-gleba-unit-groups",
   setting_type = "runtime-global",
-  order = "cab",
+  order = "cac",
   default_value = 1,
   maximum_value = 10,
   minimum_value = 0,
@@ -33,9 +33,17 @@ gleba_settings_constants.settings.GLEBA_DIFFICULTY = {
   type = "string-setting",
   name = "more-enemies-gleba-difficulty",
   setting_type = "startup",
-  order = "aab",
+  order = "aac",
   default_value = "Vanilla",
   allowed_values = { "Easy", "Vanilla", "Vanilla+", "Hard", "Insanity" }
+}
+
+gleba_settings_constants.settings.GLEBA_DO_EVOLUTION_FACTOR = {
+    type = "bool-setting",
+    name = "more-enemies-gleba-do-evolution-factor",
+    setting_type = "runtime-global",
+    order = "bab",
+    default_value = true,
 }
 
 -- { Small } --

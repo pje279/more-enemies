@@ -12,7 +12,7 @@ nauvis_settings_constants.settings.CLONE_NAUVIS_UNITS = {
   type = "double-setting",
   name = "more-enemies-clone-nauvis-units",
   setting_type = "runtime-global",
-  order = "baa",
+  order = "bac",
   default_value = 1,
   maximum_value = 10,
   minimum_value = 0,
@@ -22,7 +22,7 @@ nauvis_settings_constants.settings.CLONE_NAUVIS_UNIT_GROUPS = {
   type = "double-setting",
   name = "more-enemies-clone-gleba-nauvis-groups",
   setting_type = "runtime-global",
-  order = "bab",
+  order = "bad",
   default_value = 1,
   maximum_value = 10,
   minimum_value = 0,
@@ -36,6 +36,14 @@ nauvis_settings_constants.settings.NAUVIS_DIFFICULTY = {
   order = "aaa",
   default_value = "Vanilla",
   allowed_values = { "Easy", "Vanilla", "Vanilla+", "Hard", "Insanity" }
+}
+
+nauvis_settings_constants.settings.NAUVIS_DO_EVOLUTION_FACTOR = {
+  type = "bool-setting",
+  name = "more-enemies-nauvis-do-evolution-factor",
+  setting_type = "runtime-global",
+  order = "baa",
+  default_value = true,
 }
 
 -- { Biters } --
