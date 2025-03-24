@@ -5,6 +5,8 @@ end
 
 local Log = require("libs.log.log")
 local Difficulty_Utils = require("libs.difficulty-utils")
+local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
+local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
 local Spawn = require("control.event.spawn")
 
 local unit_group = {}
@@ -61,8 +63,6 @@ function unit_group.unit_group_finished_gathering(event)
   Log.info(group.is_unit_group)
   if (not group.force) then return end
   Log.info(group.force)
-  -- if (not group.position) then return end
-  -- Log.info(group.position)
 
   difficulty = Difficulty_Utils.get_difficulty(group.surface.name)
   Log.info(group.surface.name)
@@ -85,7 +85,18 @@ function unit_group.unit_group_finished_gathering(event)
   local difficulty_val = selected_difficulty.value
   local loop_len = 1
 
-  local evolution_factor = group.force.get_evolution_factor()
+  local use_evolution_factor = false
+  if (  group.surface.name == "nauvis"
+    and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name])
+  then
+    use_evolution_factor = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name].value
+  elseif (  group.surface.name == "gleba"
+  and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name]) then
+    use_evolution_factor = settings.global[Gleba_Settings_Constants.settings.Gleba_DO_EVOLUTION_FACTOR.name].value
+  end
+
+  local evolution_factor = 1
+  if (use_evolution_factor) then evolution_factor = group.force.get_evolution_factor() end
   Log.info(evolution_factor)
 
   if (difficulty_val > 1) then

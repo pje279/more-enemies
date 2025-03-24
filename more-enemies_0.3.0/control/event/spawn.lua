@@ -4,7 +4,9 @@ if _spawn and _spawn.more_enemies then
 end
 
 local Constants = require("libs.constants.constants")
+local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
 local Log = require("libs.log.log")
+local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
 local Difficulty_Utils = require("libs.difficulty-utils")
 
 local spawn = {}
@@ -32,9 +34,20 @@ function spawn.entity_spawned(event)
     return
   end
 
-  Log.info(entity)
-  Log.info(entity.force.get_evolution_factor())
-  local evolution_factor = entity.force.get_evolution_factor()
+  local use_evolution_factor = false
+  if (  entity.surface.name == "nauvis"
+    and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name])
+  then
+    use_evolution_factor = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name].value
+  elseif (  entity.surface.name == "gleba"
+        and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name])
+      then
+    use_evolution_factor = settings.global[Gleba_Settings_Constants.settings.Gleba_DO_EVOLUTION_FACTOR.name].value
+  end
+
+  local evolution_factor = 1
+  if (use_evolution_factor) then evolution_factor = entity.force.get_evolution_factor() end
+  Log.info(evolution_factor)
 
   if (  evolution_factor
     and difficulty.selected_difficulty.value * evolution_factor > 1)
