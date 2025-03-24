@@ -19,10 +19,18 @@ function spawn.entity_spawned(event)
 
   local surface_name = entity.surface.name
 
-  local difficulty = Difficulty_Utils.get_difficulty(surface_name)
-  Log.info("getting difficulty")
+  Log.info("Getting difficulty")
+  local difficulty = Difficulty_Utils.get_difficulty(entity.surface.name)
   if (not difficulty or not difficulty.valid) then return end
-  Log.info("selected_difficulty: " .. serpent.block(difficulty.selected_difficulty))
+
+  Log.info("Getting selected_difficulty")
+  local selected_difficulty = difficulty.selected_difficulty
+  if (not selected_difficulty) then return end
+
+  if (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == 1) then
+    Log.info("Difficulty is vanilla; no need to process")
+    return
+  end
 
   Log.info(entity)
   Log.info(entity.force.get_evolution_factor())

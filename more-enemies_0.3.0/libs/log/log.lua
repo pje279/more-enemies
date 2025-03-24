@@ -96,7 +96,7 @@ function Log.set_log_level(new_log_level)
     return
   end
 
-  log(serpent.block(new_log_level))
+  -- log(serpent.block(new_log_level))
   if (not new_log_level) then return default_return_val() end
 
   if (  new_log_level.level
@@ -117,10 +117,6 @@ function Log.set_log_level(new_log_level)
     }
     return
   end
-
-  log(is_number(new_log_level))
-  log(is_string(new_log_level))
-  log(new_log_level.valid)
 
   if (not is_number(new_log_level) and not is_string(new_log_level) and not new_log_level.valid) then return default_return_val() end
 

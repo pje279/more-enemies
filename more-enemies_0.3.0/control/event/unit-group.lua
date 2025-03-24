@@ -31,7 +31,7 @@ function unit_group.unit_group_created(event)
   local selected_difficulty = difficulty.selected_difficulty
   if (not selected_difficulty) then return end
 
-  if (selected_difficulty.name == "Vanilla" or selected_difficulty.value == 1) then
+  if (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == 1) then
     Log.info("Difficulty is vanilla; no need to process")
     return
   end
@@ -77,7 +77,7 @@ function unit_group.unit_group_finished_gathering(event)
   if (not selected_difficulty) then return end
 
   Log.info(selected_difficulty)
-  if (selected_difficulty.name == "Vanilla" or selected_difficulty.value == 1) then
+  if (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == 1) then
     Log.info("Difficulty is vanilla; no need to process")
     return
   end

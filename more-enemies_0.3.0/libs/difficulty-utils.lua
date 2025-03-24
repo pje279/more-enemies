@@ -91,19 +91,23 @@ end
 function difficulty_utils.get_difficulty(planet, reindex)
   reindex = reindex or false
 
+  Log.warn(reindex)
+  Log.warn(planet)
+  if (storage) then Log.warn(storage.difficulty) end
+
   if (  not reindex
     and planet
     and storage
     and storage.difficulty
-    and storage.difficulty[planet] ~= nil
-    and storage.difficulty.valid)
-  then return storage.difficulty[planet] end
+    and storage.difficulty[planet].valid)
+  then
+  return storage.difficulty[planet] end
 
   local difficulty = {
     valid = false
   }
 
-  Log.warn(planet)
+  Log.info(planet)
   if (not planet or planet == "") then
     Log.warn("planet invalid", true)
     return difficulty
@@ -121,7 +125,7 @@ function difficulty_utils.get_difficulty(planet, reindex)
     difficulty = difficulty_utils.init_difficulty(planet)
   end
 
-  Log.warn(difficulty)
+  Log.info(difficulty)
 
   if (storage) then storage.difficulty[planet] = difficulty end
 

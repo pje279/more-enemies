@@ -1,6 +1,6 @@
 require("libs.log.log-settings")
-require("settings.nauvis")
+require("settings.nauvis.nauvis")
 
-if mods ["space-age"] then
-  require("settings.gleba")
+if (mods and mods["space-age"]) then
+  require("settings.gleba.gleba")
 end
