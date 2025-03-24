@@ -50,7 +50,7 @@ for planet, difficulty in pairs(difficulties) do
     radius_modifier = Constants.difficulty.INSANITY.radius_modifier
   else
     Log.debug("more-enemies: map-settings -> difficulty = ")
-    Log.debug(difficulty)
+    Log.info(difficulty)
     Log.warn("No difficulty detected ")
     modifier = -1
   end

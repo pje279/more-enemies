@@ -44,10 +44,22 @@ function unit_group.unit_group_created(event)
   end
   Log.debug("adding group: " .. serpent.block(group))
 
-  storage.groups[group.unique_id] = {
+  Log.debug(group.surface.name)
+
+  Log.debug("before: " .. serpent.block(storage.groups))
+
+  if (not storage.groups[group.surface.name]) then
+    storage.groups[group.surface.name] = {}
+  end
+
+  Log.debug("after: " .. serpent.block(storage.groups))
+
+  storage.groups[group.surface.name][group.unique_id] = {
     group = group,
     count = 1
   }
+
+  Log.debug(storage.groups[group.surface.name][group.unique_id])
 end
 
 function unit_group.unit_group_finished_gathering(event)
@@ -68,7 +80,7 @@ function unit_group.unit_group_finished_gathering(event)
   Log.info(group.surface.name)
   Log.info(difficulty)
 
-  if (not difficulty) then Log.warn("difficulty is nil", true) end
+  if (not difficulty) then Log.warn("difficulty is nil") end
 
   local difficulty = Difficulty_Utils.get_difficulty(group.surface.name)
   if (not difficulty or not difficulty.valid) then return end
@@ -91,7 +103,7 @@ function unit_group.unit_group_finished_gathering(event)
   then
     use_evolution_factor = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name].value
   elseif (  group.surface.name == "gleba"
-  and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name]) then
+        and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name]) then
     use_evolution_factor = settings.global[Gleba_Settings_Constants.settings.Gleba_DO_EVOLUTION_FACTOR.name].value
   end
 
@@ -108,12 +120,17 @@ function unit_group.unit_group_finished_gathering(event)
   Log.debug("loop_len:" .. serpent.block(loop_len))
 
   for i=1, loop_len do
-    if (storage.groups[group.unique_id] and storage.groups[group.unique_id].count >= loop_len) then break end
+    if (  storage.groups[group.surface.name][group.unique_id]
+      and storage.groups[group.surface.name][group.unique_id].count >= loop_len
+    ) then break end
     Log.debug("duplicating unit group: " .. serpent.block(i))
     Spawn.duplicate_unit_group(group)
-    Log.info(storage)
-    if (storage and storage.groups and storage.groups[group.unique_id]) then
-      storage.groups[group.unique_id].count = storage.groups[group.unique_id].count + 1
+    
+    if (  storage
+      and storage.groups
+      and storage.groups[group.surface.name][group.unique_id])
+    then
+      storage.groups[group.surface.name][group.unique_id].count = storage.groups[group.surface.name][group.unique_id].count + 1
     end
   end
 
@@ -123,7 +140,7 @@ function unit_group.unit_group_finished_gathering(event)
   group.start_moving()
 
   Log.debug("removing group: " .. serpent.block(group))
-  storage.groups[group.unique_id] = nil
+  storage.groups[group.surface.name][group.unique_id] = nil
 end
 
 function get_spawner(group, radius, limit)

@@ -215,10 +215,19 @@ function log_print_message(message, log_level, traceback)
 
   -- Get the traceback setting
   local traceback_setting = nil
-  if (not traceback and settings and settings.global) then traceback_setting = settings.global[Log_Constants.DO_TRACEBACK.name] end
+  if (not traceback
+      and settings
+      and settings.global
+      and settings.global[Log_Constants.DO_TRACEBACK.name])
+  then
+    traceback_setting = settings.global[Log_Constants.DO_TRACEBACK.name]
+  end
+
   if (traceback_setting and traceback_setting.value) then traceback = traceback_setting.value end
 
   -- Always print the traceback for a nil message
+  log("traceback: " .. serpent.block(traceback))
+  log("message: " .. serpent.block(message))
   if (not message and not traceback) then
     traceback = true
   end

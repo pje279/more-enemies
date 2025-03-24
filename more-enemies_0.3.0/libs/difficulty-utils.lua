@@ -91,9 +91,8 @@ end
 function difficulty_utils.get_difficulty(planet, reindex)
   reindex = reindex or false
 
-  Log.warn(reindex)
-  Log.warn(planet)
-  if (storage) then Log.warn(storage.difficulty) end
+  Log.debug(reindex)
+  if (storage) then Log.info(storage.difficulty) end
 
   if (  not reindex
     and planet
@@ -101,25 +100,32 @@ function difficulty_utils.get_difficulty(planet, reindex)
     and storage.difficulty
     and storage.difficulty[planet].valid)
   then
-  return storage.difficulty[planet] end
+    return storage.difficulty[planet]
+  end
 
   local difficulty = {
     valid = false
   }
 
+  if (storage and not storage.difficulty) then storage.difficulty = {} end
+
   Log.info(planet)
   if (not planet or planet == "") then
-    Log.warn("planet invalid", true)
+    Log.warn("planet invalid")
     return difficulty
   end
 
+  if (storage and storage.difficulty and not storage.difficulty[planet]) then storage.difficulty[planet] = difficulty end
+
   local planet_difficulty = settings.startup["more-enemies-" .. planet .. "-difficulty"]
 
-  if (planet_difficulty and planet_difficulty.value) then
+  local selected_difficulty = Constants.difficulty[Constants.difficulty.difficulties[planet_difficulty.value]]
+
+  if (selected_difficulty and selected_difficulty.valid) then
     if (reindex) then
-      difficulty = difficulty_utils.init_difficulty(planet, planet_difficulty.value)
+      difficulty = difficulty_utils.init_difficulty(planet, selected_difficulty)
     else
-      difficulty = difficulty_utils.set_difficulty(planet, planet_difficulty.value)
+      difficulty = difficulty_utils.set_difficulty(planet, selected_difficulty)
     end
   else
     difficulty = difficulty_utils.init_difficulty(planet)
@@ -127,7 +133,14 @@ function difficulty_utils.get_difficulty(planet, reindex)
 
   Log.info(difficulty)
 
-  if (storage) then storage.difficulty[planet] = difficulty end
+  -- If storage difficulty for the planet is invalid, replace it
+  if (  storage
+    and storage.difficulty
+    and storage.difficulty[planet]
+    and not storage.difficulty[planet].valid)
+  then
+    storage.difficulty[planet] = difficulty
+  end
 
   return difficulty
 end
@@ -140,8 +153,8 @@ function create_difficulty(planet, selected_difficulty, modifier, cooldown_modif
     valid = false
   }
 
-  if (selected_difficulty and modifier >= 0 and cooldown_modifier >= 0) then
-    if (planet == "nauvis") then
+  if (selected_difficulty and selected_difficulty.valid and modifier >= 0 and cooldown_modifier >= 0) then
+    if (planet == Constants.DEFAULTS.planets.nauvis.string_val) then
       difficulty = {
         valid = true,
         selected_difficulty = selected_difficulty,
@@ -166,7 +179,7 @@ function create_difficulty(planet, selected_difficulty, modifier, cooldown_modif
           }
         }
       }
-    elseif (planet == "gleba") then
+    elseif (planet == Constants.DEFAULTS.planets.gleba.string_val) then
       difficulty = {
         valid = true,
         selected_difficulty = selected_difficulty,
@@ -192,6 +205,13 @@ function create_difficulty(planet, selected_difficulty, modifier, cooldown_modif
         }
       }
     end
+  elseif (not selected_difficulty) then
+    Log.error("selected difficulty is nilvalidate_setting_not_equal_to
+  elseif (not selected_difficulty.valid) then
+    Log.warn("selected_difficulty is not valid")
+    -- If (attempt fixes)
+    Log.warn("defaulting to vanilla")
+    difficulty.selected_difficulty = Constants.difficulty.VANILLA
   end
 
   Log.info("returning difficulty: " .. serpent.block(difficulty))

@@ -13,6 +13,7 @@ constants.difficulty.EASY.string_val = "Easy"
 constants.difficulty.EASY.value = 0.1
 constants.difficulty.EASY.radius = 15
 constants.difficulty.EASY.radius_modifier = 0.5
+constants.difficulty.EASY.valid = true
 
 constants.difficulty.VANILLA = {}
 constants.difficulty.VANILLA.name = "VANILLA"
@@ -20,6 +21,7 @@ constants.difficulty.VANILLA.string_val = "Vanilla"
 constants.difficulty.VANILLA.value = 1
 constants.difficulty.VANILLA.radius = 30
 constants.difficulty.VANILLA.radius_modifier = 1
+constants.difficulty.VANILLA.valid = true
 
 constants.difficulty.VANILLA_PLUS = {}
 constants.difficulty.VANILLA_PLUS.name = "VANILLA_PLUS"
@@ -27,6 +29,7 @@ constants.difficulty.VANILLA_PLUS.string_val = "Vanilla+"
 constants.difficulty.VANILLA_PLUS.value = 1.75
 constants.difficulty.VANILLA_PLUS.radius = 37.5
 constants.difficulty.VANILLA_PLUS.radius_modifier = 1.25
+constants.difficulty.VANILLA_PLUS.valid = true
 
 constants.difficulty.HARD = {}
 constants.difficulty.HARD.name = "HARD"
@@ -34,6 +37,7 @@ constants.difficulty.HARD.string_val = "Hard"
 constants.difficulty.HARD.value = 4
 constants.difficulty.HARD.radius = 46.875
 constants.difficulty.HARD.radius_modifier = 1.5625
+constants.difficulty.HARD.valid = true
 
 constants.difficulty.INSANITY = {}
 constants.difficulty.INSANITY.name = "INSANITY"
@@ -41,6 +45,7 @@ constants.difficulty.INSANITY.string_val = "Insanity"
 constants.difficulty.INSANITY.value = 10
 constants.difficulty.INSANITY.radius = 58.59375
 constants.difficulty.INSANITY.radius_modifier = 1.953125
+constants.difficulty.INSANITY.valid = true
 
 constants.difficulty.difficulties = {}
 

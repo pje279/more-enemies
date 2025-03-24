@@ -59,13 +59,22 @@ function initialize(from_scratch)
     for k, planet in pairs(Constants.DEFAULTS.planets) do
       Log.info(k)
       Log.info(planet)
-      Difficulty_Utils.get_difficulty(k, true)
+      local difficulty = Difficulty_Utils.get_difficulty(k, true)
+      if (storage) then
+        if (not storage.difficulty) then storage.difficulty = {} end
+
+        if (from_scratch) then
+          storage.difficulty[k] = difficulty
+        elseif (not storage.difficulty[k].valid) then
+          storage.difficulty[k] = difficulty
+        end
+      end
     end
 
     storage.more_enemies.valid = true
   end
 
-  Log.debug(storage)
+  Log.info(storage)
 end
 
 initialization.more_enemies = true
