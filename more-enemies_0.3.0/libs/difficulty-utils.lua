@@ -206,7 +206,7 @@ function create_difficulty(planet, selected_difficulty, modifier, cooldown_modif
       }
     end
   elseif (not selected_difficulty) then
-    Log.error("selected difficulty is nilvalidate_setting_not_equal_to
+    Log.error("selected difficulty is nil")
   elseif (not selected_difficulty.valid) then
     Log.warn("selected_difficulty is not valid")
     -- If (attempt fixes)
