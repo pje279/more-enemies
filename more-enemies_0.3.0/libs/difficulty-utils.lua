@@ -100,7 +100,12 @@ function difficulty_utils.get_difficulty(planet, reindex)
     and storage.difficulty
     and storage.difficulty[planet].valid)
   then
-    return storage.difficulty[planet]
+    -- While it may exist, check if it's still valid
+    if (storage.difficulty[planet].selected_difficulty and not storage.difficulty[planet].selected_difficulty.valid) then
+      return difficulty_utils.get_difficulty(planet, true)
+    else
+      return storage.difficulty[planet]
+    end
   end
 
   local difficulty = {

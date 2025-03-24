@@ -226,8 +226,8 @@ function log_print_message(message, log_level, traceback)
   if (traceback_setting and traceback_setting.value) then traceback = traceback_setting.value end
 
   -- Always print the traceback for a nil message
-  log("traceback: " .. serpent.block(traceback))
-  log("message: " .. serpent.block(message))
+  -- log("traceback: " .. serpent.block(traceback))
+  -- log("message: " .. serpent.block(message))
   if (not message and not traceback) then
     traceback = true
   end

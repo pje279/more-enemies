@@ -23,7 +23,13 @@ function spawn.entity_spawned(event)
 
   Log.info("Getting difficulty")
   local difficulty = Difficulty_Utils.get_difficulty(entity.surface.name)
-  if (not difficulty or not difficulty.valid) then return end
+  if (not difficulty or not difficulty.valid) then
+    difficulty = Difficulty_Utils.get_difficulty(entity.surface.name, true)
+  end
+  if (not difficulty or not difficulty.valid) then
+    Log.error("Failed to find a valid difficulty for " .. serpent.block(surface_name))
+    return
+  end
 
   Log.info("Getting selected_difficulty")
   local selected_difficulty = difficulty.selected_difficulty
@@ -90,8 +96,15 @@ end
 function spawn.duplicate_unit_group(group)
   if (not group or not group.valid or not group.surface) then return end
 
-  local difficulty = Difficulty_Utils.get_difficulty(group.surface.name)
-  if (not difficulty or not difficulty.valid) then return end
+  Log.info("Getting difficulty")
+  local difficulty = Difficulty_Utils.get_difficulty(entity.surface.name)
+  if (not difficulty or not difficulty.valid) then
+    difficulty = Difficulty_Utils.get_difficulty(entity.surface.name, true)
+  end
+  if (not difficulty or not difficulty.valid) then
+    Log.error("Failed to find a valid difficulty for " .. serpent.block(surface_name))
+    return
+  end
 
   local selected_difficulty = difficulty.selected_difficulty
   Log.info("selected_difficulty: " .. serpent.block(selected_difficulty))
