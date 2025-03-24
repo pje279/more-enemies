@@ -1,14 +1,11 @@
 local Constants = require("libs.constants.constants")
 local Validations = require("libs.validations")
-local DifficultyUtils = require("libs.difficulty-utils")
-
---
--- If each setting is valid, make appropriate change
+local Difficulty_Utils = require("libs.difficulty-utils")
 
 local gleba_difficulty = settings.startup["more-enemies-gleba-difficulty"]
-local difficulty = DifficultyUtils.init_difficulty("gleba")
+local difficulty = Difficulty_Utils.get_difficulty("gleba", true)
 if (gleba_difficulty and gleba_difficulty.value) then
-  difficulty = DifficultyUtils.set_difficulty(gleba_difficulty.value, "gleba")
+  difficulty = Difficulty_Utils.set_difficulty("gleba", gleba_difficulty.value)
 end
 
 --

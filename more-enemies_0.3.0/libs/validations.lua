@@ -17,7 +17,7 @@ function Validations.is_number(value)
 end
 
 function Validations.is_string(value)
-  return tostring(value) and true or false
+  return tostring(value) and not value.valid and true or false
 end
 
 local _validations = Validations

@@ -12,9 +12,10 @@ local Validations = require("libs.validations")
 
 local difficulty_utils = {}
 
-difficulty_utils.difficulty = {}
+function difficulty_utils.init_difficulty(planet, difficulty_setting)
+  difficulty_setting = difficulty_setting or Constants.difficulty.VANILLA
+  planet = planet or "nauvis"
 
-function difficulty_utils.init_difficulty(planet)
   local difficulty = {
     valid = false
   }
@@ -24,77 +25,23 @@ function difficulty_utils.init_difficulty(planet)
     return difficulty
   end
 
-  if (planet == "nauvis") then
-    difficulty = {
-      valid = true,
-      selected_difficulty = Constants.difficulty.VANILLA,
-      biter = {
-        max_count_of_owned_units = Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS,
-        max_count_of_owned_defensive_units = Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS,
-        max_friends_around_to_spawn = Nauvis_Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN,
-        max_defensive_friends_around_to_spawn = Nauvis_Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN,
-        spawning_cooldown = {
-          max = 360,
-          min = 150
-        },
-      },
-      spitter = {
-        max_count_of_owned_units = Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS,
-        max_count_of_owned_defensive_units = Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS,
-        max_friends_around_to_spawn = Nauvis_Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN,
-        max_defensive_friends_around_to_spawn = Nauvis_Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN,
-        spawning_cooldown = {
-          max = 360,
-          min = 150
-        }
-      }
-    }
-  elseif (planet == "gleba") then
-    difficulty = {
-      valid = true,
-      selected_difficulty = Constants.difficulty.VANILLA,
-      small = {
-        max_count_of_owned_units = Gleba_Constants.gleba.small.MAX_COUNT_OF_OWNED_UNITS,
-        max_count_of_owned_defensive_units = Gleba_Constants.gleba.small.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS,
-        max_friends_around_to_spawn = Gleba_Constants.gleba.small.MAX_FRIENDS_AROUND_TO_SPAWN,
-        max_defensive_friends_around_to_spawn = Gleba_Constants.gleba.small.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN,
-        spawning_cooldown = {
-          max = 360,
-          min = 150
-        },
-      },
-      regular = {
-        max_count_of_owned_units = Gleba_Constants.gleba.regular.MAX_COUNT_OF_OWNED_UNITS,
-        max_count_of_owned_defensive_units = Gleba_Constants.gleba.regular.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS,
-        max_friends_around_to_spawn = Gleba_Constants.gleba.regular.MAX_FRIENDS_AROUND_TO_SPAWN,
-        max_defensive_friends_around_to_spawn = Gleba_Constants.gleba.regular.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN,
-        spawning_cooldown = {
-          max = 360,
-          min = 150
-        }
-      }
-    }
-  end
+  difficulty = create_difficulty(planet, difficulty_setting)
 
-  difficulty_utils.difficulty = difficulty
+  if (storage) then
+    if (not storage.difficulty) then storage.difficulty = {} end
+    storage.difficulty[planet] = difficulty
+  end
 
   return difficulty
 end
 
-function difficulty_utils.set_difficulty(difficulty_setting, planet)
+function difficulty_utils.set_difficulty(planet, difficulty_setting)
+  difficulty_setting = difficulty_setting or Constants.difficulty.VANILLA
+  planet = planet or "nauvis"
+
   local difficulty = {
     valid = false
   }
-
-  -- Validate inputs
-  if (not difficulty_setting) then
-    Log.warn("difficulty_setting invalid")
-    return difficulty
-  end
-  if (not planet) then
-    Log.warn("planet invalid")
-    return difficulty
-  end
 
   local modifier = 1
   local cooldown_modifier = 1
@@ -102,24 +49,24 @@ function difficulty_utils.set_difficulty(difficulty_setting, planet)
   local selected_difficulty = nil
 
   -- Determine difficulty
-  if (difficulty_setting == Constants.difficulty.EASY.name or difficulty_setting == Constants.difficulty.EASY.value) then
+  if (difficulty_setting == Constants.difficulty.EASY.string_val or difficulty_setting == Constants.difficulty.EASY.value) then
     modifier = Constants.difficulty.EASY.value
     cooldown_modifier = Constants.difficulty.EASY.value
     selected_difficulty = Constants.difficulty.EASY
-  elseif (difficulty_setting == Constants.difficulty.VANILLA.name or difficulty_setting == Constants.difficulty.VANILLA.value) then
+  elseif (difficulty_setting == Constants.difficulty.VANILLA.string_val or difficulty_setting == Constants.difficulty.VANILLA.value) then
     modifier = Constants.difficulty.VANILLA.value
     cooldown_modifier = Constants.difficulty.VANILLA.value
     vanilla = true
     selected_difficulty = Constants.difficulty.VANILLA
-  elseif (difficulty_setting == Constants.difficulty.VANILLA_PLUS.name or difficulty_setting == Constants.difficulty.VANILLA_PLUS.value) then
+  elseif (difficulty_setting == Constants.difficulty.VANILLA_PLUS.string_val or difficulty_setting == Constants.difficulty.VANILLA_PLUS.value) then
     modifier = Constants.difficulty.VANILLA_PLUS.value
     cooldown_modifier = Constants.difficulty.VANILLA_PLUS.value
     selected_difficulty = Constants.difficulty.VANILLA_PLUS
-  elseif (difficulty_setting == Constants.difficulty.HARD.name or difficulty_setting == Constants.difficulty.HARD.value) then
+  elseif (difficulty_setting == Constants.difficulty.HARD.string_val or difficulty_setting == Constants.difficulty.HARD.value) then
     modifer = Constants.difficulty.HARD.value
     cooldown_modifier = Constants.difficulty.HARD.value
     selected_difficulty = Constants.difficulty.HARD
-  elseif (difficulty_setting == Constants.difficulty.INSANITY.name or difficulty_setting == Constants.difficulty.INSANITY.value) then
+  elseif (difficulty_setting == Constants.difficulty.INSANITY.string_val or difficulty_setting == Constants.difficulty.INSANITY.value) then
     modifier = Constants.difficulty.INSANITY.value
     cooldown_modifier = Constants.difficulty.INSANITY.value
     selected_difficulty = Constants.difficulty.INSANITY
@@ -128,6 +75,66 @@ function difficulty_utils.set_difficulty(difficulty_setting, planet)
     modifier = -1
     cooldown_modifier = -1
   end
+
+  difficulty = create_difficulty(planet, selected_difficulty, modifier, cooldown_modifier)
+
+  if (storage) then
+    if (not storage.difficulty) then storage.difficulty = {} end
+    storage.difficulty[planet] = difficulty
+  end
+
+  Log.info(difficulty)
+
+  return difficulty
+end
+
+function difficulty_utils.get_difficulty(planet, reindex)
+  reindex = reindex or false
+
+  if (  not reindex
+    and planet
+    and storage
+    and storage.difficulty
+    and storage.difficulty[planet] ~= nil
+    and storage.difficulty.valid)
+  then return storage.difficulty[planet] end
+
+  local difficulty = {
+    valid = false
+  }
+
+  Log.warn(planet)
+  if (not planet or planet == "") then
+    Log.warn("planet invalid", true)
+    return difficulty
+  end
+
+  local planet_difficulty = settings.startup["more-enemies-" .. planet .. "-difficulty"]
+
+  if (planet_difficulty and planet_difficulty.value) then
+    if (reindex) then
+      difficulty = difficulty_utils.init_difficulty(planet, planet_difficulty.value)
+    else
+      difficulty = difficulty_utils.set_difficulty(planet, planet_difficulty.value)
+    end
+  else
+    difficulty = difficulty_utils.init_difficulty(planet)
+  end
+
+  Log.warn(difficulty)
+
+  if (storage) then storage.difficulty[planet] = difficulty end
+
+  return difficulty
+end
+
+function create_difficulty(planet, selected_difficulty, modifier, cooldown_modifier)
+  modifier = modifier or 1
+  cooldown_modifier = cooldown_modifier or 1
+
+  local difficulty = {
+    valid = false
+  }
 
   if (selected_difficulty and modifier >= 0 and cooldown_modifier >= 0) then
     if (planet == "nauvis") then
@@ -183,36 +190,7 @@ function difficulty_utils.set_difficulty(difficulty_setting, planet)
     end
   end
 
-  difficulty_utils.difficulty = difficulty
-
-  Log.info(difficulty)
-
-  return difficulty
-end
-
-function difficulty_utils.get_difficulty(planet, reindex)
-  reindex = reindex or false
-
-  if (reindex and difficulty_utils and difficulty_utils.difficulty) then return difficulty_utils.difficulty end
-
-  local difficulty = {
-    valid = false
-  }
-
-  if (not planet or planet == "") then
-    Log.warn("planet invalid", true)
-    return difficulty
-  end
-
-  local planet_difficulty = settings.startup["more-enemies-" .. planet .. "-difficulty"]
-  if (planet_difficulty and planet_difficulty.value) then
-    difficulty = difficulty_utils.set_difficulty(planet_difficulty.value, planet)
-  else
-    difficulty = difficulty_utils.init_difficulty(planet)
-  end
-
-  difficulty_utils.difficulty = difficulty
-
+  Log.info("returning difficulty: " .. serpent.block(difficulty))
   return difficulty
 end
 

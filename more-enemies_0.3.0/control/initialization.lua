@@ -3,6 +3,10 @@ if _initialization and _initialization.more_enemies then
   return _initialization
 end
 
+local Constants = require("libs.constants.constants")
+local Difficulty_Utils = require("libs.difficulty-utils")
+local Log_Constants = require("libs.log.log-constants")
+
 local initialization = {}
 
 local Log = require("libs.log.log")
@@ -51,7 +55,15 @@ function initialize(from_scratch)
     error("settings.global[Log_Constants.DEBUG_LEVEL.name] is nil")
   end
 
-  storage.more_enemies.valid = true
+  if (game) then
+    for k, planet in pairs(Constants.DEFAULTS.planets) do
+      Log.info(k)
+      Log.info(planet)
+      Difficulty_Utils.get_difficulty(k, true)
+    end
+
+    storage.more_enemies.valid = true
+  end
 
   Log.debug(storage)
 end
