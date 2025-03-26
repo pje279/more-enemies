@@ -14,7 +14,7 @@ gleba_settings_constants.settings.CLONE_GLEBA_UNITS = {
   setting_type = "runtime-global",
   order = "cab",
   default_value = 1,
-  maximum_value = 10,
+  maximum_value = 11, -- This one goes up to eleven
   minimum_value = 0,
 }
 
@@ -24,7 +24,7 @@ gleba_settings_constants.settings.CLONE_GLEBA_UNIT_GROUPS = {
   setting_type = "runtime-global",
   order = "cac",
   default_value = 1,
-  maximum_value = 10,
+  maximum_value = 11, -- This one goes up to eleven
   minimum_value = 0,
 }
 

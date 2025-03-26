@@ -1,5 +1,6 @@
 local Constants = require("libs.constants.constants")
 local Gleba_Constants = require("libs.constants.gleba-constants")
+local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Behemoth_Enemies_Constants = require("libs.constants.mods.behemoth-enemies-constants")
 local Nauvis_Constants = require("libs.constants.nauvis-constants")
 local Difficulty_Utils = require("libs.difficulty-utils")
@@ -55,10 +56,16 @@ for planet, difficulty in pairs(difficulties) do
     modifier = -1
   end
 
+  local max_unit_group_size = Constants.DEFAULTS.unit_group.max_unit_group_size
+  if (settings and settings.startup and settings.startup[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name]) then
+    max_unit_group_size = settings.startup[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name].value
+  end
+
   if (not vanilla and modifier >= 0 and radius_modifier >= 0) then
     data.raw["map-settings"]["map-settings"].max_group_radius = Constants.DEFAULTS.unit_group.max_group_radius * radius_modifier
     -- data.raw["map-settings"]["map-settings"].min_group_radius = unit_group.min_group_radius / radius_modifier
-    data.raw["map-settings"]["map-settings"].unit_group.max_unit_group_size = Constants.DEFAULTS.unit_group.max_unit_group_size * modifier
+    -- data.raw["map-settings"]["map-settings"].unit_group.max_unit_group_size = Constants.DEFAULTS.unit_group.max_unit_group_size * modifier
+    data.raw["map-settings"]["map-settings"].unit_group.max_unit_group_size = max_unit_group_size * modifier
 
     if (planet == "nauvis") then
       for k,v in pairs(Nauvis_Constants.nauvis.categories) do

@@ -31,7 +31,29 @@ function initialize(from_scratch)
   from_scratch = from_scratch or false
 
   if (from_scratch) then
+    storage = {}
     storage.more_enemies = {}
+    storage.more_enemies.clones = {}
+    storage.more_enemies.clone_count = {
+      count = 0
+    }
+  end
+
+  if (storage.more_enemies) then
+    storage.more_enemies.clone = {}
+    storage.more_enemies.clone.count = 0
+    storage.more_enemies.overflow_clone_attempts = {
+      count = 0,
+      warned = {
+        none = false,
+        error = false,
+        warn = false,
+        info = false
+      },
+      valid = true
+    }
+    storage.more_enemies.staged_clones = {}
+    storage.more_enemies.transition_clones = {}
   end
 
   local user_setting = nil
@@ -59,14 +81,35 @@ function initialize(from_scratch)
     for k, planet in pairs(Constants.DEFAULTS.planets) do
       Log.info(k)
       Log.info(planet)
-      local difficulty = Difficulty_Utils.get_difficulty(k, true)
+      local difficulty = Difficulty_Utils.get_difficulty(planet.string_val, true)
       if (storage) then
-        if (not storage.difficulty) then storage.difficulty = {} end
+        if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
 
         if (from_scratch) then
-          storage.difficulty[k] = difficulty
-        elseif (not storage.difficulty[k].valid) then
-          storage.difficulty[k] = difficulty
+          storage.more_enemies.difficulties[planet.string_val] = {
+            valid = true,
+            difficulty = difficulty,
+            surface = game.get_surface(planet.string_val),
+            entities_spawned = 0,
+          }
+
+          if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
+          storage.more_enemies.groups[planet.string_val] = {}
+        end
+
+        if (not storage.more_enemies.difficulties[planet.string_val] or not storage.more_enemies.difficulties[planet.string_val].valid) then
+          storage.more_enemies.difficulties[planet.string_val] = {
+            valid = true,
+            difficulty = difficulty,
+            surface = game.get_surface(planet.string_val),
+            entities_spawned = 0,
+          }
+        end
+
+        if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
+
+        if (not storage.more_enemies.groups[planet.string_val]) then
+          storage.more_enemies.groups[planet.string_val] = {}
         end
       end
     end

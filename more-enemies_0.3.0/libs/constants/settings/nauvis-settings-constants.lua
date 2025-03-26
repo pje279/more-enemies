@@ -14,7 +14,7 @@ nauvis_settings_constants.settings.CLONE_NAUVIS_UNITS = {
   setting_type = "runtime-global",
   order = "bac",
   default_value = 1,
-  maximum_value = 10,
+  maximum_value = 11, -- This one goes up to eleven
   minimum_value = 0,
 }
 
@@ -24,7 +24,7 @@ nauvis_settings_constants.settings.CLONE_NAUVIS_UNIT_GROUPS = {
   setting_type = "runtime-global",
   order = "bad",
   default_value = 1,
-  maximum_value = 10,
+  maximum_value = 11, -- This one goes up to eleven
   minimum_value = 0,
 }
 

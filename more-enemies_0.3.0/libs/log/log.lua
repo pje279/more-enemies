@@ -228,7 +228,7 @@ function log_print_message(message, log_level, traceback)
   -- Always print the traceback for a nil message
   -- log("traceback: " .. serpent.block(traceback))
   -- log("message: " .. serpent.block(message))
-  if (not message and not traceback) then
+  if (message == nil and not traceback) then
     traceback = true
   end
 
@@ -242,13 +242,13 @@ function log_print_message(message, log_level, traceback)
         >= Log_Constants.levels[Log_Constants.NONE.num_val].level.num_val))
   then
     log(debug.traceback())
+    message = "(traced) " .. serpent.block(message)
   end
 
   local do_prefix = log_level.level.num_val < Log_Constants.levels[Log_Constants.NONE.num_val].level.num_val
   log(log_level.level.string_val .. ": " .. serpent.block(message))
   if (game) then
     game.print(
-      -- do_print_prefix(Log_Constants_Functions.levels.to_name(log_level.level), do_prefix)
       do_print_prefix(log_level.level.string_val, do_prefix)
         .. serpent.block(message))
   end

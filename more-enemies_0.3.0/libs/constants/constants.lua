@@ -42,7 +42,7 @@ constants.difficulty.HARD.valid = true
 constants.difficulty.INSANITY = {}
 constants.difficulty.INSANITY.name = "INSANITY"
 constants.difficulty.INSANITY.string_val = "Insanity"
-constants.difficulty.INSANITY.value = 10
+constants.difficulty.INSANITY.value = 11
 constants.difficulty.INSANITY.radius = 58.59375
 constants.difficulty.INSANITY.radius_modifier = 1.953125
 constants.difficulty.INSANITY.valid = true
@@ -66,6 +66,8 @@ constants.DEFAULTS.unit_group = {
   max_unit_group_size = 200
 }
 
+constants.settings = {}
+
 constants.DEFAULTS.planets = {}
 
 constants.DEFAULTS.planets.nauvis = {}
@@ -73,6 +75,11 @@ constants.DEFAULTS.planets.nauvis.string_val = "nauvis"
 
 constants.DEFAULTS.planets.gleba = {}
 constants.DEFAULTS.planets.gleba.string_val = "gleba"
+
+constants.time = {}
+constants.time.TICKS_PER_SECOND = 60
+constants.time.SECONDS_PER_MINUTE = 60
+constants.time.TICKS_PER_MINUTE = constants.time.TICKS_PER_SECOND * constants.time.SECONDS_PER_MINUTE
 
 constants.more_enemies = true
 

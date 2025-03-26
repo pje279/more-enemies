@@ -28,8 +28,8 @@ function difficulty_utils.init_difficulty(planet, difficulty_setting)
   difficulty = create_difficulty(planet, difficulty_setting)
 
   if (storage) then
-    if (not storage.difficulty) then storage.difficulty = {} end
-    storage.difficulty[planet] = difficulty
+    if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
+    storage.more_enemies.difficulties[planet] = difficulty
   end
 
   return difficulty
@@ -79,8 +79,8 @@ function difficulty_utils.set_difficulty(planet, difficulty_setting)
   difficulty = create_difficulty(planet, selected_difficulty, modifier, cooldown_modifier)
 
   if (storage) then
-    if (not storage.difficulty) then storage.difficulty = {} end
-    storage.difficulty[planet] = difficulty
+    if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
+    storage.more_enemies.difficulties[planet] = difficulty
   end
 
   Log.info(difficulty)
@@ -92,19 +92,22 @@ function difficulty_utils.get_difficulty(planet, reindex)
   reindex = reindex or false
 
   Log.debug(reindex)
-  if (storage) then Log.info(storage.difficulty) end
+  if (storage) then Log.info(storage.more_enemies.difficulties) end
 
   if (  not reindex
     and planet
     and storage
-    and storage.difficulty
-    and storage.difficulty[planet].valid)
+    and storage.more_enemies
+    and storage.more_enemies.difficulties
+    and storage.more_enemies.difficulties[planet].valid)
   then
     -- While it may exist, check if it's still valid
-    if (storage.difficulty[planet].selected_difficulty and not storage.difficulty[planet].selected_difficulty.valid) then
+    Log.info(storage.more_enemies.difficulties)
+    Log.info(planet)
+    if (storage.more_enemies.difficulties[planet].selected_difficulty and not storage.more_enemies.difficulties[planet].selected_difficulty.valid) then
       return difficulty_utils.get_difficulty(planet, true)
     else
-      return storage.difficulty[planet]
+      return storage.more_enemies.difficulties[planet]
     end
   end
 
@@ -112,7 +115,8 @@ function difficulty_utils.get_difficulty(planet, reindex)
     valid = false
   }
 
-  if (storage and not storage.difficulty) then storage.difficulty = {} end
+  if (storage and not storage.more_enemies) then storage.more_enemies = {} end
+  if (storage and storage.more_enemies and not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
 
   Log.info(planet)
   if (not planet or planet == "") then
@@ -120,7 +124,7 @@ function difficulty_utils.get_difficulty(planet, reindex)
     return difficulty
   end
 
-  if (storage and storage.difficulty and not storage.difficulty[planet]) then storage.difficulty[planet] = difficulty end
+  if (storage and storage.more_enemies and storage.more_enemies.difficulties and not storage.more_enemies.difficulties[planet]) then storage.more_enemies.difficulties[planet] = difficulty end
 
   local planet_difficulty = settings.startup["more-enemies-" .. planet .. "-difficulty"]
 
@@ -140,11 +144,12 @@ function difficulty_utils.get_difficulty(planet, reindex)
 
   -- If storage difficulty for the planet is invalid, replace it
   if (  storage
-    and storage.difficulty
-    and storage.difficulty[planet]
-    and not storage.difficulty[planet].valid)
+    and storage.more_enemies
+    and storage.more_enemies.difficulties
+    and storage.more_enemies.difficulties[planet]
+    and not storage.more_enemies.difficulties[planet].valid)
   then
-    storage.difficulty[planet] = difficulty
+    storage.more_enemies.difficulties[planet] = difficulty
   end
 
   return difficulty
@@ -212,10 +217,12 @@ function create_difficulty(planet, selected_difficulty, modifier, cooldown_modif
     end
   elseif (not selected_difficulty) then
     Log.error("selected difficulty is nil")
+    Log.error("defaulting to vanilla")
+    difficulty.selected_difficulty = Constants.difficulty.VANILLA
   elseif (not selected_difficulty.valid) then
     Log.warn("selected_difficulty is not valid")
     -- If (attempt fixes)
-    Log.warn("defaulting to vanilla")
+    Log.error("defaulting to vanilla")
     difficulty.selected_difficulty = Constants.difficulty.VANILLA
   end
 
