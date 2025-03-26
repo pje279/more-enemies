@@ -54,6 +54,9 @@ function initialize(from_scratch)
     }
     storage.more_enemies.staged_clones = {}
     storage.more_enemies.transition_clones = {}
+    storage.more_enemies.nth_tick_complete = {}
+    storage.more_enemies.nth_tick_complete.current = true
+    storage.more_enemies.nth_tick_complete.previous = true
   end
 
   local user_setting = nil

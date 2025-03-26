@@ -100,7 +100,7 @@ function settings_service.get_do_evolution_factor(surface_name)
     setting = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name].value
   elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
   and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name]) then
-    setting = settings.global[Gleba_Settings_Constants.settings.Gleba_DO_EVOLUTION_FACTOR.name].value
+    setting = settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name].value
   end
 
   return setting

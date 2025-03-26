@@ -1,6 +1,6 @@
 -- If already defined, return
-if _spawn and _spawn.more_enemies then
-  return _spawn
+if _spawn_utils and _spawn_utils.more_enemies then
+  return _spawn_utils
 end
 
 local Constants = require("libs.constants.constants")
@@ -15,83 +15,9 @@ local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settin
 local Difficulty_Utils = require("libs.difficulty-utils")
 local Settings_Service = require("control.service.settings-service")
 
-local spawn = {}
+local spawn_utils = {}
 
-spawn.filter = {}
-
-for k,v in pairs(Nauvis_Constants.nauvis.categories) do
-  table.insert(spawn.filter, { filter = "type", type = v .. "-biter"})
-  table.insert(spawn.filter, { filter = "type", type = v .. "-spitter"})
-end
-
-if (mods and mods["behemoth-enemies"]) then
-  for k,v in pairs(Behemoth_Enemies_Constants.gleba.categories) do
-    table.insert(spawn.filter, { filter = "type", type = v .. "-wriggler-pentapod" })
-    table.insert(spawn.filter, { filter = "type", type = v .. "-strafer-pentapod"})
-    table.insert(spawn.filter, { filter = "type", type = v .. "-stomper-pentapod"})
-  end
-else
-  for k,v in pairs(Gleba_Constants.gleba.categories) do
-    table.insert(spawn.filter, { filter = "type", type = v .. "-wriggler-pentapod" })
-    table.insert(spawn.filter, { filter = "type", type = v .. "-strafer-pentapod"})
-    table.insert(spawn.filter, { filter = "type", type = v .. "-stomper-pentapod"})
-  end
-end
-
-log(serpent.block(spawn.filter))
-
-function spawn.entity_died(event)
-  Log.info(event)
-  local entity = event.entity
-  if (not entity or not entity.valid) then return end
-  if (not entity.surface or not entity.name) then return end
-  if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
-
-  Log.info("Attempting to reemove entity")
-  if (storage.more_enemies.clones and storage.more_enemies.clones[entity.unit_number] ~= nil) then
-    Log.debug("Removing entity: " .. serpent.block(entity.unit_number))
-    storage.more_enemies.clones[entity.unit_number] = nil
-  end
-
-  if (not storage.more_enemies.clone) then storage.more_enemies.clone = {} end
-  if (not storage.more_enemies.clone.count) then storage.more_enemies.clone.count = 0 end
-  if (  entity
-    and entity.valid
-    and storage.more_enemies.clone.count > 0
-    and storage.more_enemies.clones[entity.unit_number])
-  then
-    storage.more_enemies.clone.count = storage.more_enemies.clone.count - 1
-  end
-end
-
-function spawn.entity_spawned(event)
-  Log.info(event)
-  local spawner = event.spawner
-  local entity = event.entity
-
-  if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
-
-  if (  storage.more_enemies.clone and storage.more_enemies.clone.clone_count
-    and storage.more_enemies.clone.clone_count > Settings_Service.get_maximum_number_of_clones())
-  then
-    Log.error("Tried to clone more than the unit limit: " .. serpent.block(Settings_Service.get_maximum_number_of_clones()))
-    Log.error("Currently " .. serpent.block(#storage.more_enemies.clones) .. " clones")
-    return
-  end
-
-  if (not spawner or not spawner.valid) then return end
-  if (not entity or not entity.valid) then return end
-  if (not entity.surface or not entity.surface.name) then return end
-
-  Log.info("Attempting to add to staged_clones")
-  if (storage and storage.more_enemies and storage.more_enemies.valid) then
-    Log.debug("Adding to staged_clones: " .. serpent.block(entity.unit_number))
-    if (not storage.more_enemies.staged_clones) then storage.more_enemies.staged_clones = {} end
-    storage.more_enemies.staged_clones[entity.unit_number] = entity
-  end
-end
-
-function spawn.duplicate_unit_group(group, tick)
+function spawn_utils.duplicate_unit_group(group, tick)
   Log.info("spawn.duplicate_unit_group" .. serpent.block(tick))
 
   if (storage) then
@@ -151,7 +77,7 @@ function spawn.duplicate_unit_group(group, tick)
   end
 end
 
-function spawn.clone_entity(default_value, difficulty, entity, optionals)
+function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   if (storage) then
     if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
   end
@@ -176,8 +102,8 @@ function spawn.clone_entity(default_value, difficulty, entity, optionals)
   then
     use_evolution_factor = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name].value
   elseif (  entity.surface.name == "gleba"
-        and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name]) then
-    use_evolution_factor = settings.global[Gleba_Settings_Constants.settings.Gleba_DO_EVOLUTION_FACTOR.name].value
+        and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name]) then
+    use_evolution_factor = settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name].value
   end
 
   local evolution_multiplier = 1
@@ -316,8 +242,8 @@ function calc_evolution_multiplier(selected_difficulty, evolution_factor)
   return value
 end
 
-spawn.more_enemies = true
+spawn_utils.more_enemies = true
 
-local _spawn = spawn
+local _spawn_utils = spawn_utils
 
-return spawn
+return spawn_utils
