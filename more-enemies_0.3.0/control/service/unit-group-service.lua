@@ -8,13 +8,12 @@ local Difficulty_Utils = require("libs.difficulty-utils")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Initialization = require("control.initialization")
 local Settings_Service = require("control.service.settings-service")
-local Spawn = require("control.utils.spawn-utils")
+local Spawn_Utils = require("control.utils.spawn-utils")
 local Unit_Group_Utils = require("control.utils.unit-group-utils")
 
 local unit_group_service = {}
 
 function unit_group_service.unit_group_created(event)
-  Log.info(event)
   local group = event.group
 
   if (not group) then return end
@@ -66,11 +65,10 @@ function unit_group_service.unit_group_created(event)
     count = 0
   }
 
-  Log.debug(storage.more_enemies.groups[group.surface.name][group.unique_id])
+  Log.warn(storage.more_enemies.groups[group.surface.name][group.unique_id])
 end
 
 function unit_group_service.unit_group_finished_gathering(event)
-  Log.info(event)
   local group = event.group
   local tick = event.tick
 
@@ -151,7 +149,7 @@ function unit_group_service.unit_group_finished_gathering(event)
     ) then break end
     Log.debug("duplicating unit group: " .. serpent.block(i))
     Log.info("tick: " .. tick)
-    Spawn.duplicate_unit_group(group, tick)
+    Spawn_Utils.duplicate_unit_group(group, tick)
 
     if (  storage
       and storage.groups
@@ -161,10 +159,10 @@ function unit_group_service.unit_group_finished_gathering(event)
     end
   end
 
-  Log.info("releasing from spawner")
-  group.release_from_spawner()
-  Log.info("start moving")
-  group.start_moving()
+  -- Log.info("releasing from spawner")
+  -- group.release_from_spawner()
+  -- Log.info("start moving")
+  -- group.start_moving()
 
   Log.debug("removing group: " .. serpent.block(group))
   storage.more_enemies.groups[group.surface.name][group.unique_id] = nil

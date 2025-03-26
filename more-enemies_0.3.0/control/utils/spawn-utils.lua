@@ -64,12 +64,13 @@ function spawn_utils.duplicate_unit_group(group, tick)
     Log.info("len: " .. serpent.block(len))
     for i=1, len do
 
-      local v = group.members[i]
-
       local member = group.members[i]
       if (member and member.valid) then
         Log.debug("adding member to staged_clones")
-        storage.more_enemies.staged_clones[member.unit_number] = member
+        storage.more_enemies.staged_clones[member.unit_number] = {
+          obj = member,
+          group = group
+        }
       end
 
       ::continue::
@@ -84,15 +85,22 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
 
   Log.info(optionals)
   optionals = optionals or {
-    clone_setting = 1,
+    -- clone_setting = 1,
+    clone_settings = {
+      unit = 1,
+      unit_group = 1
+    },
+    type = "unit",
     tick = 0
   }
 
-  local clone_setting = optionals.clone_setting
+  -- local clone_setting = optionals.clone_setting
+  local clone_settings = optionals.clone_settings
   local tick = optionals.tick
 
   -- Validate inputs
-  if (clone_setting == nil or not default_value or not difficulty or not entity) then return end
+  -- if (clone_setting == nil or not default_value or not difficulty or not entity) then return end
+  if (clone_settings == nil or not default_value or not difficulty or not entity) then return end
   if (not difficulty.valid or not entity.valid) then return end
   if (not difficulty.selected_difficulty or not entity.surface) then return end
 
@@ -117,10 +125,20 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   local loop_len = 0
 
   if (use_evolution_factor and evolution_multiplier > 0) then
-    Log.info(clone_setting)
+    -- Log.info(clone_setting)
+    Log.info(clone_settings)
     Log.info(difficulty.selected_difficulty.value)
     Log.info(evolution_multiplier)
-    loop_len = clone_setting * difficulty.selected_difficulty.value * evolution_multiplier
+    -- loop_len = clone_setting * difficulty.selected_difficulty.value * evolution_multiplier
+    if (clone_settings.type == "unit") then
+      loop_len = clone_settings.unit * difficulty.selected_difficulty.value * evolution_multiplier
+    elseif (clone_settings.type == "unit-group") then
+      loop_len = clone_settings.unit_group * difficulty.selected_difficulty.value * evolution_multiplier
+    else
+      loop_len = difficulty.selected_difficulty.value * evolution_multiplier
+    end
+  else
+    loop_len = difficulty.selected_difficulty.default_value
   end
   Log.debug(loop_len)
 

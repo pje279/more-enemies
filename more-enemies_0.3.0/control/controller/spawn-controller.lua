@@ -16,21 +16,21 @@ local spawn_controller = {}
 spawn_controller.filter = {}
 
 for k,v in pairs(Nauvis_Constants.nauvis.categories) do
-  table.insert(spawn_controller.filter, { filter = "type", type = v .. "-biter"})
-  table.insert(spawn_controller.filter, { filter = "type", type = v .. "-spitter"})
+  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-biter"})
+  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-spitter"})
 end
 
 if (mods and mods["behemoth-enemies"]) then
   for k,v in pairs(Behemoth_Enemies_Constants.gleba.categories) do
-    table.insert(spawn_controller.filter, { filter = "type", type = v .. "-wriggler-pentapod" })
-    table.insert(spawn_controller.filter, { filter = "type", type = v .. "-strafer-pentapod"})
-    table.insert(spawn_controller.filter, { filter = "type", type = v .. "-stomper-pentapod"})
+    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-wriggler-pentapod" })
+    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-strafer-pentapod"})
+    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-stomper-pentapod"})
   end
 else
   for k,v in pairs(Gleba_Constants.gleba.categories) do
-    table.insert(spawn_controller.filter, { filter = "type", type = v .. "-wriggler-pentapod" })
-    table.insert(spawn_controller.filter, { filter = "type", type = v .. "-strafer-pentapod"})
-    table.insert(spawn_controller.filter, { filter = "type", type = v .. "-stomper-pentapod"})
+    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-wriggler-pentapod" })
+    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-strafer-pentapod"})
+    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-stomper-pentapod"})
   end
 end
 
