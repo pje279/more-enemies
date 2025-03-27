@@ -1,4 +1,31 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+Date: 27. 03. 2025
+  Minor Features:
+    - Added configurable logging in the mod settings (Log level of 'None' by default)
+      Odrder of precedence: Info > Debug > Warn > Error > None (Default)
+      Includes "Do not print" and "Do function traceback" settings
+      Do not print: prevent log messages from displaying in game; only log to the factorio-current.log file
+      Do function traceback: enables the traceback for each log statement (for aid in debugging)
+    - Added console commands:
+      /more_enemies.init -> Initialize the supporting data structures from scratch, erasing any existing data
+      /more_enemies.reinit -> Reinitialize the supporting data structures, making a moderate attempt to maintain existing data
+      /more_enemies.print_storage -> Prints the contents or the supportings data structures
+      /more_enemies.version -> Prints the current mod version, and the underlying storage version
+    - Added entity cloning. Applies to Nauvis and Gleba, both configurable
+      If > 1, or above difficulty Vanilla, entities will be cloned when they spawn according to difficulty settings and evolution factor
+      If < 1, fewer entities will be cloned for the given difficulty setting
+    - Added unit group cloning. Applies to Nauvis and Gleba, both configurable
+      If > 1, or above difficulty Vanilla, unit groups (enemy attack groups) will be cloned when they finish gathereing according to difficulty settings and evolution factor
+      If < 1, unit groups will be cloned fewer times
+    - Added evolution factor [0 - 1] as a means of scaling the entity and unit group cloning more appropriately
+      Can be toggled on or off. Toggling off causes the maximum amount to be spawned at the very beginning of the game.
+  Bug Fixes:
+    - Fixed Hard difficulty actually using some of the Easy settings
+    - Fixed main menu simulation 'nauvis_biter_base_laser_defense' breaking when the character died on higher difficulties; now they explode!
+  Balance Changes:
+    - Insanity now goes to 11
+---------------------------------------------------------------------------------------------------
 Version: 0.2.0
 Date: 14. 03. 2025
   Minor Features:
