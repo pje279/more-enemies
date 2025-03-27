@@ -35,6 +35,7 @@ else
 end
 
 function spawn_controller.do_tick(event)
+  Log.info("spawn_controller.do_tick(event)")
   local tick = event.tick
   local nth_tick = Settings_Service.get_nth_tick()
   local offset = 1 + nth_tick -- Constants.time.TICKS_PER_SECOND / 2

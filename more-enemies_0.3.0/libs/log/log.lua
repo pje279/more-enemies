@@ -247,7 +247,13 @@ function log_print_message(message, log_level, traceback)
 
   local do_prefix = log_level.level.num_val < Log_Constants.levels[Log_Constants.NONE.num_val].level.num_val
   log(log_level.level.string_val .. ": " .. serpent.block(message))
-  if (game) then
+
+  local do_not_print = false
+  if (settings and settings.global and settings.global[Log_Constants.settings.DO_NOT_PRINT.name]) then
+    do_not_print = settings.global[Log_Constants.settings.DO_NOT_PRINT.name].value
+  end
+
+  if (game and not do_not_print) then
     game.print(
       do_print_prefix(log_level.level.string_val, do_prefix)
         .. serpent.block(message))
