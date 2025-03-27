@@ -3,6 +3,7 @@ if _unit_group_service and _unit_group_service.more_enemies then
   return _unit_group_service
 end
 
+local Constants = require("libs.constants.constants")
 local Log = require("libs.log.log")
 local Difficulty_Utils = require("libs.difficulty-utils")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
@@ -22,10 +23,10 @@ function unit_group_service.unit_group_created(event)
   if (not group.position) then return end
 
   Log.info("Getting difficulty")
-  local difficulty = Difficulty_Utils.get_difficulty(group.surface.name)
+  local difficulty = Difficulty_Utils.get_difficulty(group.surface.name).difficulty
   if (not difficulty or not difficulty.valid) then
     Log.warn("difficulty was nil or invalid; reindexing")
-    difficulty = Difficulty_Utils.get_difficulty(group.surface.name, true)
+    difficulty = Difficulty_Utils.get_difficulty(group.surface.name, true).difficulty
   end
   if (not difficulty or not difficulty.valid) then
     Log.error("Failed to find a valid difficulty for " .. serpent.block(group.surface.name))
@@ -36,7 +37,7 @@ function unit_group_service.unit_group_created(event)
   local selected_difficulty = difficulty.selected_difficulty
   if (not selected_difficulty) then return end
 
-  if (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == 1) then
+  if (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == Constants.difficulty.VANILLA.value) then
     Log.info("Difficulty is vanilla; no need to process")
     return
   end
@@ -48,24 +49,24 @@ function unit_group_service.unit_group_created(event)
     storage.more_enemies.groups = {}
   end
 
-  Log.debug("adding group: " .. serpent.block(group))
+  Log.info("adding group: " .. serpent.block(group))
 
-  Log.debug(group.surface.name)
+  Log.info(group.surface.name)
 
-  Log.debug("before: " .. serpent.block(storage.groups))
+  Log.info("before: " .. serpent.block(storage.groups))
 
   if (not storage.more_enemies.groups[group.surface.name]) then
     storage.more_enemies.groups[group.surface.name] = {}
   end
 
-  Log.debug("after: " .. serpent.block(storage.groups))
+  Log.info("after: " .. serpent.block(storage.groups))
 
   storage.more_enemies.groups[group.surface.name][group.unique_id] = {
     group = group,
     count = 0
   }
 
-  Log.warn(storage.more_enemies.groups[group.surface.name][group.unique_id])
+  Log.info(storage.more_enemies.groups[group.surface.name][group.unique_id])
 end
 
 function unit_group_service.unit_group_finished_gathering(event)
@@ -75,8 +76,8 @@ function unit_group_service.unit_group_finished_gathering(event)
   if (  storage.more_enemies.clone and storage.more_enemies.clone.clone_count
     and storage.more_enemies.clone.clone_count > Settings_Service.get_maximum_number_of_clones())
   then
-    Log.error("Tried to clone more than the unit limit: " .. serpent.block(Settings_Service.get_maximum_number_of_clones()))
-    Log.error("Currently " .. serpent.block(storage.more_enemies.clone.clone_count) .. " clones")
+    Log.debug("Tried to clone more than the unit limit: " .. serpent.block(Settings_Service.get_maximum_number_of_clones()))
+    Log.debug("Currently " .. serpent.block(storage.more_enemies.clone.clone_count) .. " clones")
     return
   end
 
@@ -93,10 +94,10 @@ function unit_group_service.unit_group_finished_gathering(event)
 
   Log.info("2")
 
-  local difficulty = Difficulty_Utils.get_difficulty(group.surface.name)
+  local difficulty = Difficulty_Utils.get_difficulty(group.surface.name).difficulty
   if (not difficulty or not difficulty.valid) then
     Log.warn("difficulty was nil or invalid; reindexing")
-    difficulty = Difficulty_Utils.get_difficulty(group.surface.name, true)
+    difficulty = Difficulty_Utils.get_difficulty(group.surface.name, true).difficulty
   end
   if (not difficulty or not difficulty.valid) then
     Log.error("Failed to find a valid difficulty for " .. serpent.block(group.surface.name))
@@ -107,12 +108,12 @@ function unit_group_service.unit_group_finished_gathering(event)
   if (not difficulty) then return end
 
   local selected_difficulty = difficulty.selected_difficulty
-  Log.debug(selected_difficulty)
+  Log.info(selected_difficulty)
   if (not selected_difficulty) then return end
 
   local vanilla = 1
   if (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == 1) then
-    if (Settings_Service.get_clone_unit_group_setting(group.surface.name) == 1) then vanilla = vanilla + 1 end
+    if (Settings_Service.get_clone_unit_group_setting(group.surface.name) == Global_Settings_Constants.settings.MAX_UNIT_SIZE_RUNTIME.default_value) then vanilla = vanilla + 1 end
     if (Settings_Service.get_maximum_group_size(group.surface.name) == Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.default_value) then vanilla = vanilla + 1 end
     Log.info("Difficulty is vanilla; no need to process")
   end
@@ -127,19 +128,26 @@ function unit_group_service.unit_group_finished_gathering(event)
   local use_evolution_factor = Settings_Service.get_do_evolution_factor(group.surface.name)
 
   local evolution_factor = 1
+  Log.debug("use_evolution_factor  = "  .. serpent.block(use_evolution_factor))
   if (use_evolution_factor) then
     evolution_factor = group.force.get_evolution_factor()
   end
   Log.info(evolution_factor)
 
   local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(group.surface.name)
+  Log.error(clone_unit_group_setting)
+
+  Log.error(selected_difficulty.value)
+  Log.error(evolution_factor)
 
   if (selected_difficulty.value > 1) then
-    loop_len = math.floor(selected_difficulty.value * evolution_factor * clone_unit_group_setting)
+    -- Log.error("floor")
+    loop_len = math.floor((selected_difficulty.value +  clone_unit_group_setting)  * evolution_factor)
   else
-    loop_len = math.ceil(selected_difficulty.value * evolution_factor * clone_unit_group_setting)
+    -- Log.error("ceil")
+    loop_len = math.ceil((selected_difficulty.value +  clone_unit_group_setting)  * evolution_factor)
   end
-  Log.debug("loop_len: " .. serpent.block(loop_len))
+  Log.error("loop_len: " .. serpent.block(loop_len))
 
   Log.info("4")
 

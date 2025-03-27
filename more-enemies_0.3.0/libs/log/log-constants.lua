@@ -82,16 +82,30 @@ log_constants.levels[log_constants.NONE.num_val] = {
   valid = true
 }
 
-log_constants.DEBUG_LEVEL = {}
-log_constants.DEBUG_LEVEL.value = "None"
-log_constants.DEBUG_LEVEL.name = "more-enemies-debug-level"
-
-log_constants.DO_TRACEBACK = {}
-log_constants.DO_TRACEBACK.value = false
-log_constants.DO_TRACEBACK.name = "more-enemies-do-traceback"
+log_constants.settings = {}
 
 log_constants.constants = {}
 log_constants.constants.EMPTY_STRING = ""
+
+log_constants.settings.DEBUG_LEVEL = {}
+log_constants.settings.DEBUG_LEVEL.value = "None"
+log_constants.settings.DEBUG_LEVEL.name = "more-enemies-debug-level"
+
+log_constants.settings.DO_TRACEBACK = {
+  type = "bool-setting",
+  name = "more-enemies-do-traceback",
+  setting_type = "runtime-global",
+  order = "abb",
+  default_value = false
+}
+
+log_constants.settings.DO_NOT_PRINT = {
+  type = "bool-setting",
+  name = "more-enemies-do-not-print",
+  setting_type = "runtime-global",
+  order = "abc",
+  default_value = true,
+}
 
 log_constants.more_enemies = true
 

@@ -53,15 +53,14 @@ function initialize(from_scratch)
       valid = true
     }
     storage.more_enemies.staged_clones = {}
-    storage.more_enemies.transition_clones = {}
     storage.more_enemies.nth_tick_complete = {}
     storage.more_enemies.nth_tick_complete.current = true
     storage.more_enemies.nth_tick_complete.previous = true
   end
 
   local user_setting = nil
-  if (settings and settings.global and settings.global[Log_Constants.DEBUG_LEVEL.name]) then
-    user_setting = settings.global[Log_Constants.DEBUG_LEVEL.name].value
+  if (settings and settings.global and settings.global[Log_Constants.settings.DEBUG_LEVEL.name]) then
+    user_setting = settings.global[Log_Constants.settings.DEBUG_LEVEL.name].value
     if (user_setting) then
       Log.info(user_setting)
       Log.set_log_level(user_setting)

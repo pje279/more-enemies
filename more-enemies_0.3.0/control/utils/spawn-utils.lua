@@ -27,10 +27,10 @@ function spawn_utils.duplicate_unit_group(group, tick)
   if (not group or not group.valid or not group.surface) then return end
 
   Log.debug("duplicate_unit_group: Getting difficulty")
-  local difficulty = Difficulty_Utils.get_difficulty(group.surface.name)
+  local difficulty = Difficulty_Utils.get_difficulty(group.surface.name).difficulty
   if (not difficulty or not difficulty.valid) then
     Log.warn("difficulty was nil or invalid; reindexing")
-    difficulty = Difficulty_Utils.get_difficulty(group.surface.name, true)
+    difficulty = Difficulty_Utils.get_difficulty(group.surface.name, true).difficulty
   end
   if (not difficulty or not difficulty.valid) then
     Log.error("Failed to find a valid difficulty for " .. serpent.block(group.surface.name))
@@ -85,7 +85,6 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
 
   Log.info(optionals)
   optionals = optionals or {
-    -- clone_setting = 1,
     clone_settings = {
       unit = 1,
       unit_group = 1
@@ -94,25 +93,20 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     tick = 0
   }
 
-  -- local clone_setting = optionals.clone_setting
   local clone_settings = optionals.clone_settings
   local tick = optionals.tick
 
   -- Validate inputs
-  -- if (clone_setting == nil or not default_value or not difficulty or not entity) then return end
   if (clone_settings == nil or not default_value or not difficulty or not entity) then return end
+  Log.info("past 1")
   if (not difficulty.valid or not entity.valid) then return end
-  if (not difficulty.selected_difficulty or not entity.surface) then return end
+  Log.info("past 2")
+  if (not difficulty.selected_difficulty) then return end
+  Log.info("past 3")
+  if (not entity.surface) then return end
+  Log.info("past validations")
 
-  local use_evolution_factor = false
-  if (  entity.surface.name == "nauvis"
-    and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name])
-  then
-    use_evolution_factor = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name].value
-  elseif (  entity.surface.name == "gleba"
-        and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name]) then
-    use_evolution_factor = settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name].value
-  end
+  local use_evolution_factor = Settings_Service.get_do_evolution_factor(entity.surface.name)
 
   local evolution_multiplier = 1
   local evolution_factor = 0
@@ -123,38 +117,36 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   Log.debug(evolution_multiplier)
 
   local loop_len = 0
+  -- local loop_len = 1
+  local clone_setting = 0
 
-  if (use_evolution_factor and evolution_multiplier > 0) then
-    -- Log.info(clone_setting)
-    Log.info(clone_settings)
-    Log.info(difficulty.selected_difficulty.value)
-    Log.info(evolution_multiplier)
-    -- loop_len = clone_setting * difficulty.selected_difficulty.value * evolution_multiplier
-    if (clone_settings.type == "unit") then
-      loop_len = clone_settings.unit * difficulty.selected_difficulty.value * evolution_multiplier
-    elseif (clone_settings.type == "unit-group") then
-      loop_len = clone_settings.unit_group * difficulty.selected_difficulty.value * evolution_multiplier
-    else
-      loop_len = difficulty.selected_difficulty.value * evolution_multiplier
-    end
+  Log.info(clone_settings)
+  Log.info(difficulty.selected_difficulty.value)
+  Log.info(evolution_multiplier)
+  if (clone_settings.type == "unit") then
+    loop_len = (clone_settings.unit + difficulty.selected_difficulty.value) * evolution_multiplier
+    clone_setting = clone_settings.unit
+  elseif (clone_settings.type == "unit-group") then
+    loop_len = (clone_settings.unit_group + difficulty.selected_difficulty.value) * evolution_multiplier
+    clone_setting = clone_settings.unit_group
   else
-    loop_len = difficulty.selected_difficulty.default_value
+    loop_len = difficulty.selected_difficulty.value * evolution_multiplier
   end
-  Log.debug(loop_len)
+  Log.info(loop_len)
 
   local clones = {}
 
   local limit_runtime = Settings_Service.get_maximum_group_size()
 
+  Log.info("at cloner definition")
   local cloner = function (entity)
-    Log.info("Cloning")
+    Log.debug("Cloning")
     if (not entity.valid) then return end
 
     if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
     if (not storage.more_enemies.clones) then storage.more_enemies.clones = {} end
 
     local clone = nil
-    -- if (#storage.more_enemies.clones < difficulty.selected_difficulty.value * Settings_Service.get_maximum_number_of_clones())
     if (#storage.more_enemies.clones < Settings_Service.get_maximum_number_of_clones()) then
       clone = entity.clone({
         position = entity.position,
@@ -195,14 +187,15 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     return clone
   end
 
+  Log.debug("at fun definition")
   local fun = function (loop_len, limit, clones, obj, difficulty, cloner, tick)
     tick = tick or -1
 
     local clone_limit = Settings_Service.get_maximum_number_of_clones()
     for i=1, math.ceil(loop_len) do
-      -- Log.error("i = " .. serpent.block(i))
+      Log.info("i = " .. serpent.block(i))
       if (tick > 0 and game and game.tick > tick + Constants.settings.TICKS_TO_TRY_CLONING.maximum_value) then
-        Log.error("Too much time pass since starting to clone; breaking out of loop"
+        Log.warn("Too much time pass since starting to clone; breaking out of loop"
           .. "\nStarted: " .. serpent.block(tick)
           .. "\nCurrent: " .. serpent.block(game.tick)
         )
@@ -211,15 +204,15 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
       if (  storage.more_enemies.clone and storage.more_enemies.clone.clone_count
         and storage.more_enemies.clone.clone_count > Settings_Service.get_maximum_number_of_clones())
       then
-        Log.error("Tried to clone more than the unit limit: " .. serpent.block(clone_limit))
-        Log.error("Currently " .. serpent.block(storage.more_enemies.clone.clone_count) .. " clones")
+        Log.warn("Tried to clone more than the unit limit: " .. serpent.block(clone_limit))
+        Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.clone_count) .. " clones")
         return
       end
       clones[i] = cloner(obj)
     end
   end
 
-  if (clone_setting ~= default_value) then
+  if (clone_setting ~= default_value.value) then
     -- Settings are different from default
     -- -> use the user settings instead
     if (use_evolution_factor) then
@@ -228,8 +221,8 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
       fun(math.ceil(loop_len), limit_runtime, clones, entity, difficulty, cloner)
     else
       Log.debug("user settings without evolution_factor")
-      Log.debug(math.ceil(clone_setting * difficulty.selected_difficulty.value))
-      fun(math.ceil(clone_setting * difficulty.selected_difficulty.value), limit_runtime, clones, entity, difficulty, cloner)
+      Log.debug(math.ceil(clone_setting + difficulty.selected_difficulty.value))
+      fun(math.ceil(clone_setting + difficulty.selected_difficulty.value), limit_runtime, clones, entity, difficulty, cloner)
     end
   else
     if (use_evolution_factor) then
@@ -244,7 +237,7 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     end
   end
 
-  -- Log.error(clones)
+  -- Log.info(clones)
   return clones
 end
 
@@ -254,7 +247,6 @@ function calc_evolution_multiplier(selected_difficulty, evolution_factor)
   if (not selected_difficulty or not selected_difficulty.valid) then return evolution_factor end
 
   -- Calculate the evolution factor
-  -- local value = ((selected_difficulty.value ^ (evolution_factor / (selected_difficulty.value ^ (evolution_factor / selected_difficulty.value)))) * (evolution_factor ^ 2)) * selected_difficulty.value
   local value = ((selected_difficulty.value ^ (evolution_factor / (selected_difficulty.value ^ (evolution_factor / selected_difficulty.value)))) * (evolution_factor ^ 2))-- * selected_difficulty.value
   Log.debug("evolution multiplier: " .. value)
   return value

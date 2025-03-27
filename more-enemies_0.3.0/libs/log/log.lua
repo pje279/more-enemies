@@ -37,8 +37,8 @@ end
 
 function Log.get_log_level()
   local _log_level = Log_Constants.levels[Log_Constants.NONE.num_val]
-  if (settings and settings.global and settings.global[Log_Constants.DEBUG_LEVEL.name]) then
-    _log_level = settings.global[Log_Constants.DEBUG_LEVEL.name].value
+  if (settings and settings.global and settings.global[Log_Constants.settings.DEBUG_LEVEL.name]) then
+    _log_level = settings.global[Log_Constants.settings.DEBUG_LEVEL.name].value
     log_level = {
       level = Log_Constants.levels[Log_Constants.NONE.num_val],
       valid = false
@@ -218,9 +218,9 @@ function log_print_message(message, log_level, traceback)
   if (not traceback
       and settings
       and settings.global
-      and settings.global[Log_Constants.DO_TRACEBACK.name])
+      and settings.global[Log_Constants.settings.DO_TRACEBACK.name])
   then
-    traceback_setting = settings.global[Log_Constants.DO_TRACEBACK.name]
+    traceback_setting = settings.global[Log_Constants.settings.DO_TRACEBACK.name]
   end
 
   if (traceback_setting and traceback_setting.value) then traceback = traceback_setting.value end

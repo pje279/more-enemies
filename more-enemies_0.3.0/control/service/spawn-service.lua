@@ -82,7 +82,8 @@ function spawn_service.do_nth_tick(event)
     for k, planet in pairs(Constants.DEFAULTS.planets) do
       Log.info(k)
       Log.info(planet)
-      if (storage.more_enemies.difficulties[planet.string_val].selected_difficulty.string_val == Constants.difficulty.VANILLA.string_val) then
+      if (  storage.more_enemies.difficulties[planet.string_val].selected_difficulty
+        and storage.more_enemies.difficulties[planet.string_val].selected_difficulty.string_val == Constants.difficulty.VANILLA.string_val) then
         if (Settings_Service.get_clone_unit_setting(planet.string_val) ~= 1) then goto attempt_clone end
         if (Settings_Service.get_clone_unit_group_setting(planet.string_val) ~= 1) then goto attempt_clone end
         if (Settings_Service.get_maximum_group_size(planet.string_val) ~= Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.default_value) then goto attempt_clone end
@@ -95,12 +96,11 @@ function spawn_service.do_nth_tick(event)
       if (clone_overflow > 1) then
         if (not storage.more_enemies or not storage.more_enemies.valid or not storage.more_enemies.overflow_clone_attempts or not not storage.more_enemies.overflow_clone_attempts.count) then Initialization.reinit() end
         storage.more_enemies.overflow_clone_attempts.count = storage.more_enemies.overflow_clone_attempts.count + 1
-        Log.error("Tried to clone more than the unit limt; returning")
+        Log.warn("Tried to clone more than the unit limt; returning")
         return
       end
 
       local j = 0
-      -- for i, staged_clone in pairs(storage.more_enemies.staged_clones) do
       for i, _staged_clone in pairs(storage.more_enemies.staged_clones) do
         Log.info(_staged_clone)
         local staged_clone = _staged_clone.obj
@@ -110,7 +110,7 @@ function spawn_service.do_nth_tick(event)
         Log.info(staged_clone)
 
         if (j > clones_per_tick) then
-          Log.warn("Tried to clone more than the clone_per_tick limt; breaking inner loop")
+          Log.debug("Tried to clone more than the clone_per_tick limt; breaking inner loop")
           clone_overflow = clone_overflow + 1
           break
         end
@@ -121,25 +121,23 @@ function spawn_service.do_nth_tick(event)
         end
 
         local max_num_clones = Settings_Service.get_maximum_number_of_clones()
-        Log.error(max_num_clones)
-        Log.error(storage.more_enemies.clone.count)
+        Log.info(max_num_clones)
+        Log.info(storage.more_enemies.clone.count)
 
         if (  storage.more_enemies.clone
           and storage.more_enemies.clone.count > max_num_clones)
         then
-          Log.error("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
-          Log.error("Currently " .. serpent.block(storage.more_enemies.clone.count) .. " clones")
+          Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
+          Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.count) .. " clones")
           return
         end
 
+        Log.debug(planet.string_val)
         local clone_unit_setting = Settings_Service.get_clone_unit_setting(planet.string_val)
         local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(planet.string_val)
         Log.info("clone_unit_setting: " .. serpent.block(clone_unit_setting))
         Log.info("clone_unit_group_setting: " .. serpent.block(clone_unit_group_setting))
 
-        -- Maybe a bit much/simplistic
-        -- TODO: revisit maybe?
-        -- local clone_setting = clone_unit_setting * clone_unit_group_setting
         local clone_settings = {
           unit = clone_unit_setting,
           unit_group = clone_unit_group_setting,
@@ -147,27 +145,27 @@ function spawn_service.do_nth_tick(event)
         }
 
         Log.info("Attempting to clone entity on planet " .. staged_clone.surface.name)
+        Log.debug(clone_settings)
         if (staged_clone.surface.name == Constants.DEFAULTS.planets.nauvis.string_val) then
-          -- clones = Spawn_Utils.clone_entity(Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNITS.default_value, storage.more_enemies.difficulties[planet.string_val], staged_clone, { clone_setting = clone_setting, tick = tick })
-          clones = Spawn_Utils.clone_entity(Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNITS.default_value, storage.more_enemies.difficulties[planet.string_val], staged_clone, { clone_settings = clone_settings, tick = tick })
+          clones = Spawn_Utils.clone_entity({ value = Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNITS.default_value }, storage.more_enemies.difficulties[planet.string_val].difficulty, staged_clone, { clone_settings = clone_settings, tick = tick })
         elseif (staged_clone.surface.name == Constants.DEFAULTS.planets.gleba.string_val) then
-          -- clones = Spawn_Utils.clone_entity(Gleba_Settings_Constants.settings.CLONE_GLEBA_UNITS.default_value, storage.more_enemies.difficulties[planet.string_val], staged_clone, { clone_setting = clone_setting, tick = tick })
-          clones = Spawn_Utils.clone_entity(Gleba_Settings_Constants.settings.CLONE_GLEBA_UNITS.default_value, storage.more_enemies.difficulties[planet.string_val], staged_clone, { clone_settings = clone_settings, tick = tick })
+          clones = Spawn_Utils.clone_entity({ value = Gleba_Settings_Constants.settings.CLONE_GLEBA_UNITS.default_value }, storage.more_enemies.difficulties[planet.string_val].difficulty, staged_clone, { clone_settings = clone_settings, tick = tick })
         else
           Log.warn("Planet is neither nauvis nor gleba\nPlanet is unsupported; making no changes")
           return
         end
 
-        j = j + #clones
+        if (clones) then
+          j = j + #clones
+        end
 
-        Log.info("clone = " .. serpent.block(clone))
+        Log.debug("clones = " .. serpent.block(clones))
 
         -- add the new clones to storage
         if (clones and #clones > 0) then
           for j=1, #clones do
             if (clones[j] and clones[j].valid) then
               Log.debug("adding clone: " .. serpent.block(clones[j]))
-              -- storage.more_enemies.clones[clones[j].unit_number] = clones[j]
               storage.more_enemies.clones[clones[j].unit_number] = {
                 obj = clones[j],
                 type = group and "unit-group" or "unit"
@@ -189,10 +187,10 @@ function spawn_service.do_nth_tick(event)
           end
 
           if (group) then
-            Log.warn(group)
-            Log.warn("releasing from spawner")
+            Log.debug(group)
+            Log.debug("releasing from spawner")
             group.release_from_spawner()
-            Log.warn("start moving")
+            Log.debug("start moving")
             group.start_moving()
           end
 
@@ -231,7 +229,7 @@ function spawn_service.do_nth_tick_cleanup()
       end
       i = i + 1
       if (i > limit) then
-        Log.warn("breaking from initial step of cleanup")
+        Log.debug("breaking from initial step of cleanup")
         break
       end
     end
@@ -257,14 +255,13 @@ function spawn_service.entity_died(event)
   Log.info(event)
   local entity = event.entity
   if (not entity or not entity.valid) then return end
-  -- if (not entity.surface or not entity.name) then return end
   if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
 
   Log.info("Attempting to remove entity")
   if (storage.more_enemies.clones and storage.more_enemies.clones[entity.unit_number] ~= nil) then
     Log.debug("Removing entity: " .. serpent.block(entity.unit_number))
     storage.more_enemies.clones[entity.unit_number] = nil
-    storage.more_enemies.clone.count = storage.more_enemies.clone.count - 1
+    if (storage.more_enemies.clone.count > 0) then storage.more_enemies.clone.count = storage.more_enemies.clone.count - 1 end
     return
   end
 
@@ -272,13 +269,13 @@ function spawn_service.entity_died(event)
   if (not storage.more_enemies.clone) then storage.more_enemies.clone = {} end
   if (not storage.more_enemies.clone.count) then storage.more_enemies.clone.count = 0 end
   if (  entity
-    -- and entity.valid
     and storage.more_enemies.clone.count > 0
     and storage.more_enemies.clones[entity.unit_number])
   then
     Log.debug("removing, second try")
     storage.more_enemies.clones[entity.unit_number] = nil
-    storage.more_enemies.clone.count = storage.more_enemies.clone.count - 1
+    if (storage.more_enemies.clone.count > 0) then storage.more_enemies.clone.count = storage.more_enemies.clone.count - 1 end
+    return
   end
   Log.debug("failed to remove")
 end
@@ -293,8 +290,8 @@ function spawn_service.entity_spawned(event)
   if (  storage.more_enemies.clone and storage.more_enemies.clone.clone_count
     and storage.more_enemies.clone.clone_count > Settings_Service.get_maximum_number_of_clones())
   then
-    Log.error("Tried to clone more than the unit limit: " .. serpent.block(Settings_Service.get_maximum_number_of_clones()))
-    Log.error("Currently " .. serpent.block(#storage.more_enemies.clones) .. " clones")
+    Log.warn("Tried to clone more than the unit limit: " .. serpent.block(Settings_Service.get_maximum_number_of_clones()))
+    Log.warn("Currently " .. serpent.block(#storage.more_enemies.clones) .. " clones")
     return
   end
 

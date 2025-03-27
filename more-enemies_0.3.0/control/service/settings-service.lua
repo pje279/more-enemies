@@ -128,6 +128,21 @@ function settings_service.get_maximum_number_of_clones()
   return setting
 end
 
+function settings_service.get_do_evolution_factor(surface_name)
+  local setting = false
+
+  if (  surface_name == Constants.DEFAULTS.planets.nauvis.string_val
+    and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name])
+  then
+    setting = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name].value
+  elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
+        and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name]) then
+    setting = settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name].value
+  end
+
+  return setting
+end
+
 settings_service.more_enemies = true
 
 local _settings_service = settings_service

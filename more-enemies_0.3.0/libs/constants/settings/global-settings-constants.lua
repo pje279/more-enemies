@@ -11,7 +11,7 @@ global_settings_constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME = {
   type = "int-setting",
   name = "more-enemies-max-unit-group-size-runtime",
   setting_type = "runtime-global",
-  order = "ddd",
+  order = "ccc",
   default_value = 200,
   maximum_value = 1111, -- This one goes up to eleven-hundered and eleven
   minimum_value = 0,
@@ -55,7 +55,7 @@ global_settings_constants.settings.CLONES_PER_TICK = {
   name = "more-enemies-clones-per-tick",
   setting_type = "runtime-global",
   order = "ddd",
-  default_value = 150,
+  default_value = 100,
   maximum_value = 1111, -- This one goes up to eleven-hundered and eleven
   minimum_value = 0,
 }
@@ -65,7 +65,7 @@ global_settings_constants.settings.MAXIMUM_NUMBER_OF_CLONES = {
   name = "more-enemies-maximum-number-of-clones",
   setting_type = "runtime-global",
   order = "ddd",
-  default_value = 5000,
+  default_value = 2500,
   maximum_value = 111111, -- This one goes up to eleven-hundered and eleven
   minimum_value = 0,
 }

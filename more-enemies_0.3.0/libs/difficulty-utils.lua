@@ -29,7 +29,8 @@ function difficulty_utils.init_difficulty(planet, difficulty_setting)
 
   if (storage) then
     if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
-    storage.more_enemies.difficulties[planet] = difficulty
+    if (not storage.more_enemies.difficulties[planet]) then storage.more_enemies.difficulties[planet] = {} end
+    storage.more_enemies.difficulties[planet].difficulty = difficulty
   end
 
   return difficulty
@@ -80,7 +81,8 @@ function difficulty_utils.set_difficulty(planet, difficulty_setting)
 
   if (storage) then
     if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
-    storage.more_enemies.difficulties[planet] = difficulty
+    if (not storage.more_enemies.difficulties[planet]) then storage.more_enemies.difficulties[planet] = {} end
+    storage.more_enemies.difficulties[planet].difficulty = difficulty
   end
 
   Log.info(difficulty)

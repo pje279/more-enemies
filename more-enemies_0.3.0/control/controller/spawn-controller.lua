@@ -70,20 +70,13 @@ function spawn_controller.do_tick(event)
   end
 end
 
--- function do_nth_tick(event)
---   return Spawn_Service.do_nth_tick(event)
--- end
-
--- -- function spawn_controller.do_nth_tick_cleanup()
--- function do_nth_tick_cleanup()
---   return Spawn_service.do_nth_tick_cleanup()
--- end
-
 function spawn_controller.entity_died(event)
+  Log.debug("spawn_controller.entity_died(event)")
   Spawn_Service.entity_died(event)
 end
 
 function spawn_controller.entity_spawned(event)
+  Log.debug("spawn_controller.entity_spawned(event)")
   Spawn_Service.entity_spawned(event)
 end
 

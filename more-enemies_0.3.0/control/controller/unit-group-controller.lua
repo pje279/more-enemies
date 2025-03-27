@@ -10,11 +10,13 @@ local Unit_Group_Service = require("control.service.unit-group-service")
 local unit_group_controller = {}
 
 function unit_group_controller.unit_group_created(event)
+  Log.error("unit_group_controller.unit_group_created(event)")
   Log.info(event)
   Unit_Group_Service.unit_group_created(event)
 end
 
 function unit_group_controller.unit_group_finished_gathering(event)
+  Log.error("unit_group_controller.unit_group_finished_gathering(event)")
   Log.info(event)
   Unit_Group_Service.unit_group_finished_gathering(event)
 end
