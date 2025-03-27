@@ -13,7 +13,7 @@ global_settings_constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME = {
   setting_type = "runtime-global",
   order = "ccc",
   default_value = 200,
-  maximum_value = 1111, -- This one goes up to eleven-hundered and eleven
+  maximum_value = 1111,
   minimum_value = 0,
 }
 
@@ -23,7 +23,7 @@ global_settings_constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP = {
   setting_type = "startup",
   order = "ddd",
   default_value = 200,
-  maximum_value = 1111, -- This one goes up to eleven-hundered and eleven
+  maximum_value = 1111,
   minimum_value = 0,
 }
 
@@ -32,21 +32,21 @@ global_settings_constants.settings.TICKS_TO_TRY_CLONING = {
   name = "more-enemies-ticks-to-try-cloning",
   setting_type = "startup",
   order = "ddd",
-  default_value = 150,
-  maximum_value = 1111, -- This one goes up to eleven-hundered and eleven
+  default_value = 15,
+  maximum_value = 111,
   minimum_value = 0,
 }
 
 global_settings_constants.settings.NTH_TICK = {}
 global_settings_constants.settings.NTH_TICK.name = "more-enemies-nth-tick"
-global_settings_constants.settings.NTH_TICK.value = 30
+global_settings_constants.settings.NTH_TICK.value = 5
 global_settings_constants.settings.NTH_TICK.setting = {
   type = "int-setting",
   name = "more-enemies-nth-tick",
   setting_type = "runtime-global",
   order = "ddd",
   default_value = global_settings_constants.settings.NTH_TICK.value,
-  maximum_value = 1111, -- This one goes up to eleven-hundered and eleven
+  maximum_value = 111,
   minimum_value = 0,
 }
 
@@ -55,8 +55,8 @@ global_settings_constants.settings.CLONES_PER_TICK = {
   name = "more-enemies-clones-per-tick",
   setting_type = "runtime-global",
   order = "ddd",
-  default_value = 100,
-  maximum_value = 1111, -- This one goes up to eleven-hundered and eleven
+  default_value = 25,
+  maximum_value = 111,
   minimum_value = 0,
 }
 
@@ -66,7 +66,7 @@ global_settings_constants.settings.MAXIMUM_NUMBER_OF_CLONES = {
   setting_type = "runtime-global",
   order = "ddd",
   default_value = 2500,
-  maximum_value = 111111, -- This one goes up to eleven-hundered and eleven
+  maximum_value = 111111,
   minimum_value = 0,
 }
 

@@ -8,7 +8,6 @@ local Gleba_Constants = require("libs.constants.gleba-constants")
 local Log = require("libs.log.log")
 local Log_Constants_Functions = require("libs.log.log-constants-functions")
 local Nauvis_Constants = require("libs.constants.nauvis-constants")
-local Validations = require("libs.validations")
 
 local difficulty_utils = {}
 

@@ -3,39 +3,41 @@ if _gleba_settings_constants and _gleba_settings_constants.more_enemies then
   return _gleba_settings_constants
 end
 
+local Constants = require("libs.constants.constants")
+
 gleba_settings_constants = {}
 
 gleba_settings_constants.settings = {}
 
 -- { Cloning } --
 gleba_settings_constants.settings.CLONE_GLEBA_UNITS = {
-  type = "double-setting",
-  name = "more-enemies-clone-gleba-units",
-  setting_type = "runtime-global",
-  order = "cab",
-  default_value = 1,
-  maximum_value = 11, -- This one goes up to eleven
-  minimum_value = 0,
+    type = "double-setting",
+    name = "more-enemies-clone-gleba-units",
+    setting_type = "runtime-global",
+    order = "cab",
+    default_value = 1,
+    maximum_value = 11, -- This one goes up to eleven
+    minimum_value = 0,
 }
 
 gleba_settings_constants.settings.CLONE_GLEBA_UNIT_GROUPS = {
-  type = "double-setting",
-  name = "more-enemies-clone-gleba-unit-groups",
-  setting_type = "runtime-global",
-  order = "cac",
-  default_value = 1,
-  maximum_value = 11, -- This one goes up to eleven
-  minimum_value = 0,
+    type = "double-setting",
+    name = "more-enemies-clone-gleba-unit-groups",
+    setting_type = "runtime-global",
+    order = "cac",
+    default_value = 1,
+    maximum_value = 11, -- This one goes up to eleven
+    minimum_value = 0,
 }
 
 -- { Difficulty } --
 gleba_settings_constants.settings.GLEBA_DIFFICULTY = {
-  type = "string-setting",
-  name = "more-enemies-gleba-difficulty",
-  setting_type = "startup",
-  order = "aac",
-  default_value = "Vanilla",
-  allowed_values = { "Easy", "Vanilla", "Vanilla+", "Hard", "Insanity" }
+    type = "string-setting",
+    name = "more-enemies-gleba-difficulty",
+    setting_type = "startup",
+    order = "aac",
+    default_value = "Vanilla",
+    allowed_values = Constants.difficulty.difficulties_array
 }
 
 gleba_settings_constants.settings.GLEBA_DO_EVOLUTION_FACTOR = {

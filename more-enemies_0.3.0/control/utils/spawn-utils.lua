@@ -57,7 +57,6 @@ function spawn_utils.duplicate_unit_group(group, tick)
   -- Only try to clone if the difficulty is greater than Vanilla (1)
   if ((selected_difficulty and selected_difficulty.valid and selected_difficulty.value > 1) or clone_setting ~= 1) then
     local len = #group.members
-    Log.debug("len:" .. serpent.block(len))
 
     local clones = {}
 
@@ -117,21 +116,29 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   Log.debug(evolution_multiplier)
 
   local loop_len = 0
-  -- local loop_len = 1
   local clone_setting = 0
 
   Log.info(clone_settings)
   Log.info(difficulty.selected_difficulty.value)
   Log.info(evolution_multiplier)
+  local loop_len_fun = function (clone_setting, difficulty, evolution_multiplier)
+    if (clone_setting >= 0 and clone_setting < 1 ) then
+      return (clone_setting * difficulty.selected_difficulty.value) * evolution_multiplier
+    else
+      return (clone_setting + difficulty.selected_difficulty.value) * evolution_multiplier
+    end
+  end
+
   if (clone_settings.type == "unit") then
-    loop_len = (clone_settings.unit + difficulty.selected_difficulty.value) * evolution_multiplier
     clone_setting = clone_settings.unit
+    loop_len = loop_len_fun(clone_setting, difficulty, evolution_multiplier)
   elseif (clone_settings.type == "unit-group") then
-    loop_len = (clone_settings.unit_group + difficulty.selected_difficulty.value) * evolution_multiplier
     clone_setting = clone_settings.unit_group
+    loop_len = loop_len_fun(clone_setting, difficulty, evolution_multiplier)
   else
     loop_len = difficulty.selected_difficulty.value * evolution_multiplier
   end
+  Log.debug("loop_len after calcs")
   Log.info(loop_len)
 
   local clones = {}
@@ -222,7 +229,8 @@ function calc_evolution_multiplier(selected_difficulty, evolution_factor)
   if (not selected_difficulty or not selected_difficulty.valid) then return evolution_factor end
 
   -- Calculate the evolution factor
-  local value = ((selected_difficulty.value ^ (evolution_factor / (selected_difficulty.value ^ (evolution_factor / selected_difficulty.value)))) * (evolution_factor ^ 2))-- * selected_difficulty.value
+  -- https://www.wolframalpha.com/input?i=x%5E%28y%2F%28x%5E%28y%2Fx%29%29%29+*+%28y%5Ex%29
+  local value = ((selected_difficulty.value ^ (evolution_factor / (selected_difficulty.value ^ (evolution_factor / selected_difficulty.value)))) * (evolution_factor ^ selected_difficulty.value))
   Log.debug("evolution multiplier: " .. value)
   return value
 end

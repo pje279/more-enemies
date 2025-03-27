@@ -3,6 +3,7 @@ if _spawn_controller and _spawn_controller.more_enemies then
   return _spawn_controller
 end
 
+local Constants = require("libs.constants.constants")
 local Behemoth_Enemies_Constants = require("libs.constants.mods.behemoth-enemies-constants")
 local Gleba_Constants = require("libs.constants.gleba-constants")
 local Initialization = require("control.initialization")
@@ -10,6 +11,7 @@ local Log = require("libs.log.log")
 local Nauvis_Constants = require("libs.constants.nauvis-constants")
 local Spawn_Service = require("control.service.spawn-service")
 local Settings_Service = require("control.service.settings-service")
+local Version_Validations = require("control.validations.version-validations")
 
 local spawn_controller = {}
 
@@ -35,15 +37,20 @@ else
 end
 
 function spawn_controller.do_tick(event)
-  Log.info("spawn_controller.do_tick(event)")
+  -- Log.info("spawn_controller.do_tick(event)")
+
   local tick = event.tick
   local nth_tick = Settings_Service.get_nth_tick()
   local offset = 1 + nth_tick -- Constants.time.TICKS_PER_SECOND / 2
   local tick_modulo = tick % offset
 
-  Log.info("nth_tick = " .. serpent.block(nth_tick) .. " - tick_modulo = " .. serpent.block(tick_modulo))
+  -- Log.info("nth_tick = " .. serpent.block(nth_tick) .. " - tick_modulo = " .. serpent.block(tick_modulo))
   if (nth_tick ~= tick_modulo) then return end
-  if (not storage or not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reini() end
+
+  -- Check/validate the storage version
+  if (not Version_Validations.validate_version()) then return end
+
+  if (not storage or not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
   if (not storage.more_enemies.nth_tick_complete) then storage.more_enemies.nth_tick_complete = { current = false, previous = false } end
   if (not storage.more_enemies.nth_tick_cleanup_complete) then storage.more_enemies.nth_tick_cleanup_complete = { current = false, previous = false } end
 

@@ -4,10 +4,12 @@ if _unit_group_service and _unit_group_service.more_enemies then
 end
 
 local Constants = require("libs.constants.constants")
-local Log = require("libs.log.log")
 local Difficulty_Utils = require("control.utils.difficulty-utils")
+local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Initialization = require("control.initialization")
+local Log = require("libs.log.log")
+local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
 local Settings_Service = require("control.service.settings-service")
 local Spawn_Utils = require("control.utils.spawn-utils")
 local Unit_Group_Utils = require("control.utils.unit-group-utils")
@@ -109,8 +111,12 @@ function unit_group_service.unit_group_finished_gathering(event)
 
   local vanilla = 1
   if (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == 1) then
-    if (Settings_Service.get_clone_unit_group_setting(group.surface.name) == Global_Settings_Constants.settings.MAX_UNIT_SIZE_RUNTIME.default_value) then vanilla = vanilla + 1 end
-    if (Settings_Service.get_maximum_group_size(group.surface.name) == Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.default_value) then vanilla = vanilla + 1 end
+    if (  Settings_Service.get_clone_unit_group_setting(group.surface.name) == Gleba_Settings_Constants.settings.CLONE_GLEBA_UNIT_GROUPS.default_value
+      and Settings_Service.get_clone_unit_group_setting(group.surface.name) == Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNIT_GROUPS.default_value)
+    then
+      vanilla = vanilla + 1
+    end
+    if (Settings_Service.get_maximum_group_size(group.surface.name) == Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.default_value) then vanilla = vanilla + 1 end
     Log.info("Difficulty is vanilla; no need to process")
   end
 
@@ -136,9 +142,9 @@ function unit_group_service.unit_group_finished_gathering(event)
   Log.info(evolution_factor)
 
   if (selected_difficulty.value > 1) then
-    loop_len = math.floor((selected_difficulty.value +  clone_unit_group_setting)  * evolution_factor)
+    loop_len = math.floor((selected_difficulty.value + clone_unit_group_setting) * evolution_factor)
   else
-    loop_len = math.ceil((selected_difficulty.value +  clone_unit_group_setting)  * evolution_factor)
+    loop_len = math.ceil((selected_difficulty.value + clone_unit_group_setting) * evolution_factor)
   end
   Log.info("loop_len: " .. serpent.block(loop_len))
 

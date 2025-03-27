@@ -5,11 +5,11 @@ end
 
 local Constants = require("libs.constants.constants")
 local Difficulty_Utils = require("control.utils.difficulty-utils")
+local Log = require("libs.log.log")
 local Log_Constants = require("libs.log.log-constants")
 
 local initialization = {}
 
-local Log = require("libs.log.log")
 
 function initialization.init()
   Log.debug("Initializing More Enemies")
@@ -33,6 +33,9 @@ function initialize(from_scratch)
   if (from_scratch) then
     storage = {}
     storage.more_enemies = {}
+
+    storage.more_enemies.version = Constants.meta.version
+
     storage.more_enemies.clones = {}
     storage.more_enemies.clone_count = {
       count = 0
@@ -40,6 +43,21 @@ function initialize(from_scratch)
   end
 
   if (storage.more_enemies) then
+    if (not storage.more_enemies.version) then
+      storage.more_enemies.version = Constants.meta.version
+    elseif (not storage.more_enemies.version.valid) then
+      -- What do?
+      -- Log.error("storage version is not valid")
+      -- Log.error("If you're seeing this, please report it")
+      -- Log.error("To stop seeing this, try executing the command /more_enemies.init")
+      initialize(true)
+    else
+      local version = Constants.meta.functions.version.validate()
+      if (version and not version.valid) then
+        storage.more_enemies.version.valid = false
+      end
+    end
+
     storage.more_enemies.clone = {}
     storage.more_enemies.clone.count = 0
     storage.more_enemies.overflow_clone_attempts = {

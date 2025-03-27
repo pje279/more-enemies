@@ -3,6 +3,8 @@ if _nauvis_settings_constants and _nauvis_settings_constants.more_enemies then
   return _nauvis_settings_constants
 end
 
+local Constants = require("libs.constants.constants")
+
 nauvis_settings_constants = {}
 
 nauvis_settings_constants.settings = {}
@@ -35,7 +37,7 @@ nauvis_settings_constants.settings.NAUVIS_DIFFICULTY = {
   setting_type = "startup",
   order = "aaa",
   default_value = "Vanilla",
-  allowed_values = { "Easy", "Vanilla", "Vanilla+", "Hard", "Insanity" }
+  allowed_values = Constants.difficulty.difficulties_array
 }
 
 nauvis_settings_constants.settings.NAUVIS_DO_EVOLUTION_FACTOR = {
