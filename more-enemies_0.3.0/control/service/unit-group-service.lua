@@ -5,7 +5,7 @@ end
 
 local Constants = require("libs.constants.constants")
 local Log = require("libs.log.log")
-local Difficulty_Utils = require("libs.difficulty-utils")
+local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Initialization = require("control.initialization")
 local Settings_Service = require("control.service.settings-service")
@@ -43,11 +43,7 @@ function unit_group_service.unit_group_created(event)
   end
 
   if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
-
-  if (not storage.more_enemies.groups) then
-    Log.warn("storage.more_enemies.groups == nil")
-    storage.more_enemies.groups = {}
-  end
+  if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
 
   Log.info("adding group: " .. serpent.block(group))
 
@@ -132,22 +128,19 @@ function unit_group_service.unit_group_finished_gathering(event)
   if (use_evolution_factor) then
     evolution_factor = group.force.get_evolution_factor()
   end
-  Log.info(evolution_factor)
 
   local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(group.surface.name)
-  Log.error(clone_unit_group_setting)
 
-  Log.error(selected_difficulty.value)
-  Log.error(evolution_factor)
+  Log.info(clone_unit_group_setting)
+  Log.info(selected_difficulty.value)
+  Log.info(evolution_factor)
 
   if (selected_difficulty.value > 1) then
-    -- Log.error("floor")
     loop_len = math.floor((selected_difficulty.value +  clone_unit_group_setting)  * evolution_factor)
   else
-    -- Log.error("ceil")
     loop_len = math.ceil((selected_difficulty.value +  clone_unit_group_setting)  * evolution_factor)
   end
-  Log.error("loop_len: " .. serpent.block(loop_len))
+  Log.info("loop_len: " .. serpent.block(loop_len))
 
   Log.info("4")
 

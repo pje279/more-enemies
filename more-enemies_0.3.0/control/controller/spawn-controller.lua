@@ -57,7 +57,7 @@ function spawn_controller.do_tick(event)
     Log.debug("do_nth_tick completed")
     storage.more_enemies.nth_tick_complete.current = true
   else
-    Log.warn("failed to finish processing")
+    Log.debug("failed to finish processing")
   end
 
   Log.info("attempt to clean up")
@@ -66,7 +66,7 @@ function spawn_controller.do_tick(event)
       Log.debug("do_nth_tick_cleanup completed")
       storage.more_enemies.nth_tick_cleanup_complete.current = true
     else
-      Log.warn("failed to finish cleaning up")
+      Log.debug("failed to finish cleaning up")
     end
   end
 end

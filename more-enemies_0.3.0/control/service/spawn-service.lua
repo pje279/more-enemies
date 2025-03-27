@@ -88,7 +88,7 @@ function spawn_service.do_nth_tick(event)
         if (Settings_Service.get_clone_unit_group_setting(planet.string_val) ~= 1) then goto attempt_clone end
         if (Settings_Service.get_maximum_group_size(planet.string_val) ~= Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.default_value) then goto attempt_clone end
 
-        Log.warn("Vanilla detected for " .. planet.string_val .. "; skipping")
+        Log.debug("Vanilla detected for " .. planet.string_val .. "; skipping")
         break
         ::attempt_clone::
       end
@@ -96,7 +96,7 @@ function spawn_service.do_nth_tick(event)
       if (clone_overflow > 1) then
         if (not storage.more_enemies or not storage.more_enemies.valid or not storage.more_enemies.overflow_clone_attempts or not not storage.more_enemies.overflow_clone_attempts.count) then Initialization.reinit() end
         storage.more_enemies.overflow_clone_attempts.count = storage.more_enemies.overflow_clone_attempts.count + 1
-        Log.warn("Tried to clone more than the unit limt; returning")
+        Log.debug("Tried to clone more than the unit limt; returning")
         return
       end
 

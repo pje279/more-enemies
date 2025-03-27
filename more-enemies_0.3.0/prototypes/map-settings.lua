@@ -3,7 +3,7 @@ local Gleba_Constants = require("libs.constants.gleba-constants")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Behemoth_Enemies_Constants = require("libs.constants.mods.behemoth-enemies-constants")
 local Nauvis_Constants = require("libs.constants.nauvis-constants")
-local Difficulty_Utils = require("libs.difficulty-utils")
+local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Log = require("libs.log.log")
 
 local difficulties = {}

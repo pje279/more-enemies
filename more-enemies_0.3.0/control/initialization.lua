@@ -4,7 +4,7 @@ if _initialization and _initialization.more_enemies then
 end
 
 local Constants = require("libs.constants.constants")
-local Difficulty_Utils = require("libs.difficulty-utils")
+local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Log_Constants = require("libs.log.log-constants")
 
 local initialization = {}

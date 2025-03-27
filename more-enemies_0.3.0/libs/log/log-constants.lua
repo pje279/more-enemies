@@ -91,25 +91,23 @@ log_constants.settings.DEBUG_LEVEL = {}
 log_constants.settings.DEBUG_LEVEL.value = "None"
 log_constants.settings.DEBUG_LEVEL.name = "more-enemies-debug-level"
 
-log_constants.settings.DO_TRACEBACK = {
-  type = "bool-setting",
-  name = "more-enemies-do-traceback",
-  setting_type = "runtime-global",
-  order = "abb",
-  default_value = false
-}
-
 log_constants.settings.DO_NOT_PRINT = {
   type = "bool-setting",
   name = "more-enemies-do-not-print",
   setting_type = "runtime-global",
-  order = "abc",
+  order = "abb",
   default_value = true,
 }
 
-log_constants.more_enemies = true
+log_constants.settings.DO_TRACEBACK = {
+  type = "bool-setting",
+  name = "more-enemies-do-traceback",
+  setting_type = "runtime-global",
+  order = "abc",
+  default_value = false
+}
 
--- log(serpent.block(log_constants))
+log_constants.more_enemies = true
 
 local _log_constants = log_constants
 

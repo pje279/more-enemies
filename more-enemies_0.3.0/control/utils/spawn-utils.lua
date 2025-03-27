@@ -12,7 +12,7 @@ local Initialization = require("control.initialization")
 local Log = require("libs.log.log")
 local Nauvis_Constants = require("libs.constants.nauvis-constants")
 local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
-local Difficulty_Utils = require("libs.difficulty-utils")
+local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Settings_Service = require("control.service.settings-service")
 
 local spawn_utils = {}
@@ -164,25 +164,6 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
       Log.warn("Currently at maximum number of cloned enemies")
     end
 
-    if (  entity
-      and entity.valid
-      and entity.surface
-      and entity.surface.name
-      and entity.unit_number)
-    then
-      storage.more_enemies.clones[entity.unit_number] = entity.surface.name
-      Log.debug(entity.unit_number)
-    end
-    if (  clone
-    and clone.valid
-    and clone.surface
-    and clone.surface.name
-    and clone.unit_number)
-    then
-      storage.more_enemies.clones[clone.unit_number] = clone.surface.name
-      Log.debug(clone.unit_number)
-    end
-
     Log.info(clone)
     return clone
   end
@@ -194,13 +175,6 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     local clone_limit = Settings_Service.get_maximum_number_of_clones()
     for i=1, math.ceil(loop_len) do
       Log.info("i = " .. serpent.block(i))
-      if (tick > 0 and game and game.tick > tick + Constants.settings.TICKS_TO_TRY_CLONING.maximum_value) then
-        Log.warn("Too much time pass since starting to clone; breaking out of loop"
-          .. "\nStarted: " .. serpent.block(tick)
-          .. "\nCurrent: " .. serpent.block(game.tick)
-        )
-        break
-      end
       if (  storage.more_enemies.clone and storage.more_enemies.clone.clone_count
         and storage.more_enemies.clone.clone_count > Settings_Service.get_maximum_number_of_clones())
       then
@@ -208,6 +182,7 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
         Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.clone_count) .. " clones")
         return
       end
+
       clones[i] = cloner(obj)
     end
   end
