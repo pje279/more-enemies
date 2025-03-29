@@ -20,7 +20,7 @@ constants.meta.version.minor.warned = false
 constants.meta.version.minor.valid = true
 
 constants.meta.version.bug_fix = {}
-constants.meta.version.bug_fix.value = 0
+constants.meta.version.bug_fix.value = 2
 constants.meta.version.bug_fix.warned = false
 constants.meta.version.bug_fix.valid = true
 
@@ -146,10 +146,8 @@ constants.DEFAULTS.planets = {}
 constants.DEFAULTS.planets.nauvis = {}
 constants.DEFAULTS.planets.nauvis.string_val = "nauvis"
 
-if (mods and mods["space-age"]) then
-  constants.DEFAULTS.planets.gleba = {}
-  constants.DEFAULTS.planets.gleba.string_val = "gleba"
-end
+constants.DEFAULTS.planets.gleba = {}
+constants.DEFAULTS.planets.gleba.string_val = "gleba"
 
 constants.time = {}
 constants.time.TICKS_PER_SECOND = 60

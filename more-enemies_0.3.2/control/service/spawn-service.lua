@@ -82,7 +82,10 @@ function spawn_service.do_nth_tick(event)
     for k, planet in pairs(Constants.DEFAULTS.planets) do
       Log.info(k)
       Log.info(planet)
-      if (  storage.more_enemies.difficulties[planet.string_val].selected_difficulty
+      if (  storage.more_enemies
+        and storage.more_enemies.difficulties
+        and storage.more_enemies.difficulties[planet.string_val]
+        and storage.more_enemies.difficulties[planet.string_val].selected_difficulty
         and storage.more_enemies.difficulties[planet.string_val].selected_difficulty.string_val == Constants.difficulty.VANILLA.string_val) then
         if (Settings_Service.get_clone_unit_setting(planet.string_val) ~= 1) then goto attempt_clone end
         if (Settings_Service.get_clone_unit_group_setting(planet.string_val) ~= 1) then goto attempt_clone end

@@ -3,13 +3,15 @@ if _gleba_constants and _gleba_constants.more_enemies then
   return _gleba_constants
 end
 
-local gleba_constants = require("libs.constants.constants")
-if (not gleba_constants) then error('gleba_constants is nil: require("libs.constants.constants") failed') end
+local gleba_constants = {}
 
 --
 -- { Gleba } --
 
 gleba_constants.gleba = {}
+
+gleba_constants.gleba.string_val = "gleba"
+
 gleba_constants.gleba.categories = {
   SMALL = "small",
   MEDIUM = "medium",
