@@ -1,13 +1,20 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.2
+Date: 2025-03-29
+  Bug Fixes:
+    - (Hopefully) fixed issues related to loading; should hopefully be more compatible with other mods now
+      May not fully work out of the box, but hopefully should not stop the game from loading
+      Not seeing issues locally anymore, other than needing to optimize performance
+---------------------------------------------------------------------------------------------------
 Version: 0.3.1
-Date: 29. 03. 2025
+Date: 2025-03-29
   Bug Fixes:
     - Fixed error on load when Space Age was not present
     - Update dependency version for base to 2.0.42 (below has not been tested)
     - Update optional dependency version for space-age to 2.0.42 (below has not been tested)
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.0
-Date: 27. 03. 2025
+Date: 2025-03-27
   Minor Features:
     - Added configurable logging in the mod settings (Log level of 'None' by default)
       Odrder of precedence: Info > Debug > Warn > Error > None (Default)
@@ -34,13 +41,13 @@ Date: 27. 03. 2025
     - Insanity now goes to 11
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.0
-Date: 14. 03. 2025
+Date: 2025-03-14
   Minor Features:
     - Added preset difficulty settings (Easy (0.1), Vanilla (1), Vanilla+ (1.75), Hard (4), Insanity (10))
     - Each setting can selectively override what would be set by the chosen difficulty
     - By default, everything is set to vanilla
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.0
-Date: 13. 03. 2025
+Date: 2025-03-13
   Minor Features:
     - Initial release
