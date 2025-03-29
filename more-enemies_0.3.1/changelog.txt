@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.1
+Date: 29. 03. 2025
+  Bug Fixes:
+    - Fixed error on load when Space Age was not present
+    - Update dependency version for base to 2.0.42 (below has not been tested)
+    - Update optional dependency version for space-age to 2.0.42 (below has not been tested)
+---------------------------------------------------------------------------------------------------
 Version: 0.3.0
 Date: 27. 03. 2025
   Minor Features:

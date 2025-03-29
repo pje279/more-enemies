@@ -146,8 +146,10 @@ constants.DEFAULTS.planets = {}
 constants.DEFAULTS.planets.nauvis = {}
 constants.DEFAULTS.planets.nauvis.string_val = "nauvis"
 
-constants.DEFAULTS.planets.gleba = {}
-constants.DEFAULTS.planets.gleba.string_val = "gleba"
+if (mods and mods["space-age"]) then
+  constants.DEFAULTS.planets.gleba = {}
+  constants.DEFAULTS.planets.gleba.string_val = "gleba"
+end
 
 constants.time = {}
 constants.time.TICKS_PER_SECOND = 60
