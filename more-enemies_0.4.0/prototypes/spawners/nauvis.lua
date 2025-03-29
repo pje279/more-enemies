@@ -101,3 +101,7 @@ elseif (difficulty.valid) then
       difficulty.spitter.spawning_cooldown.min
     }
 end
+
+if (mods and mods["ArmouredBiters"]) then
+  require("prototypes.spawners.mods.armoured-biters")
+end
