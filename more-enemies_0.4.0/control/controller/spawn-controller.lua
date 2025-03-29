@@ -3,6 +3,7 @@ if _spawn_controller and _spawn_controller.more_enemies then
   return _spawn_controller
 end
 
+local Armoured_Biters_Constants = require("libs.constants.mods.armoured-biters-constants")
 local Constants = require("libs.constants.constants")
 local Behemoth_Enemies_Constants = require("libs.constants.mods.behemoth-enemies-constants")
 local Gleba_Constants = require("libs.constants.gleba-constants")
@@ -17,12 +18,25 @@ local spawn_controller = {}
 
 spawn_controller.filter = {}
 
-for k,v in pairs(Nauvis_Constants.nauvis.categories) do
-  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-biter"})
-  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-spitter"})
+-- for k,v in pairs(Nauvis_Constants.nauvis.categories) do
+--   table.insert(spawn_controller.filter, { filter = "name", name = v .. "-biter"})
+--   table.insert(spawn_controller.filter, { filter = "name", name = v .. "-spitter"})
+-- end
+
+if (script and script.active_mods and script.active_mods["ArmouredBiters"]) then
+  for k,v in pairs(Armoured_Biters_Constants.nauvis.categories) do
+    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-biter"})
+    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-spitter"})
+    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-armoured-biter"})
+  end
+else
+  for k,v in pairs(Gleba_Constants.nauvis.categories) do
+    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-biter"})
+    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-spitter"})
+  end
 end
 
-if (mods and mods["behemoth-enemies"]) then
+if (script and script.active_mods and script.active_mods["behemoth-enemies"]) then
   for k,v in pairs(Behemoth_Enemies_Constants.gleba.categories) do
     table.insert(spawn_controller.filter, { filter = "name", name = v .. "-wriggler-pentapod" })
     table.insert(spawn_controller.filter, { filter = "name", name = v .. "-strafer-pentapod"})

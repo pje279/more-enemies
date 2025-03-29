@@ -75,6 +75,10 @@ for planet, difficulty in pairs(difficulties) do
       for k,v in pairs(Nauvis_Constants.nauvis.categories) do
         data.raw["unit"][v .. "-biter"].absorptions_to_join_attack.pollution = data.raw["unit"][v .. "-biter"].absorptions_to_join_attack.pollution / modifier
         data.raw["unit"][v .. "-spitter"].absorptions_to_join_attack.pollution = data.raw["unit"][v .. "-spitter"].absorptions_to_join_attack.pollution / modifier
+
+        if (mods and mods["ArmouredBiters"]) then
+          data.raw["unit"][v .. "-armoured-biter"].absorptions_to_join_attack.pollution = data.raw["unit"][v .. "-spitter"].absorptions_to_join_attack.pollution / modifier
+        end
       end
     end
 

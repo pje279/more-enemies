@@ -4,7 +4,7 @@ if _behemoth_enemies_constants and _behemoth_enemies_constants.more_enemies then
 end
 
 local behemoth_enemies_constants = require("libs.constants.gleba-constants")
-if (not behemoth_enemies_constants) then error('gleba_constants is nil: require("libs.constants.gleba-constants") failed') end
+if (not behemoth_enemies_constants) then error('behemoth_enemies_constants is nil: require("libs.constants.gleba-constants") failed') end
 
 table.insert(behemoth_enemies_constants.gleba.categories, "behemoth")
 
