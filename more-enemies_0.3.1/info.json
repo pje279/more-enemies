@@ -6,7 +6,7 @@
 	"author": "TheEckelmonster",
 	"description": "Exposes several spawner settings to be configurable from within the game.",
 	"dependencies": [
-		"base >= 2.0",
-		"? space-age >= 2.0"
+		"base >= 2.0.42",
+		"? space-age >= 2.0.42"
 	]
 }
