@@ -9,7 +9,9 @@ local Log = require("libs.log.log")
 local difficulties = {}
 
 for k, planet in pairs(Constants.DEFAULTS.planets) do
-  difficulties[planet.string_val] = Difficulty_Utils.get_difficulty(planet.string_val, true)
+  if (planet) then
+    difficulties[planet.string_val] = Difficulty_Utils.get_difficulty(planet.string_val, true)
+  end
 end
 
 local modifier = 1
@@ -17,6 +19,8 @@ local radius_modifier = 1
 local vanilla = false
 
 for planet, difficulty in pairs(difficulties) do
+
+  if (not planet or not planet.valid) then goto continue end
 
   if ( difficulty.selected_difficulty.string_val == Constants.difficulty.EASY.string_val
       or difficulty.selected_difficulty.value == Constants.difficulty.EASY.value)
@@ -91,4 +95,6 @@ for planet, difficulty in pairs(difficulties) do
       end
     end
   end
+
+  ::continue::
 end
