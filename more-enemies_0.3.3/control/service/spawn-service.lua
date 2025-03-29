@@ -175,7 +175,7 @@ function spawn_service.do_nth_tick(event)
               }
             end
 
-            if (group) then
+            if (group and group.valid) then
               group.add_member(clones[j])
             end
 
