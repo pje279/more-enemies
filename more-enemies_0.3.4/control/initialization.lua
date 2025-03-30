@@ -40,6 +40,10 @@ function initialize(from_scratch)
     storage.more_enemies.clone_count = {
       count = 0
     }
+  elseif (storage.more_enemies) then
+    if (not storage.more_enemies.clones) then storage.more_enemies.clones = {} end
+    if (not storage.more_enemies.staged_clones) then storage.more_enemies.staged_clones = {} end
+    if (not storage.more_enemies.clone_count) then storage.more_enemies.clone_count = { count = 0 } end
   end
 
   if (storage.more_enemies) then
@@ -57,6 +61,8 @@ function initialize(from_scratch)
         storage.more_enemies.version.valid = false
       end
     end
+
+    storage.more_enemies.do_nth_tick = true
 
     storage.more_enemies.clone = {}
     storage.more_enemies.clone.count = 0

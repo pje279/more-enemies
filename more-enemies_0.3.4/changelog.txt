@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.4
+Date: 2025-03-30
+  Bug Fixes:
+    - Added more missing validity checks
+    - Added the ability to toggle on and off the clone processing
+      /more_enemies.get_do_nth_tick -> Gets the value of do_nth_tick
+      /more_enemies.set_do_nth_tick X -> Sets do_nth_tick to true if X == "true", or X >= 1; otherwise sets do_nth_tick to false
+      This can effectively disable cloning altogether if needed.
+    - Fixed enemmy unit groups cloning all the way up to the limit despite difficulty settings
+      To that end, runtime difficulty settings (the multipliers) should function properly now
+    - Added some slight randomness to the placement of clones
+---------------------------------------------------------------------------------------------------
 Version: 0.3.3
 Date: 2025-03-29
   Bug Fixes:
