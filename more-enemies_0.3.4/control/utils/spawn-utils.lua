@@ -53,20 +53,27 @@ function spawn_utils.duplicate_unit_group(group, tick)
     return
   end
 
-  local use_evolution_factor = Settings_Service.get_do_evolution_factor(group.surface.name)
+  -- local use_evolution_factor = Settings_Service.get_do_evolution_factor(group.surface.name)
 
-  -- Only try to clone if the difficulty is greater than Vanilla (1)
-  if ((selected_difficulty and selected_difficulty.valid and selected_difficulty.value > 1) or clone_setting ~= 1) then
-    local len = #group.members
+  -- Only try to clone if the difficulty is not equal to Vanilla (1), or other unit group settings have changed
+  if ((selected_difficulty and selected_difficulty.valid and selected_difficulty.value > 1) or clone_unit_group_setting ~= 1) then
+
+    -- local modifier = (selected_difficulty.value + clone_unit_group_setting) / Constants.difficulty.INSANITY.value
+    local modifier = 1 / ((Constants.difficulty.INSANITY.value - selected_difficulty.value) + 1)
+    -- local modifier = 1
+    if (modifier < 0) then modifier = 0 end
+    if (modifier > 1) then modifier = 1 end
+
+    local len = math.floor(#group.members * (modifier) )
 
     local clones = {}
 
-    Log.info("len: " .. serpent.block(len))
+    Log.debug("len: " .. serpent.block(len))
     for i=1, len do
 
       local member = group.members[i]
       if (member and member.valid) then
-        Log.debug("adding member to staged_clones")
+        Log.info("adding member to staged_clones")
         storage.more_enemies.staged_clones[member.unit_number] = {
           obj = member,
           group = group

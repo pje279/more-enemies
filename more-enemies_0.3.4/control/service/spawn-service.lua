@@ -213,11 +213,23 @@ function spawn_service.do_nth_tick(event)
             end
 
             if (group and group.valid) then
-              Log.debug(group)
-              Log.debug("releasing from spawner")
-              group.release_from_spawner()
-              Log.debug("start moving")
-              group.start_moving()
+              -- Log.debug(group)
+              -- Log.debug("releasing from spawner")
+              -- group.release_from_spawner()
+              -- Log.debug("start moving")
+              -- group.start_moving()
+
+              if (  storage.more_enemies
+                and storage.more_enemies.groups
+                and storage.more_enemies.groups[group.surface.name]
+                and storage.more_enemies.groups[group.surface.name][group.unique_id]
+                and storage.more_enemies.groups[group.surface.name][group.unique_id].count ~= nil
+                and storage.more_enemies.groups[group.surface.name][group.unique_id].max_count ~= nil
+                and storage.more_enemies.groups[group.surface.name][group.unique_id].count >= storage.more_enemies.groups[group.surface.name][group.unique_id].max_count)
+              then
+                Log.debug("removing group: " .. serpent.block(group))
+                storage.more_enemies.groups[group.surface.name][group.unique_id] = nil
+              end
             end
           end
         end
