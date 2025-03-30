@@ -117,6 +117,14 @@ function difficulty_utils.get_difficulty(planet, reindex)
     valid = false
   }
 
+  if (  planet == "gleba"
+    and ((mods and not mods["space-age"]) or (script and script.active_mods and not script.active_mods["space-age"])))
+  then
+    Log.warn("planet invalid")
+    return difficulty
+  end
+
+
   if (storage and not storage.more_enemies) then storage.more_enemies = {} end
   if (storage and storage.more_enemies and not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
 
@@ -175,20 +183,20 @@ function create_difficulty(planet, selected_difficulty, modifier, cooldown_modif
           valid = true,
           selected_difficulty = selected_difficulty,
           biter = {
-            max_count_of_owned_units = vanilla and Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS or (Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
-            max_count_of_owned_defensive_units = vanilla and Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
-            max_friends_around_to_spawn = vanilla and Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN or (Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-            max_defensive_friends_around_to_spawn = vanilla and Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+            max_count_of_owned_units = vanilla and Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS or (Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+            max_count_of_owned_defensive_units = vanilla and Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+            max_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+            max_defensive_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
             spawning_cooldown = {
               max = 360 / (cooldown_modifier + 1),
               min = 150 / (cooldown_modifier + 1)
             },
           },
           spitter = {
-            max_count_of_owned_units = vanilla and Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS or (Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
-            max_count_of_owned_defensive_units = vanilla and Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
-            max_friends_around_to_spawn = vanilla and Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN or (Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-            max_defensive_friends_around_to_spawn = vanilla and Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+            max_count_of_owned_units = vanilla and Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS or (Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+            max_count_of_owned_defensive_units = vanilla and Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+            max_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+            max_defensive_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
             spawning_cooldown = {
               max = 360 / (cooldown_modifier + 1),
               min = 150 / (cooldown_modifier + 1)
@@ -210,20 +218,20 @@ function create_difficulty(planet, selected_difficulty, modifier, cooldown_modif
           valid = true,
           selected_difficulty = selected_difficulty,
           biter = {
-            max_count_of_owned_units = vanilla and Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS or (Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
-            max_count_of_owned_defensive_units = vanilla and Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
-            max_friends_around_to_spawn = vanilla and Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN or (Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-            max_defensive_friends_around_to_spawn = vanilla and Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+            max_count_of_owned_units = vanilla and Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS or (Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+            max_count_of_owned_defensive_units = vanilla and Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+            max_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+            max_defensive_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
             spawning_cooldown = {
               max = 360 / (cooldown_modifier + 1),
               min = 150 / (cooldown_modifier + 1)
             },
           },
           spitter = {
-            max_count_of_owned_units = vanilla and Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS or (Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
-            max_count_of_owned_defensive_units = vanilla and Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
-            max_friends_around_to_spawn = vanilla and Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN or (Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-            max_defensive_friends_around_to_spawn = vanilla and Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+            max_count_of_owned_units = vanilla and Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS or (Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+            max_count_of_owned_defensive_units = vanilla and Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+            max_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+            max_defensive_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
             spawning_cooldown = {
               max = 360 / (cooldown_modifier + 1),
               min = 150 / (cooldown_modifier + 1)
@@ -237,20 +245,20 @@ function create_difficulty(planet, selected_difficulty, modifier, cooldown_modif
         valid = true,
         selected_difficulty = selected_difficulty,
         small = {
-          max_count_of_owned_units = vanilla and Constants.gleba.small.MAX_COUNT_OF_OWNED_UNITS or (Constants.gleba.small.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
-          max_count_of_owned_defensive_units = vanilla and Constants.gleba.small.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Constants.gleba.small.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
-          max_friends_around_to_spawn = vanilla and Constants.gleba.small.MAX_FRIENDS_AROUND_TO_SPAWN or (Constants.gleba.small.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-          max_defensive_friends_around_to_spawn = vanilla and Constants.gleba.small.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Constants.gleba.small.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+          max_count_of_owned_units = vanilla and Gleba_Constants.gleba.small.MAX_COUNT_OF_OWNED_UNITS or (Gleba_Constants.gleba.small.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+          max_count_of_owned_defensive_units = vanilla and Gleba_Constants.gleba.small.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Gleba_Constants.gleba.small.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+          max_friends_around_to_spawn = vanilla and Gleba_Constants.gleba.small.MAX_FRIENDS_AROUND_TO_SPAWN or (Gleba_Constants.gleba.small.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+          max_defensive_friends_around_to_spawn = vanilla and Gleba_Constants.gleba.small.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Gleba_Constants.gleba.small.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
           spawning_cooldown = {
             max = 360 / (cooldown_modifier + 1),
             min = 150 / (cooldown_modifier + 1)
           },
         },
         regular = {
-          max_count_of_owned_units = vanilla and Constants.gleba.regular.MAX_COUNT_OF_OWNED_UNITS or (Constants.gleba.regular.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
-          max_count_of_owned_defensive_units = vanilla and Constants.gleba.regular.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Constants.gleba.regular.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
-          max_friends_around_to_spawn = vanilla and Constants.gleba.regular.MAX_FRIENDS_AROUND_TO_SPAWN or (Constants.gleba.regular.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-          max_defensive_friends_around_to_spawn = vanilla and Constants.gleba.regular.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Constants.gleba.regular.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+          max_count_of_owned_units = vanilla and Gleba_Constants.gleba.regular.MAX_COUNT_OF_OWNED_UNITS or (Gleba_Constants.gleba.regular.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+          max_count_of_owned_defensive_units = vanilla and Gleba_Constants.gleba.regular.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Gleba_Constants.gleba.regular.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+          max_friends_around_to_spawn = vanilla and Gleba_Constants.gleba.regular.MAX_FRIENDS_AROUND_TO_SPAWN or (Gleba_Constants.gleba.regular.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+          max_defensive_friends_around_to_spawn = vanilla and Gleba_Constants.gleba.regular.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Gleba_Constants.gleba.regular.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
           spawning_cooldown = {
             max = 360 / (cooldown_modifier + 1),
             min = 150 / (cooldown_modifier + 1)

@@ -3,13 +3,15 @@ if _nauvis_constants and _nauvis_constants.more_enemies then
   return _nauvis_constants
 end
 
-local nauvis_constants = require("libs.constants.constants")
-if (not nauvis_constants) then error('nauvis_constants is nil: require("libs.constants.constants") failed') end
+local nauvis_constants = {}
 
 --
 -- { Nauvis } --
 
 nauvis_constants.nauvis = {}
+
+nauvis_constants.nauvis.string_val = "nauvis"
+
 nauvis_constants.nauvis.categories = {
   SMALL = "small",
   MEDIUM = "medium",

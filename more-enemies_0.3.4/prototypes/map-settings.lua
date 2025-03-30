@@ -20,7 +20,7 @@ local vanilla = false
 
 for planet, difficulty in pairs(difficulties) do
 
-  if (not planet or not planet.valid) then goto continue end
+  if (not planet or not difficulty or not difficulty.valid) then goto continue end
 
   if ( difficulty.selected_difficulty.string_val == Constants.difficulty.EASY.string_val
       or difficulty.selected_difficulty.value == Constants.difficulty.EASY.value)
@@ -83,22 +83,18 @@ for planet, difficulty in pairs(difficulties) do
     end
 
     if (planet == "gleba" and mods and mods["space-age"]) then
-      if (mods and mods["behemoth-enemies"]) then
-        for k,v in pairs(Behemoth_Enemies_Constants.gleba.categories) do
-          data.raw["unit"][v .. "-wriggler-pentapod"].absorptions_to_join_attack.spores = data.raw["unit"][v .. "-wriggler-pentapod"].absorptions_to_join_attack.spores / modifier
-          data.raw["spider-unit"][v .. "-strafer-pentapod"].absorptions_to_join_attack.spores = data.raw["spider-unit"][v .. "-strafer-pentapod"].absorptions_to_join_attack.spores / modifier
-          data.raw["spider-unit"][v .. "-stomper-pentapod"].absorptions_to_join_attack.spores = data.raw["spider-unit"][v .. "-stomper-pentapod"].absorptions_to_join_attack.spores / modifier
-        end
-      else
-        for k,v in pairs(Gleba_Constants.gleba.categories) do
-          log(serpent.block(v))
-          data.raw["unit"][v .. "-wriggler-pentapod"].absorptions_to_join_attack.spores = data.raw["unit"][v .. "-wriggler-pentapod"].absorptions_to_join_attack.spores / modifier
-          data.raw["spider-unit"][v .. "-strafer-pentapod"].absorptions_to_join_attack.spores = data.raw["spider-unit"][v .. "-strafer-pentapod"].absorptions_to_join_attack.spores / modifier
-          data.raw["spider-unit"][v .. "-stomper-pentapod"].absorptions_to_join_attack.spores = data.raw["spider-unit"][v .. "-stomper-pentapod"].absorptions_to_join_attack.spores / modifier
-        end
+      for k,v in pairs(Gleba_Constants.gleba.categories) do
+        data.raw["unit"][v .. "-wriggler-pentapod"].absorptions_to_join_attack.spores = data.raw["unit"][v .. "-wriggler-pentapod"].absorptions_to_join_attack.spores / modifier
+        data.raw["spider-unit"][v .. "-strafer-pentapod"].absorptions_to_join_attack.spores = data.raw["spider-unit"][v .. "-strafer-pentapod"].absorptions_to_join_attack.spores / modifier
+        data.raw["spider-unit"][v .. "-stomper-pentapod"].absorptions_to_join_attack.spores = data.raw["spider-unit"][v .. "-stomper-pentapod"].absorptions_to_join_attack.spores / modifier
       end
     end
   end
-
   ::continue::
+end
+
+if (modifier >= 0 and mods and mods["space-age"] and mods["behemoth-enemies"]) then
+  data.raw["unit"][Behemoth_Enemies_Constants.prefix .. "-wriggler-pentapod"].absorptions_to_join_attack.spores = data.raw["unit"][Behemoth_Enemies_Constants.prefix .. "-wriggler-pentapod"].absorptions_to_join_attack.spores / modifier
+  data.raw["spider-unit"][Behemoth_Enemies_Constants.prefix .. "-strafer-pentapod"].absorptions_to_join_attack.spores = data.raw["spider-unit"][Behemoth_Enemies_Constants.prefix .. "-strafer-pentapod"].absorptions_to_join_attack.spores / modifier
+  data.raw["spider-unit"][Behemoth_Enemies_Constants.prefix .. "-stomper-pentapod"].absorptions_to_join_attack.spores = data.raw["spider-unit"][Behemoth_Enemies_Constants.prefix .. "-stomper-pentapod"].absorptions_to_join_attack.spores / modifier
 end

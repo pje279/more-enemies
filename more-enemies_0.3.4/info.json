@@ -4,7 +4,7 @@
 	"factorio_version": "2.0",
 	"title": "More Enemies",
 	"author": "TheEckelmonster",
-	"description": "Exposes several spawner settings to be configurable from within the game.",
+	"description": "Clones enemies and enemy unit groups, as well as exposes several spawner settings; all configurable from within the game.",
 	"dependencies": [
 		"base >= 2.0.42",
 		"? space-age >= 2.0.42"

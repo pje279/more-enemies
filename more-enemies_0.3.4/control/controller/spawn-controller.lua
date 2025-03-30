@@ -18,36 +18,27 @@ local spawn_controller = {}
 
 spawn_controller.filter = {}
 
--- for k,v in pairs(Nauvis_Constants.nauvis.categories) do
---   table.insert(spawn_controller.filter, { filter = "name", name = v .. "-biter"})
---   table.insert(spawn_controller.filter, { filter = "name", name = v .. "-spitter"})
--- end
+for k,v in pairs(Nauvis_Constants.nauvis.categories) do
+  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-biter"})
+  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-spitter"})
+end
 
 if (script and script.active_mods and script.active_mods["ArmouredBiters"]) then
   for k,v in pairs(Armoured_Biters_Constants.nauvis.categories) do
-    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-biter"})
-    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-spitter"})
     table.insert(spawn_controller.filter, { filter = "name", name = v .. "-armoured-biter"})
-  end
-else
-  for k,v in pairs(Gleba_Constants.nauvis.categories) do
-    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-biter"})
-    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-spitter"})
   end
 end
 
-if (script and script.active_mods and script.active_mods["behemoth-enemies"]) then
-  for k,v in pairs(Behemoth_Enemies_Constants.gleba.categories) do
-    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-wriggler-pentapod" })
-    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-strafer-pentapod"})
-    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-stomper-pentapod"})
-  end
-else
-  for k,v in pairs(Gleba_Constants.gleba.categories) do
-    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-wriggler-pentapod" })
-    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-strafer-pentapod"})
-    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-stomper-pentapod"})
-  end
+for k,v in pairs(Gleba_Constants.gleba.categories) do
+  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-wriggler-pentapod" })
+  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-strafer-pentapod"})
+  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-stomper-pentapod"})
+end
+
+if ((mods and mods["space-age"] and mods["behemoth-enemies"]) or (script and script.active_mods and script.active_mods["space-age"] and script.active_mods["behemoth-enemies"])) then
+  table.insert(spawn_controller.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-wriggler-pentapod" })
+  table.insert(spawn_controller.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-strafer-pentapod"})
+  table.insert(spawn_controller.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-stomper-pentapod"})
 end
 
 function spawn_controller.do_tick(event)
@@ -73,12 +64,15 @@ function spawn_controller.do_tick(event)
   storage.more_enemies.nth_tick_complete.current = false
   storage.more_enemies.nth_tick_cleanup_complete.current = false
 
-  Log.info("attempt to process")
-  if (storage.more_enemies.nth_tick_cleanup_complete.previous and Spawn_Service.do_nth_tick(event)) then
-    Log.debug("do_nth_tick completed")
-    storage.more_enemies.nth_tick_complete.current = true
-  else
-    Log.debug("failed to finish processing")
+
+  if (storage.more_enemies and storage.more_enemies.do_nth_tick) then
+    Log.info("attempt to process")
+    if (storage.more_enemies.nth_tick_cleanup_complete.previous and Spawn_Service.do_nth_tick(event)) then
+      Log.debug("do_nth_tick completed")
+      storage.more_enemies.nth_tick_complete.current = true
+    else
+      Log.debug("failed to finish processing")
+    end
   end
 
   Log.info("attempt to clean up")

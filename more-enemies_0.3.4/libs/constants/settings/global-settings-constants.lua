@@ -64,8 +64,8 @@ global_settings_constants.settings.MAXIMUM_NUMBER_OF_CLONES = {
   type = "int-setting",
   name = "more-enemies-maximum-number-of-clones",
   setting_type = "runtime-global",
-  order = "edd",
-  default_value = 2500,
+  order = "ddd",
+  default_value = 1500,
   maximum_value = 111111,
   minimum_value = 0,
 }
