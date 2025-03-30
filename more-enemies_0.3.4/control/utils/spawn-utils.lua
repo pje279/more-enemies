@@ -24,6 +24,7 @@ function spawn_utils.duplicate_unit_group(group, tick)
     if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
   end
 
+  if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
   if (not group or not group.valid or not group.surface) then return end
 
   Log.debug("duplicate_unit_group: Getting difficulty")
@@ -52,20 +53,23 @@ function spawn_utils.duplicate_unit_group(group, tick)
     return
   end
 
-  local use_evolution_factor = Settings_Service.get_do_evolution_factor(group.surface.name)
+  -- Only try to clone if the difficulty is not equal to Vanilla (1), or other unit group settings have changed
+  if ((selected_difficulty and selected_difficulty.valid and selected_difficulty.value > 1) or clone_unit_group_setting ~= 1) then
 
-  -- Only try to clone if the difficulty is greater than Vanilla (1)
-  if ((selected_difficulty and selected_difficulty.valid and selected_difficulty.value > 1) or clone_setting ~= 1) then
-    local len = #group.members
+    local modifier = 1 / ((Constants.difficulty.INSANITY.value - selected_difficulty.value) + 1)
+    if (modifier < 0) then modifier = 0 end
+    if (modifier > 1) then modifier = 1 end
+
+    local len = math.floor(#group.members * (modifier) )
 
     local clones = {}
 
-    Log.info("len: " .. serpent.block(len))
+    Log.debug("len: " .. serpent.block(len))
     for i=1, len do
 
       local member = group.members[i]
       if (member and member.valid) then
-        Log.debug("adding member to staged_clones")
+        Log.info("adding member to staged_clones")
         storage.more_enemies.staged_clones[member.unit_number] = {
           obj = member,
           group = group
@@ -81,6 +85,8 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   if (storage) then
     if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
   end
+
+  if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
 
   Log.info(optionals)
   optionals = optionals or {
@@ -122,7 +128,7 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   Log.info(difficulty.selected_difficulty.value)
   Log.info(evolution_multiplier)
   local loop_len_fun = function (clone_setting, difficulty, evolution_multiplier)
-    if (clone_setting >= 0 and clone_setting < 1 ) then
+    if (clone_setting >= 0 and clone_setting <= 1 ) then
       return (clone_setting * difficulty.selected_difficulty.value) * evolution_multiplier
     else
       return (clone_setting + difficulty.selected_difficulty.value) * evolution_multiplier
@@ -154,9 +160,15 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     if (not storage.more_enemies.clones) then storage.more_enemies.clones = {} end
 
     local clone = nil
+
+    if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return clone end
+
     if (#storage.more_enemies.clones < Settings_Service.get_maximum_number_of_clones()) then
       clone = entity.clone({
-        position = entity.position,
+        position = {
+          x = entity.position.x + math.random(-1, 1),
+          y = entity.position.y + math.random(-1, 1)
+        },
         surface = entity.surface.name,
         force = entity.force
       })
@@ -180,10 +192,13 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     tick = tick or -1
 
     local clone_limit = Settings_Service.get_maximum_number_of_clones()
-    for i=1, math.ceil(loop_len) do
+    for i=1, math.floor(loop_len) do
       Log.info("i = " .. serpent.block(i))
-      if (  storage.more_enemies.clone and storage.more_enemies.clone.clone_count
-        and storage.more_enemies.clone.clone_count > Settings_Service.get_maximum_number_of_clones())
+      if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
+
+      if (  storage.more_enemies
+        and storage.more_enemies.clone and storage.more_enemies.clone.clone_count
+        and storage.more_enemies.clone.clone_count > clone_limit)
       then
         Log.warn("Tried to clone more than the unit limit: " .. serpent.block(clone_limit))
         Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.clone_count) .. " clones")
@@ -198,24 +213,24 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     -- Settings are different from default
     -- -> use the user settings instead
     if (use_evolution_factor) then
-      Log.debug("user settings with evolution_factor")
-      Log.debug(math.ceil(loop_len))
-      fun(math.ceil(loop_len), limit_runtime, clones, entity, difficulty, cloner)
+      Log.warn("user settings with evolution_factor")
+      Log.debug(loop_len)
+      fun(loop_len, limit_runtime, clones, entity, difficulty, cloner)
     else
       Log.debug("user settings without evolution_factor")
-      Log.debug(math.ceil(clone_setting + difficulty.selected_difficulty.value))
-      fun(math.ceil(clone_setting + difficulty.selected_difficulty.value), limit_runtime, clones, entity, difficulty, cloner)
+      Log.debug(clone_setting + difficulty.selected_difficulty.value)
+      fun(clone_setting + difficulty.selected_difficulty.value, limit_runtime, clones, entity, difficulty, cloner)
     end
   else
     if (use_evolution_factor) then
       Log.debug("standard settings with evolution_factor")
-      Log.debug(math.ceil(loop_len))
-      fun(math.ceil(loop_len), limit_runtime, clones, entity, difficulty, cloner)
+      Log.debug(loop_len)
+      fun(loop_len, limit_runtime, clones, entity, difficulty, cloner)
     else
       Log.debug("standard settings without evolution_factor")
       -- No changes -> use selected difficulty
-      Log.debug(math.ceil(difficulty.selected_difficulty.value))
-      fun(math.ceil(difficulty.selected_difficulty.value), limit_runtime, clones, entity, difficulty, cloner)
+      Log.debug(difficulty.selected_difficulty.value)
+      fun(difficulty.selected_difficulty.value, limit_runtime, clones, entity, difficulty, cloner)
     end
   end
 
