@@ -1,5 +1,5 @@
 $mod = "more-enemies"
-$version = "0.3.3"
+$version = "0.3.4"
 
 $mod_directory = $mod + "_"
 $full = $mod_directory + $version
