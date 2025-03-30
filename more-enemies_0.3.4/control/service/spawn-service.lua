@@ -96,6 +96,8 @@ function spawn_service.do_nth_tick(event)
         ::attempt_clone::
       end
 
+      Log.info("attempting to clone")
+
       if (clone_overflow > 1) then
         if (not storage.more_enemies or not storage.more_enemies.valid or not storage.more_enemies.overflow_clone_attempts or not not storage.more_enemies.overflow_clone_attempts.count) then Initialization.reinit() end
         storage.more_enemies.overflow_clone_attempts.count = storage.more_enemies.overflow_clone_attempts.count + 1
@@ -108,6 +110,11 @@ function spawn_service.do_nth_tick(event)
         Log.info(_staged_clone)
         local staged_clone = _staged_clone.obj
         local group = _staged_clone.group
+
+        if (group and not group.valid) then goto
+          Log.debug("_staged_clone.group was invalid; skipping")
+          goto continue_tick
+        end
 
         Log.info(i)
         Log.info(staged_clone)
@@ -189,7 +196,7 @@ function spawn_service.do_nth_tick(event)
             storage.more_enemies.clone.count = storage.more_enemies.clone.count + 1
           end
 
-          if (group) then
+          if (group and group.valid) then
             Log.debug(group)
             Log.debug("releasing from spawner")
             group.release_from_spawner()
@@ -197,11 +204,11 @@ function spawn_service.do_nth_tick(event)
             group.start_moving()
           end
 
-          -- remove the stage_clone after processing
-          storage.more_enemies.staged_clones[staged_clone.unit_number] = nil
 
         end
         ::continue_tick::
+        -- remove the staged_clone after processing
+        storage.more_enemies.staged_clones[staged_clone.unit_number] = nil
       end
     end
   end
