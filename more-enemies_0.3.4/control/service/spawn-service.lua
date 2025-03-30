@@ -108,7 +108,11 @@ function spawn_service.do_nth_tick(event)
       Log.info("attempting to clone")
 
       if (clone_overflow > 1) then
-        if (not storage.more_enemies or not storage.more_enemies.valid or not storage.more_enemies.overflow_clone_attempts or not not storage.more_enemies.overflow_clone_attempts.count) then Initialization.reinit() end
+        if (not storage.more_enemies) then Initialization.reinit() end
+        if (not storage.more_enemies.valid) then Initialization.reinit() end
+        if (not storage.more_enemies.overflow_clone_attempts) then Initialization.reinit() end
+        if (storage.more_enemies.overflow_clone_attempts.count == nil) then Initialization.reinit() end
+
         storage.more_enemies.overflow_clone_attempts.count = storage.more_enemies.overflow_clone_attempts.count + 1
         Log.debug("Tried to clone more than the unit limt; returning")
         return
@@ -121,6 +125,7 @@ function spawn_service.do_nth_tick(event)
         Log.info(_staged_clone)
         local staged_clone = _staged_clone.obj
         local group = _staged_clone.group
+        local unit_number = 1
 
         if (group and not group.valid) then
           Log.debug("_staged_clone.group was invalid; skipping")
@@ -140,6 +145,8 @@ function spawn_service.do_nth_tick(event)
           Log.debug("staged_clone is nil or invalid; skipping")
           skip = true
           -- goto continue_tick
+        else
+          unit_number = staged_clone.unit_number
         end
 
         if (not skip) then
@@ -184,7 +191,7 @@ function spawn_service.do_nth_tick(event)
           if (clones and #clones > 0) then
             for j=1, #clones do
               if (clones[j] and clones[j].valid) then
-                Log.debug("adding clone: " .. serpent.block(clones[j]))
+                Log.info("adding clone: " .. serpent.block(clones[j]))
                 storage.more_enemies.clones[clones[j].unit_number] = {
                   obj = clones[j],
                   type = group and "unit-group" or "unit"
@@ -216,7 +223,7 @@ function spawn_service.do_nth_tick(event)
         end
         -- ::continue_tick::
         -- remove the staged_clone after processing
-        storage.more_enemies.staged_clones[staged_clone.unit_number] = nil
+        storage.more_enemies.staged_clones[unit_number] = nil
       end
     end
   end
@@ -235,6 +242,7 @@ function spawn_service.do_nth_tick_cleanup()
   local _temp = {}
   local _invalids = {}
   local i = 1
+  -- TODO: Make this configurable
   local limit = Global_Settings_Constants.settings.CLONES_PER_TICK.default_value
 
   Log.info("Starting iteration of staged_clones")
@@ -285,7 +293,7 @@ function spawn_service.entity_died(event)
 
   Log.info("Attempting to remove entity again")
   if (not storage.more_enemies.clone) then storage.more_enemies.clone = {} end
-  if (not storage.more_enemies.clone.count) then storage.more_enemies.clone.count = 0 end
+  if (storage.more_enemies.clone.count == nil) then storage.more_enemies.clone.count = 0 end
   if (  entity
     and storage.more_enemies.clone.count > 0
     and storage.more_enemies.clones[entity.unit_number])
