@@ -82,7 +82,7 @@ function more_enemies_commands.set_do_nth_tick(command)
   validate_command(command, function (player)
     Log.info("commands.set_do_nth_tick", true)
     if (storage and storage.more_enemies and storage.more_enemies.valid) then
-      if (command.parameter ~= nil and (command.parameter or command.parameter == "true" or command.parameter > 1)) then
+      if (command.parameter ~= nil and (command.parameter or command.parameter == "true" or command.parameter >= 1)) then
         log("Setting do_nth_tick to true")
         player.print("Setting do_nth_tick to true")
         storage.more_enemies.do_nth_tick = true

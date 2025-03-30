@@ -165,7 +165,10 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
 
     if (#storage.more_enemies.clones < Settings_Service.get_maximum_number_of_clones()) then
       clone = entity.clone({
-        position = entity.position,
+        position = {
+          x = entity.position.x + math.random(-1, 1),
+          y = entity.position.y + math.random(-1, 1)
+        },
         surface = entity.surface.name,
         force = entity.force
       })
