@@ -17,6 +17,8 @@ local Unit_Group_Utils = require("control.utils.unit-group-utils")
 local unit_group_service = {}
 
 function unit_group_service.unit_group_created(event)
+  if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
+
   local group = event.group
 
   if (not group) then return end

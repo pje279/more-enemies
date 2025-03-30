@@ -37,6 +37,8 @@ end
 function spawn_controller.do_tick(event)
   -- Log.info("spawn_controller.do_tick(event)")
 
+  if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
+
   local tick = event.tick
   local nth_tick = Settings_Service.get_nth_tick()
   local offset = 1 + nth_tick -- Constants.time.TICKS_PER_SECOND / 2

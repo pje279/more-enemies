@@ -24,6 +24,7 @@ function spawn_utils.duplicate_unit_group(group, tick)
     if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
   end
 
+  if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
   if (not group or not group.valid or not group.surface) then return end
 
   Log.debug("duplicate_unit_group: Getting difficulty")
@@ -81,6 +82,8 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   if (storage) then
     if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
   end
+
+  if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
 
   Log.info(optionals)
   optionals = optionals or {
@@ -154,6 +157,9 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     if (not storage.more_enemies.clones) then storage.more_enemies.clones = {} end
 
     local clone = nil
+
+    if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return clone end
+
     if (#storage.more_enemies.clones < Settings_Service.get_maximum_number_of_clones()) then
       clone = entity.clone({
         position = entity.position,
@@ -182,8 +188,11 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     local clone_limit = Settings_Service.get_maximum_number_of_clones()
     for i=1, math.ceil(loop_len) do
       Log.info("i = " .. serpent.block(i))
-      if (  storage.more_enemies.clone and storage.more_enemies.clone.clone_count
-        and storage.more_enemies.clone.clone_count > Settings_Service.get_maximum_number_of_clones())
+      if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
+
+      if (  storage.more_enemies
+        and storage.more_enemies.clone and storage.more_enemies.clone.clone_count
+        and storage.more_enemies.clone.clone_count > clone_limit)
       then
         Log.warn("Tried to clone more than the unit limit: " .. serpent.block(clone_limit))
         Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.clone_count) .. " clones")
@@ -198,7 +207,7 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     -- Settings are different from default
     -- -> use the user settings instead
     if (use_evolution_factor) then
-      Log.debug("user settings with evolution_factor")
+      Log.warn("user settings with evolution_factor")
       Log.debug(math.ceil(loop_len))
       fun(math.ceil(loop_len), limit_runtime, clones, entity, difficulty, cloner)
     else

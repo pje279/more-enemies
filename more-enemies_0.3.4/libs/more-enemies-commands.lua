@@ -9,8 +9,8 @@ local Log = require("libs.log.log")
 
 local more_enemies_commands = {}
 
-function more_enemies_commands.init(event)
-  validate_command_event(event, function (player)
+function more_enemies_commands.init(command)
+  validate_command(command, function (player)
     Log.info("commands.init")
     player.print("Initializing anew")
     Initialization.init()
@@ -18,8 +18,8 @@ function more_enemies_commands.init(event)
   end)
 end
 
-function more_enemies_commands.reinit(event)
-  validate_command_event(event, function (player)
+function more_enemies_commands.reinit(command)
+  validate_command(command, function (player)
     Log.info("commands.reinit")
     player.print("Reinitializing")
     Initialization.reinit()
@@ -27,16 +27,31 @@ function more_enemies_commands.reinit(event)
   end)
 end
 
-function more_enemies_commands.print_storage(event)
-  validate_command_event(event, function (player)
+function more_enemies_commands.print_storage(command)
+  validate_command(command, function (player)
     Log.info("commands.print_storage", true)
     log(serpent.block(storage))
     player.print(serpent.block(storage))
   end)
 end
 
-function more_enemies_commands.version(event)
-  validate_command_event(event, function (player)
+function more_enemies_commands.print_clone_counts(command)
+  validate_command(command, function (player)
+    Log.info("commands.print_clone_counts", true)
+    if (storage and storage.more_enemies and storage.more_enemies.valid) then
+      if (not storage.more_enemies.clone) then Initialization.reinit() end
+
+      log("storage.more_enemies.clone.count: " .. tostring(storage.more_enemies.clone.count))
+      player.print("storage.more_enemies.clone.count: " .. tostring(storage.more_enemies.clone.count))
+    else
+      Log.error("storage is either nil or invalid")
+      player.print(serpent.block("storage is either nil or invalid; command failed"))
+    end
+  end)
+end
+
+function more_enemies_commands.version(command)
+  validate_command(command, function (player)
     Log.info("commands.version")
 
     if (not storage.more_enemies or not storage.more_enemies.valid) then
@@ -44,12 +59,15 @@ function more_enemies_commands.version(event)
       player.print(serpent.block("storage.more_enemies is nil or invalid; could not obtain version"))
       return
     end
+
     local more_enemies = storage.more_enemies
+
     if (not more_enemies.version or not more_enemies.version.valid) then
       log(serpent.block("storage.more_enemies.version is nil or invalid; could not obtain version"))
       player.print(serpent.block("storage.more_enemies.version is nil or invalid; could not obtain version"))
       return
     end
+
     local version = more_enemies.version
 
     log(serpent.block("more_enemies mod version: " .. Constants.meta.version.string_val))
@@ -60,10 +78,43 @@ function more_enemies_commands.version(event)
   end)
 end
 
-function validate_command_event(event, fun)
-  Log.info(event)
-  if (event) then
-    local player_index = event.player_index
+function more_enemies_commands.set_do_nth_tick(command)
+  validate_command(command, function (player)
+    Log.info("commands.set_do_nth_tick", true)
+    if (storage and storage.more_enemies and storage.more_enemies.valid) then
+      if (command.parameter ~= nil and (command.parameter or command.parameter == "true" or command.parameter > 1)) then
+        log("Setting do_nth_tick to true")
+        player.print("Setting do_nth_tick to true")
+        storage.more_enemies.do_nth_tick = true
+      else
+        log("Setting do_nth_tick to false")
+        player.print("Setting do_nth_tick to false")
+        storage.more_enemies.do_nth_tick = false
+      end
+    else
+      Log.error("storage is either nil or invalid")
+      player.print(serpent.block("storage is either nil or invalid; command failed"))
+    end
+  end)
+end
+
+function more_enemies_commands.get_do_nth_tick(command)
+  validate_command(command, function (player)
+    Log.info("commands.get_do_nth_tick", true)
+    if (storage and storage.more_enemies and storage.more_enemies.valid) then
+        log("do_nth_tick = " .. serpent.block(storage.more_enemies.do_nth_tick))
+        player.print("do_nth_tick = " .. serpent.block(storage.more_enemies.do_nth_tick))
+    else
+      Log.error("storage is either nil or invalid")
+      player.print(serpent.block("storage is either nil or invalid; command failed"))
+    end
+  end)
+end
+
+function validate_command(command, fun)
+  Log.info(command)
+  if (command) then
+    local player_index = command.player_index
 
     local player
     if (game and player_index > 0 and game.players) then
@@ -78,8 +129,11 @@ end
 
 commands.add_command("more_enemies.init", "Initialize from scratch. Will erase existing data.", more_enemies_commands.init)
 commands.add_command("more_enemies.reinit", "Tries to reinitialize, attempting to preserve existing data.", more_enemies_commands.reinit)
+commands.add_command("more_enemies.print_clone_counts", "Prints the clone counts.", more_enemies_commands.print_clone_counts)
 commands.add_command("more_enemies.print_storage", "Prints the underlying storage data.", more_enemies_commands.print_storage)
 commands.add_command("more_enemies.version", "Prints the current mod version, and the underlying storage version.", more_enemies_commands.version)
+commands.add_command("more_enemies.get_do_nth_tick", "Gets the value of the underlying variable for whether to process clones or not.", more_enemies_commands.get_do_nth_tick)
+commands.add_command("more_enemies.set_do_nth_tick", "Sets whether to process clones or not depending on the parameter passed.", more_enemies_commands.set_do_nth_tick)
 
 more_enemies_commands.more_enemies = true
 
