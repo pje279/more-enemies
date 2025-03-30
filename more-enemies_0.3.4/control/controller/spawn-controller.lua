@@ -37,8 +37,6 @@ end
 function spawn_controller.do_tick(event)
   -- Log.info("spawn_controller.do_tick(event)")
 
-  if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
-
   local tick = event.tick
   local nth_tick = Settings_Service.get_nth_tick()
   local offset = 1 + nth_tick -- Constants.time.TICKS_PER_SECOND / 2
@@ -59,12 +57,15 @@ function spawn_controller.do_tick(event)
   storage.more_enemies.nth_tick_complete.current = false
   storage.more_enemies.nth_tick_cleanup_complete.current = false
 
-  Log.info("attempt to process")
-  if (storage.more_enemies.nth_tick_cleanup_complete.previous and Spawn_Service.do_nth_tick(event)) then
-    Log.debug("do_nth_tick completed")
-    storage.more_enemies.nth_tick_complete.current = true
-  else
-    Log.debug("failed to finish processing")
+
+  if (storage.more_enemies and storage.more_enemies.do_nth_tick) then
+    Log.info("attempt to process")
+    if (storage.more_enemies.nth_tick_cleanup_complete.previous and Spawn_Service.do_nth_tick(event)) then
+      Log.debug("do_nth_tick completed")
+      storage.more_enemies.nth_tick_complete.current = true
+    else
+      Log.debug("failed to finish processing")
+    end
   end
 
   Log.info("attempt to clean up")
