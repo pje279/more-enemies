@@ -15,12 +15,12 @@ constants.meta.version.major.warned = false
 constants.meta.version.major.valid = true
 
 constants.meta.version.minor = {}
-constants.meta.version.minor.value = 4
+constants.meta.version.minor.value = 3
 constants.meta.version.minor.warned = false
 constants.meta.version.minor.valid = true
 
 constants.meta.version.bug_fix = {}
-constants.meta.version.bug_fix.value = 0
+constants.meta.version.bug_fix.value = 4
 constants.meta.version.bug_fix.warned = false
 constants.meta.version.bug_fix.valid = true
 
