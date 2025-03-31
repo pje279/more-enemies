@@ -14,6 +14,10 @@ script.on_init(Initialization.init)
 
 script.on_event(defines.events.on_tick, Spawn_Controller.do_tick)
 
+-- Detect entities built by other mods
+--  -> Could be enemies created by other mods
+script.on_event(defines.events.script_raised_built, Spawn_Controller.entity_built, Spawn_Controller.filter)
+
 script.on_event(defines.events.on_runtime_mod_setting_changed, Settings_Controller.mod_setting_changed)
 script.on_event(defines.events.on_entity_spawned, Spawn_Controller.entity_spawned)
 script.on_event(defines.events.on_entity_died, Spawn_Controller.entity_died, Spawn_Controller.filter)

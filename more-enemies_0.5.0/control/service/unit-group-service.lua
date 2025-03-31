@@ -123,7 +123,7 @@ function unit_group_service.unit_group_finished_gathering(event)
   local group = event.group
   local tick = event.tick
 
-  Log.error(event.group)
+  Log.info(event.group)
 
   local max_num_clones = Settings_Service.get_maximum_number_of_clones()
 
@@ -197,7 +197,7 @@ function unit_group_service.unit_group_finished_gathering(event)
   Log.info(evolution_factor)
 
   loop_len = math.floor((selected_difficulty.value * clone_unit_group_setting) * evolution_factor)
-  Log.error("loop_len: " .. serpent.block(loop_len))
+  Log.info("loop_len: " .. serpent.block(loop_len))
 
   Log.info("4")
 

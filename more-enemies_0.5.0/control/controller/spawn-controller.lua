@@ -96,6 +96,11 @@ function spawn_controller.entity_spawned(event)
   Spawn_Service.entity_spawned(event)
 end
 
+function spawn_controller.entity_built(event)
+  Log.debug("spawn_controller.entity_built")
+  Spawn_Service.entity_built(event)
+end
+
 spawn_controller.more_enemies = true
 
 local _spawn_controller = spawn_controller

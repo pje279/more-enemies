@@ -343,6 +343,37 @@ function spawn_service.entity_spawned(event)
   end
 end
 
+function spawn_service.entity_built(event)
+  Log.info(event)
+  local mod_name = event.mod_name
+  local entity = event.entity
+
+  if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
+
+  local max_num_clones = Settings_Service.get_maximum_number_of_clones()
+  if (  storage.more_enemies.clone and storage.more_enemies.clone.clone_count
+    and storage.more_enemies.clone.clone_count > max_num_clones)
+  then
+    Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
+    Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.clone_count) .. " clones")
+    return
+  end
+
+  if (not entity or not entity.valid) then return end
+  if (not entity.surface or not entity.surface.name) then return end
+
+  Log.info("Attempting to add to staged_clones")
+  if (storage and storage.more_enemies and storage.more_enemies.valid) then
+    Log.debug("entity_built - Adding to staged_clones: " .. serpent.block(entity.unit_number))
+    if (not storage.more_enemies.staged_clones) then storage.more_enemies.staged_clones = {} end
+    storage.more_enemies.staged_clones[entity.unit_number] = {
+      obj = entity,
+      surface = entity.surface,
+      group = nil
+    }
+  end
+end
+
 spawn_service.more_enemies = true
 
 local _spawn_service = spawn_service
