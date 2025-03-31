@@ -4,6 +4,8 @@ Date: 2025-03-30
   Minor Features:
     - Compatability with ArmouredBiters
     - Compatability with behemoth-enemies
+    - Added console command
+      /more_enemies.purge -> removes all cloned enemies, and enemies staged to be cloned
   Bug Fixes:
     - Reverted randomness of clone placement for now, as it was causing some enemies to spawn inside of their spawners
 ---------------------------------------------------------------------------------------------------

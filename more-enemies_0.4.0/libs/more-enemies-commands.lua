@@ -111,6 +111,46 @@ function more_enemies_commands.get_do_nth_tick(command)
   end)
 end
 
+function more_enemies_commands.purge(command)
+  validate_command(command, function (player)
+    Log.info("commands.purge", true)
+    if (  storage and storage.more_enemies and storage.more_enemies.valid) then
+      local original_do_nth_tick = storage.more_enemies.do_nth_tick
+      storage.more_enemies.do_nth_tick = false
+
+      Log.debug("purge clones")
+      -- Purge clones
+      if (storage.more_enemies.clones) then
+        for k,v in pairs(storage.more_enemies.clones) do
+          if (v and v.obj) then
+            Log.debug("purging" .. serpent.block(v.obj))
+            v.obj.destroy()
+          end
+        end
+        storage.more_enemies.clones = {}
+        storage.more_enemies.clone = { count = 0 }
+      end
+
+      Log.debug("purge staged_clones")
+      -- Purge staged_clones
+      if (storage.more_enemies.staged_clones) then
+        for k,v in pairs(storage.more_enemies.staged_clones) do
+          if (v and v.obj) then
+            Log.debug("purging" .. serpent.block(v.obj))
+            v.obj.destroy()
+          end
+        end
+        storage.more_enemies.staged_clones = {}
+      end
+
+      storage.more_enemies.do_nth_tick = original_do_nth_tick
+    else
+      Log.error("storage is either nil or invalid")
+      player.print(serpent.block("storage is either nil or invalid; command failed"))
+    end
+  end)
+end
+
 function validate_command(command, fun)
   Log.info(command)
   if (command) then
@@ -134,6 +174,7 @@ commands.add_command("more_enemies.print_storage", "Prints the underlying storag
 commands.add_command("more_enemies.version", "Prints the current mod version, and the underlying storage version.", more_enemies_commands.version)
 commands.add_command("more_enemies.get_do_nth_tick", "Gets the value of the underlying variable for whether to process clones or not.", more_enemies_commands.get_do_nth_tick)
 commands.add_command("more_enemies.set_do_nth_tick", "Sets whether to process clones or not depending on the parameter passed.", more_enemies_commands.set_do_nth_tick)
+commands.add_command("more_enemies.purge", "Clears all of the cloned enemies, and enemies staged to be cloned", more_enemies_commands.purge)
 
 more_enemies_commands.more_enemies = true
 
