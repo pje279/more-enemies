@@ -15,7 +15,7 @@ constants.meta.version.major.warned = false
 constants.meta.version.major.valid = true
 
 constants.meta.version.minor = {}
-constants.meta.version.minor.value = 4
+constants.meta.version.minor.value = 5
 constants.meta.version.minor.warned = false
 constants.meta.version.minor.valid = true
 
