@@ -165,10 +165,11 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
 
     if (#storage.more_enemies.clones < Settings_Service.get_maximum_number_of_clones()) then
       clone = entity.clone({
-        position = {
-          x = entity.position.x + math.random(-1, 1),
-          y = entity.position.y + math.random(-1, 1)
-        },
+        position = entity.position,
+        -- position = {
+        --   x = entity.position.x + math.random(-1, 1),
+        --   y = entity.position.y + math.random(-1, 1)
+        -- },
         surface = entity.surface.name,
         force = entity.force
       })
@@ -213,7 +214,7 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     -- Settings are different from default
     -- -> use the user settings instead
     if (use_evolution_factor) then
-      Log.warn("user settings with evolution_factor")
+      Log.debug("user settings with evolution_factor")
       Log.debug(loop_len)
       fun(loop_len, limit_runtime, clones, entity, difficulty, cloner)
     else

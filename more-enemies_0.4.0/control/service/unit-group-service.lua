@@ -87,7 +87,7 @@ function unit_group_service.unit_group_created(event)
     storage.more_enemies.groups[group.surface.name] = {}
   end
 
-  Log.error("after: " .. serpent.block(storage.more_enemies.groups))
+  Log.info("after: " .. serpent.block(storage.more_enemies.groups))
 
   local loop_len = 1
   local use_evolution_factor = Settings_Service.get_do_evolution_factor(group.surface.name)
@@ -103,7 +103,7 @@ function unit_group_service.unit_group_created(event)
   else
     loop_len = math.floor((selected_difficulty.value * clone_unit_group_setting) * evolution_factor)
   end
-  Log.error("loop_len: " .. serpent.block(loop_len))
+  Log.info("loop_len: " .. serpent.block(loop_len))
 
   storage.more_enemies.groups[group.surface.name][group.unique_id] = {
     group = group,
@@ -112,7 +112,7 @@ function unit_group_service.unit_group_created(event)
     valid = true
   }
 
-  Log.error(storage.more_enemies.groups[group.surface.name][group.unique_id])
+  Log.debug(storage.more_enemies.groups[group.surface.name][group.unique_id])
 end
 
 --[[
