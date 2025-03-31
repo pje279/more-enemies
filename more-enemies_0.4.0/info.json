@@ -8,6 +8,7 @@
 	"dependencies": [
 		"base >= 2.0.42",
 		"? space-age >= 2.0.42",
-		"? ArmouredBiters >= 1.2.1"
+		"? ArmouredBiters >= 1.2.1",
+		"? behemoth-enemies >= 0.0.6"
 	]
 }

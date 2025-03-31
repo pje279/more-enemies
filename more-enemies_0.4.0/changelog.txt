@@ -2,7 +2,10 @@
 Version: 0.4.0
 Date: 2025-03-30
   Minor Features:
-    - Compatability with armoured-biters
+    - Compatability with ArmouredBiters
+    - Compatability with behemoth-enemies
+  Bug Fixes:
+    - Reverted randomness of clone placement for now, as it was causing some enemies to spawn inside of their spawners
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.4
 Date: 2025-03-30
