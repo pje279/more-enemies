@@ -3,6 +3,7 @@ Version: 0.5.0
 Date: 2025-03-31
   Minor Features:
     - Added infrastructure to detect and support cloning of entities created by other mods, assuming they raise the 'script_raised_built' event
+      -> Most notably, BREAM (does not raise this event yet, sadly)
     - Tested compatibility with Cold_Biters, Explosive_Biters, and Toxic_Biters by MFerrari
       -> No changes necessary, works out of the box
 ---------------------------------------------------------------------------------------------------
