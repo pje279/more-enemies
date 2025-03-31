@@ -1,0 +1,1 @@
+require("settings.mods.armoured-biters.armoured-biters")
