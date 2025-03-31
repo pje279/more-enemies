@@ -57,16 +57,34 @@ constants.meta.functions.version.validate = function()
   end
 
   -- Check the version numbers; initialize if necessary
-  if (not storage.more_enemies.version.major) then storage.more_enemies.version.major = { valid = false, value = 0 } end
-  if (not storage.more_enemies.version.minor) then storage.more_enemies.version.minor = { valid = false, value = 0 } end
-  if (not storage.more_enemies.version.bug_fix) then storage.more_enemies.version.bug_fix = { valid = false, value = 0 } end
+  if (not storage.more_enemies.version.major) then
+    storage.more_enemies.version.major = { valid = false, value = 0 }
+  else
+    return_val.major.value = storage.more_enemies.version.major.value
+  end
+  if (not storage.more_enemies.version.minor) then
+    storage.more_enemies.version.minor = { valid = false, value = 0 }
+  else
+    return_val.minor.value = storage.more_enemies.version.minor.value
+  end
+  if (not storage.more_enemies.version.bug_fix) then
+    storage.more_enemies.version.bug_fix = { valid = false, value = 0 }
+  else
+    return_val.bug_fix.value = storage.more_enemies.version.minor.value
+  end
 
   -- Compare the version numbers
   if (constants.meta.version.major.value <= storage.more_enemies.version.major.value) then return_val.major.valid = true end
   if (constants.meta.version.minor.value <= storage.more_enemies.version.minor.value) then return_val.minor.valid = true end
   if (constants.meta.version.bug_fix.value <= storage.more_enemies.version.bug_fix.value) then return_val.bug_fix.valid = true end
 
-  return_val.valid = true
+  -- Check if they're valid
+  if (  return_val.major.valid
+    or (return_val.major.valid and return_val.minor.valid)
+    or (return_val.major.valid and return_val.minor.valid and return_val.bug_fix.valid))
+  then
+    return_val.valid = true
+  end
 
   return return_val
 end

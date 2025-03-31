@@ -115,35 +115,7 @@ function more_enemies_commands.purge(command)
   validate_command(command, function (player)
     Log.info("commands.purge", true)
     if (  storage and storage.more_enemies and storage.more_enemies.valid) then
-      local original_do_nth_tick = storage.more_enemies.do_nth_tick
-      storage.more_enemies.do_nth_tick = false
-
-      Log.debug("purge clones")
-      -- Purge clones
-      if (storage.more_enemies.clones) then
-        for k,v in pairs(storage.more_enemies.clones) do
-          if (v and v.obj) then
-            Log.debug("purging" .. serpent.block(v.obj))
-            v.obj.destroy()
-          end
-        end
-        storage.more_enemies.clones = {}
-        storage.more_enemies.clone = { count = 0 }
-      end
-
-      Log.debug("purge staged_clones")
-      -- Purge staged_clones
-      if (storage.more_enemies.staged_clones) then
-        for k,v in pairs(storage.more_enemies.staged_clones) do
-          if (v and v.obj) then
-            Log.debug("purging" .. serpent.block(v.obj))
-            v.obj.destroy()
-          end
-        end
-        storage.more_enemies.staged_clones = {}
-      end
-
-      storage.more_enemies.do_nth_tick = original_do_nth_tick
+      Initialization.purge()
     else
       Log.error("storage is either nil or invalid")
       player.print(serpent.block("storage is either nil or invalid; command failed"))

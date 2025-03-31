@@ -10,7 +10,6 @@ local Log_Constants = require("libs.log.log-constants")
 
 local initialization = {}
 
-
 function initialization.init()
   Log.debug("Initializing More Enemies")
 
@@ -27,10 +26,55 @@ function initialization.reinit()
   Log.debug("Finished reinitializing More Enemies")
 end
 
+function initialization.purge()
+  if (storage.more_enemies and storage.more_enemies.valid) then
+    local original_do_nth_tick = storage.more_enemies.do_nth_tick
+    storage.more_enemies.do_nth_tick = false
+
+    Log.debug("purge clones")
+    -- Purge clones
+    if (storage.more_enemies.clones) then
+      for k,v in pairs(storage.more_enemies.clones) do
+        if (v and v.obj) then
+          Log.debug("purging" .. serpent.block(v.obj))
+          v.obj.destroy()
+        end
+      end
+      storage.more_enemies.clones = {}
+      storage.more_enemies.clone = { count = 0 }
+    end
+
+    Log.debug("purge staged_clones")
+    -- Purge staged_clones
+    if (storage.more_enemies.staged_clones) then
+      for k,v in pairs(storage.more_enemies.staged_clones) do
+        if (v and v.obj) then
+          Log.debug("purging" .. serpent.block(v.obj))
+          v.obj.destroy()
+        end
+      end
+      storage.more_enemies.staged_clones = {}
+    end
+
+    storage.more_enemies.do_nth_tick = original_do_nth_tick
+  end
+end
+
 function initialize(from_scratch)
+  if (not storage.more_enemies) then storage.more_enemies = {} end
+  storage.more_enemies.do_nth_tick = false
+
   from_scratch = from_scratch or false
 
+  local do_purge = function ()
+    if (storage.more_enemies and (storage.more_enemies.clones or storage.more_enemies.staged_clones)) then
+      initialization.purge()
+    end
+  end
+
   if (from_scratch) then
+    do_purge()
+
     storage = {}
     storage.more_enemies = {}
 
@@ -40,7 +84,10 @@ function initialize(from_scratch)
     storage.more_enemies.clone_count = {
       count = 0
     }
-  elseif (storage.more_enemies) then
+  else
+    -- do_purge()
+
+    if (not storage.more_enemies) then storage.more_enemies = {} end
     if (not storage.more_enemies.clones) then storage.more_enemies.clones = {} end
     if (not storage.more_enemies.staged_clones) then storage.more_enemies.staged_clones = {} end
     if (not storage.more_enemies.clone_count) then storage.more_enemies.clone_count = { count = 0 } end
@@ -62,8 +109,6 @@ function initialize(from_scratch)
       end
     end
 
-    storage.more_enemies.do_nth_tick = true
-
     storage.more_enemies.clone = {}
     storage.more_enemies.clone.count = 0
     storage.more_enemies.overflow_clone_attempts = {
@@ -80,6 +125,7 @@ function initialize(from_scratch)
     storage.more_enemies.nth_tick_complete = {}
     storage.more_enemies.nth_tick_complete.current = true
     storage.more_enemies.nth_tick_complete.previous = true
+
   end
 
   local user_setting = nil
@@ -139,6 +185,8 @@ function initialize(from_scratch)
         end
       end
     end
+
+    storage.more_enemies.do_nth_tick = true
 
     storage.more_enemies.valid = true
   end
