@@ -1,0 +1,80 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.4.0
+Date: 2025-03-30
+  Minor Features:
+    - Compatability with ArmouredBiters
+    - Compatability with behemoth-enemies
+    - Added console command
+      /more_enemies.purge -> removes all cloned enemies, and enemies staged to be cloned
+  Bug Fixes:
+    - Reverted randomness of clone placement for now, as it was causing some enemies to spawn inside of their spawners
+---------------------------------------------------------------------------------------------------
+Version: 0.3.4
+Date: 2025-03-30
+  Bug Fixes:
+    - Added more missing validity checks
+    - Added the ability to toggle on and off the clone processing
+      /more_enemies.get_do_nth_tick -> Gets the value of do_nth_tick
+      /more_enemies.set_do_nth_tick X -> Sets do_nth_tick to true if X == "true", or X >= 1; otherwise sets do_nth_tick to false
+      This can effectively disable cloning altogether if needed.
+    - Fixed enemmy unit groups cloning all the way up to the limit despite difficulty settings
+      To that end, runtime difficulty settings (the multipliers) should function properly now
+    - Added some slight randomness to the placement of clones
+---------------------------------------------------------------------------------------------------
+Version: 0.3.3
+Date: 2025-03-29
+  Bug Fixes:
+    - Added validity check before adding member to unit group
+---------------------------------------------------------------------------------------------------
+Version: 0.3.2
+Date: 2025-03-29
+  Bug Fixes:
+    - (Hopefully) fixed issues related to loading; should hopefully be more compatible with other mods now
+      May not fully work out of the box, but hopefully should not stop the game from loading
+      Not seeing issues locally anymore, other than needing to optimize performance
+---------------------------------------------------------------------------------------------------
+Version: 0.3.1
+Date: 2025-03-29
+  Bug Fixes:
+    - Fixed error on load when Space Age was not present
+    - Update dependency version for base to 2.0.42 (below has not been tested)
+    - Update optional dependency version for space-age to 2.0.42 (below has not been tested)
+---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+Date: 2025-03-27
+  Minor Features:
+    - Added configurable logging in the mod settings (Log level of 'None' by default)
+      Odrder of precedence: Info > Debug > Warn > Error > None (Default)
+      Includes "Do not print" and "Do function traceback" settings
+      Do not print: prevent log messages from displaying in game; only log to the factorio-current.log file
+      Do function traceback: enables the traceback for each log statement (for aid in debugging)
+    - Added console commands:
+      /more_enemies.init -> Initialize the supporting data structures from scratch, erasing any existing data
+      /more_enemies.reinit -> Reinitialize the supporting data structures, making a moderate attempt to maintain existing data
+      /more_enemies.print_storage -> Prints the contents or the supportings data structures
+      /more_enemies.version -> Prints the current mod version, and the underlying storage version
+    - Added entity cloning. Applies to Nauvis and Gleba, both configurable
+      If > 1, or above difficulty Vanilla, entities will be cloned when they spawn according to difficulty settings and evolution factor
+      If < 1, fewer entities will be cloned for the given difficulty setting
+    - Added unit group cloning. Applies to Nauvis and Gleba, both configurable
+      If > 1, or above difficulty Vanilla, unit groups (enemy attack groups) will be cloned when they finish gathereing according to difficulty settings and evolution factor
+      If < 1, unit groups will be cloned fewer times
+    - Added evolution factor [0 - 1] as a means of scaling the entity and unit group cloning more appropriately
+      Can be toggled on or off. Toggling off causes the maximum amount to be spawned at the very beginning of the game.
+  Bug Fixes:
+    - Fixed Hard difficulty actually using some of the Easy settings
+    - Fixed main menu simulation 'nauvis_biter_base_laser_defense' breaking when the character died on higher difficulties; now they explode!
+  Balance Changes:
+    - Insanity now goes to 11
+---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+Date: 2025-03-14
+  Minor Features:
+    - Added preset difficulty settings (Easy (0.1), Vanilla (1), Vanilla+ (1.75), Hard (4), Insanity (10))
+    - Each setting can selectively override what would be set by the chosen difficulty
+    - By default, everything is set to vanilla
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
+Date: 2025-03-13
+  Minor Features:
+    - Initial release
