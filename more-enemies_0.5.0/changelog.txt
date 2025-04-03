@@ -8,13 +8,14 @@ Date: 2025-04-03
       Adds an additional setting for maximum number of modded clones
       Mod created entities are tracked ~somewhat independently of vanilla entities
       -> Allows for cloning of mod added entities even when othwerwise at the the maximum number of clones
-      -> Maximum number of modded clones helps to prevent it froming runnning amok, though
+      -> Maximum number of modded clones helps to prevent it froming runnning amok though
     - Tested compatibility with Cold_Biters, Explosive_Biters, and Toxic_Biters by MFerrari
       Added as optional dependencies
     - Changed the internal version checking to automatically initialize fresh upon detecting a version change
-    - Cloned entities (and their parent entity) are now purged upon initializing fresh
+    - Cloned entities (and staged entities) are now purged upon initializing fresh
     - Updated the purge command
-      Removed /more_enemeies.purge
+      Removed
+      -> /more_enemeies.purge
       Added
       -> /more_enemies.purge_all -> Clears all of the cloned enemies, and enemies staged to be cloned
       -> /more_enemies.purge_clones -> Clears all of the vanilla cloned enemies, and vanilla enemies staged to be cloned
