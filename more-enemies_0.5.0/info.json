@@ -12,6 +12,7 @@
 		"? Cold_biters >= 2.0.9",
 		"? Explosive_biters >= 2.3.1",
 		"? Toxic_biters >= 2.0.4",
-		"? behemoth-enemies >= 0.0.6"
+		"? behemoth-enemies >= 0.0.6",
+		"? BREAM >= 2.1.2"
 	]
 }
