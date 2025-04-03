@@ -87,18 +87,22 @@ function initialization.purge(optionals)
           v.obj.destroy()
         end
       end
+      storage.more_enemies.clone = {}
+      storage.more_enemies.clone.count = 0
       storage.more_enemies.staged_clones = {}
     end
 
     Log.debug("purge mod.staged_clones")
     -- Purge mod.staged_clones
-    if (storage.more_enemies.mod and storage.more_enemies.mod.staged_clones and (optionals.all or optionals.mod_added_clones)) then
+    if (storage.more_enemies.mod and storage.more_enemies.mod.staged_clones and optionals.mod_added_clones) then
       for k,v in pairs(storage.more_enemies.mod.staged_clones) do
         if (v and v.obj) then
           Log.debug("purging" .. serpent.block(v.obj))
           v.obj.destroy()
         end
       end
+      storage.more_enemies.mod.clone = {}
+      storage.more_enemies.mod.clone.count = 0
       storage.more_enemies.mod.staged_clones = {}
     end
 
@@ -173,8 +177,6 @@ function initialize(from_scratch)
       end
     end
 
-    storage.more_enemies.clone = {}
-    storage.more_enemies.clone.count = 0
     storage.more_enemies.overflow_clone_attempts = {
       count = 0,
       warned = {
@@ -185,7 +187,7 @@ function initialize(from_scratch)
       },
       valid = true
     }
-    storage.more_enemies.staged_clones = {}
+
     storage.more_enemies.nth_tick_complete = {}
     storage.more_enemies.nth_tick_complete.current = true
     storage.more_enemies.nth_tick_complete.previous = true

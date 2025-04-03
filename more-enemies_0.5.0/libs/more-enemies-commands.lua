@@ -44,9 +44,11 @@ function more_enemies_commands.print_clone_counts(command)
       if (not storage.more_enemies.mod.clone) then Initialization.reinit() end
 
       log("storage.more_enemies.clone.count: " .. tostring(storage.more_enemies.clone.count))
-      log("storage.more_enemies.mod.clone.count: " .. tostring(storage.more_enemies.mod.clone.count))
       player.print("storage.more_enemies.clone.count: " .. tostring(storage.more_enemies.clone.count))
-      player.print("storage.more_enemies.mod.clone.count: " .. tostring(storage.more_enemies.mod.clone.count))
+      if (script and script.active_mods and script.active_mods["BREAM"]) then
+        log("storage.more_enemies.mod.clone.count: " .. tostring(storage.more_enemies.mod.clone.count))
+        player.print("storage.more_enemies.mod.clone.count: " .. tostring(storage.more_enemies.mod.clone.count))
+      end
     else
       Log.error("storage is either nil or invalid")
       player.print(serpent.block("storage is either nil or invalid; command failed"))
