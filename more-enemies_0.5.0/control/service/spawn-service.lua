@@ -78,7 +78,6 @@ function spawn_service.do_nth_tick(event)
   Log.info("Clone attempts")
   spawn_service.clone_attempts()
 
-  -- TODO: Make this a configurable setting
   local clones_per_tick = Settings_Service.get_clones_per_tick()
   local clone_overflow = 1
 
@@ -131,7 +130,6 @@ function spawn_service.do_nth_tick(event)
         if (not mod_stage_clone or not mod_stage_clone.valid or mod_stage_clone.surface.name ~= planet.string_val) then
           Log.warn("mod_stage_clone is nil, invalid, or wrong planet for clone; skipping")
           skip = true
-          -- goto continue_tick
         else
           unit_number = mod_stage_clone.unit_number
           surface_name = mod_stage_clone.surface.name
@@ -205,7 +203,6 @@ function spawn_service.do_nth_tick(event)
               storage.more_enemies.mod.clone.count = storage.more_enemies.mod.clone.count + 1
             end
           end
-        -- end
           -- remove the staged_clone after processing
           storage.more_enemies.mod.staged_clones[unit_number] = nil
         end
@@ -247,7 +244,6 @@ function spawn_service.do_nth_tick(event)
         if (not staged_clone or not staged_clone.valid or staged_clone.surface.name ~= planet.string_val) then
           Log.debug("staged_clone is nil, invalid, or wrong planet for clone; skipping")
           skip = true
-          -- goto continue_tick
         else
           unit_number = staged_clone.unit_number
           surface_name = staged_clone.surface.name
@@ -351,7 +347,6 @@ function spawn_service.do_nth_tick_cleanup()
   local _temp = {}
   local _invalids = {}
   local i = 1
-  -- TODO: Make this configurable
   local limit = Global_Settings_Constants.settings.CLONES_PER_TICK.default_value
 
   Log.info("Starting iteration of staged_clones")
@@ -416,8 +411,6 @@ function spawn_service.entity_died(event)
   end
 
   Log.info("Attempting to remove entity again")
-  -- if (not storage.more_enemies.clone) then storage.more_enemies.clone = {} end
-  -- if (storage.more_enemies.clone.count == nil) then storage.more_enemies.clone.count = 0 end
   if (  entity
     and storage.more_enemies.clone.count > 0
     and storage.more_enemies.clones[entity.unit_number])

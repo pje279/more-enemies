@@ -72,7 +72,7 @@ constants.meta.functions.version.validate = function()
   if (not storage.more_enemies.version.bug_fix) then
     storage.more_enemies.version.bug_fix = { valid = false, value = 0 }
   else
-    return_val.bug_fix.value = storage.more_enemies.version.minor.value
+    return_val.bug_fix.value = storage.more_enemies.version.bug_fix.value
   end
 
   -- Compare the version numbers
@@ -80,13 +80,11 @@ constants.meta.functions.version.validate = function()
   if (constants.meta.version.minor.value <= storage.more_enemies.version.minor.value) then return_val.minor.valid = true end
   if (constants.meta.version.bug_fix.value <= storage.more_enemies.version.bug_fix.value) then return_val.bug_fix.valid = true end
 
-  Log.error(return_val)
   -- Check if they're valid
   if (return_val.major.valid and return_val.minor.valid and return_val.bug_fix.valid) then
     return_val.valid = true
   end
 
-  Log.error(return_val)
   return return_val
 end
 

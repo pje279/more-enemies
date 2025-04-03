@@ -14,7 +14,7 @@ gleba_settings_constants.settings.CLONE_GLEBA_UNITS = {
     type = "double-setting",
     name = "more-enemies-clone-gleba-units",
     setting_type = "runtime-global",
-    order = "cab",
+    order = "dab",
     default_value = 1,
     maximum_value = 11, -- This one goes up to eleven
     minimum_value = 0,
@@ -24,7 +24,7 @@ gleba_settings_constants.settings.CLONE_GLEBA_UNIT_GROUPS = {
     type = "double-setting",
     name = "more-enemies-clone-gleba-unit-groups",
     setting_type = "runtime-global",
-    order = "cac",
+    order = "dac",
     default_value = 1,
     maximum_value = 11, -- This one goes up to eleven
     minimum_value = 0,
@@ -35,7 +35,7 @@ gleba_settings_constants.settings.GLEBA_DIFFICULTY = {
     type = "string-setting",
     name = "more-enemies-gleba-difficulty",
     setting_type = "startup",
-    order = "aac",
+    order = "bab",
     default_value = "Vanilla",
     allowed_values = Constants.difficulty.difficulties_array
 }
@@ -44,7 +44,7 @@ gleba_settings_constants.settings.GLEBA_DO_EVOLUTION_FACTOR = {
     type = "bool-setting",
     name = "more-enemies-gleba-do-evolution-factor",
     setting_type = "runtime-global",
-    order = "bab",
+    order = "cab",
     default_value = true,
 }
 
@@ -53,7 +53,7 @@ gleba_settings_constants.settings.GLEBA_SMALL_MAX_COUNT_OF_OWNED_UNITS = {
     type = "int-setting",
     name = "more-enemies-spawner-gleba-small-max-count-of-owned-units",
     setting_type = "startup",
-    order = "caa",
+    order = "daa",
     default_value = 1,
     minimum_value = 0,
 }
@@ -62,7 +62,7 @@ gleba_settings_constants.settings.GLEBA_SMALL_MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS
     type = "int-setting",
     name = "more-enemies-spawner-gleba-small-max-count-of-owned-defensive-units",
     setting_type = "startup",
-    order = "cab",
+    order = "dab",
     default_value = 1,
     minimum_value = 0,
 }
@@ -71,7 +71,7 @@ gleba_settings_constants.settings.GLEBA_SMALL_MAX_FRIENDS_AROUND_TO_SPAWN = {
     type = "int-setting",
     name = "more-enemies-spawner-gleba-small-max-friends-around-to-spawn",
     setting_type = "startup",
-    order = "cac",
+    order = "dac",
     default_value = 2,
     minimum_value = 0,
 }
@@ -80,7 +80,7 @@ gleba_settings_constants.settings.GLEBA_SMALL_MAX_DEFENSIVE_FRIENDS_AROUND_TO_SP
     type = "int-setting",
     name = "more-enemies-spawner-gleba-small-max-defensive-friends-around-to-spawn",
     setting_type = "startup",
-    order = "cad",
+    order = "dad",
     default_value = 2,
     minimum_value = 0,
 }
@@ -89,7 +89,7 @@ gleba_settings_constants.settings.GLEBA_SMALL_MAX_SPAWNING_COOLDOWN = {
     type = "int-setting",
     name = "more-enemies-max-spawning-cooldown-gleba-small",
     setting_type = "startup",
-    order = "cae",
+    order = "dae",
     default_value = 360,
     minimum_value = 1,
 }
@@ -98,7 +98,7 @@ gleba_settings_constants.settings.GLEBA_SMALL_MIN_SPAWNING_COOLDOWN = {
     type = "int-setting",
     name = "more-enemies-min-spawning-cooldown-gleba-small",
     setting_type = "startup",
-    order = "caf",
+    order = "daf",
     default_value = 150,
     minimum_value = 1,
 }
@@ -108,7 +108,7 @@ gleba_settings_constants.settings.GLEBA_MAX_COUNT_OF_OWNED_UNITS = {
     type = "int-setting",
     name = "more-enemies-spawner-gleba-max-count-of-owned-units",
     setting_type = "startup",
-    order = "cba",
+    order = "dba",
     default_value = 2,
     minimum_value = 0,
 }
@@ -117,7 +117,7 @@ gleba_settings_constants.settings.GLEBA_MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS = {
     type = "int-setting",
     name = "more-enemies-spawner-gleba-max-count-of-owned-defensive-units",
     setting_type = "startup",
-    order = "cbb",
+    order = "dbb",
     default_value = 1,
     minimum_value = 0,
 }
@@ -126,7 +126,7 @@ gleba_settings_constants.settings.GLEBA_MAX_FRIENDS_AROUND_TO_SPAWN = {
     type = "int-setting",
     name = "more-enemies-spawner-gleba-max-friends-around-to-spawn",
     setting_type = "startup",
-    order = "cbc",
+    order = "dbc",
     default_value = 3,
     minimum_value = 0,
 }
@@ -134,7 +134,7 @@ gleba_settings_constants.settings.GLEBA_MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN = 
     type = "int-setting",
     name = "more-enemies-spawner-gleba-max-defensive-friends-around-to-spawn",
     setting_type = "startup",
-    order = "cbd",
+    order = "dbd",
     default_value = 2,
     minimum_value = 0,
 }
@@ -143,7 +143,7 @@ gleba_settings_constants.settings.GLEBA_MAX_SPAWNING_COOLDOWN = {
     type = "int-setting",
     name = "more-enemies-max-spawning-cooldown-gleba",
     setting_type = "startup",
-    order = "cbe",
+    order = "dbe",
     default_value = 360,
     minimum_value = 1,
 }
@@ -152,7 +152,7 @@ gleba_settings_constants.settings.GLEBA_MIN_SPAWNING_COOLDOWN = {
     type = "int-setting",
     name = "more-enemies-min-spawning-cooldown-gleba",
     setting_type = "startup",
-    order = "cbf",
+    order = "dbf",
     default_value = 150,
     minimum_value = 1,
 }

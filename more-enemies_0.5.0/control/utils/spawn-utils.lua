@@ -165,11 +165,6 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
 
     if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return clone end
 
-    -- if (Entity_Validations.get_mod_name(entity)) then
-    --   Log.error("Checking if there are too many clones")
-    --   Log.error(entity.mod_name)
-    -- end
-
     local max_num_clones = Settings_Service.get_maximum_number_of_clones()
     if (  storage.more_enemies.clone and storage.more_enemies.clone.count
       and storage.more_enemies.clone.count > max_num_clones)
@@ -219,10 +214,6 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     else
       storage.more_enemies.clone.count = storage.more_enemies.clone.count + 1
     end
-
-    -- else
-    --   Log.warn("Currently at maximum number of cloned enemies")
-    -- end
 
     Log.info(clone)
     return {

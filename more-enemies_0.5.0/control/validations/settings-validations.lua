@@ -3,8 +3,6 @@ if (_settings_validations and _settings_validations.more_enemies) then
   return _settings_validations
 end
 
-local Constants = require("libs.constants.constants")
-local Initialization = require("control.initialization")
 local Log = require("libs.log.log")
 
 local settings_validations = {}
