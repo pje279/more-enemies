@@ -85,7 +85,7 @@ function initialize(from_scratch)
   end
 
   if (from_scratch) then
-    player.print("Initializing anew")
+    if (game) then game.print("more-enemies: Initializing anew") end
     do_purge()
 
     storage = {}
@@ -130,10 +130,12 @@ function initialize(from_scratch)
       -- Log.error("If you're seeing this, please report it")
       -- Log.error("To stop seeing this, try executing the command /more_enemies.init")
       initialize(true)
+      return
     else
       local version = Constants.meta.functions.version.validate()
       if (version and not version.valid) then
         storage.more_enemies.version.valid = false
+        return
       end
     end
 
@@ -153,7 +155,6 @@ function initialize(from_scratch)
     storage.more_enemies.nth_tick_complete = {}
     storage.more_enemies.nth_tick_complete.current = true
     storage.more_enemies.nth_tick_complete.previous = true
-
   end
 
   local user_setting = nil
@@ -219,7 +220,7 @@ function initialize(from_scratch)
     storage.more_enemies.valid = true
   end
 
-  if (from_scratch) then player.print("Initialization complete") end
+  if (from_scratch and game) then game.print("more-enemies: Initialization complete") end
   Log.info(storage)
 end
 

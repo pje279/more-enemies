@@ -13,18 +13,18 @@ function version_validations.validate_version()
   local return_val = true
   local version = Constants.meta.functions.version.validate()
   local validate_fun = function ()
-    Log.warn("Invalid version detected relative to version " .. Constants.meta.version.string_val .. "; reinitializing naively")
+    Log.warn("more-enemies: Invalid version detected relative to version " .. Constants.meta.version.string_val .. "; reinitializing naively")
     Initialization.reinit()
     Log.warn(Constants.meta.functions.version.validate())
     if (not Constants.meta.functions.version.validate().valid) then
       local return_val = false
-      Log.error("invalid version detected relative to version " .. Constants.meta.version.string_val .. "; naive reinitialization failed")
+      Log.error("more-enemies: invalid version detected relative to version " .. Constants.meta.version.string_val .. "; naive reinitialization failed")
       if (storage.more_enemies and storage.more_enemies.version and storage.more_enemies.version.string_val) then
-        game.print("Version (" .. storage.more_enemies.version.string_val ..") is invalid relative to current installed version: (" .. Constants.meta.version.string_val .. ")")
+        game.print("more-enemies: Version (" .. storage.more_enemies.version.string_val ..") is invalid relative to current installed version: (" .. Constants.meta.version.string_val .. ")")
       else
-        game.print("Version is invalid relative to current installed version: (" .. Constants.meta.version.string_val .. ")")
+        game.print("more-enemies: Version is invalid relative to current installed version: (" .. Constants.meta.version.string_val .. ")")
       end
-      game.print("If this error persists, recommend executing command /more_enemies.init")
+      game.print("more-enemies: If this error persists, recommend executing command /more_enemies.init")
     end
     return return_val
   end -- local validate_fun = function (version)
@@ -40,12 +40,12 @@ function version_validations.validate_version()
         storage.more_enemies.version.string_val = "nil"
       end
 
-      log("Inconsistent version detected ("
+      log("more-enemies: Inconsistent version detected ("
         .. Constants.meta.version.string_val ..") with existing data ("
         .. storage.more_enemies.version.string_val
         .. ");") -- recommend executing command /more_enemies.init")
 
-      game.print("Inconsistent version detected ("
+      game.print("more-enemies: Inconsistent version detected ("
         .. Constants.meta.version.string_val ..") with existing data ("
         .. storage.more_enemies.version.string_val
         .. ");") -- recommend executing command /more_enemies.init")
