@@ -474,7 +474,8 @@ function spawn_service.entity_spawned(event)
     storage.more_enemies.staged_clones[entity.unit_number] = {
       obj = entity,
       surface = entity.surface,
-      group = nil
+      group = nil,
+      mod_name = nil,
     }
   end
 end

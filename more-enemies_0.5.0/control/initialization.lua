@@ -4,6 +4,7 @@ if _initialization and _initialization.more_enemies then
 end
 
 local Constants = require("libs.constants.constants")
+local Entity_Validations = require("control.validations.entity-validations")
 local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Log = require("libs.log.log")
 local Log_Constants = require("libs.log.log-constants")
@@ -26,14 +27,20 @@ function initialization.reinit()
   Log.debug("Finished reinitializing More Enemies")
 end
 
-function initialization.purge()
+function initialization.purge(optionals)
+  optionals = optionals or {
+    all = true,
+    clones = true,
+    mod_added_clones = true
+  }
+
   if (storage.more_enemies and storage.more_enemies.valid) then
     local original_do_nth_tick = storage.more_enemies.do_nth_tick
     storage.more_enemies.do_nth_tick = false
 
     Log.debug("purge clones")
     -- Purge clones
-    if (storage.more_enemies.clones) then
+    if (storage.more_enemies.clones and optionals.all) then
       for k,v in pairs(storage.more_enemies.clones) do
         if (v and v.obj) then
           Log.debug("purging" .. serpent.block(v.obj))
@@ -42,11 +49,32 @@ function initialization.purge()
       end
       storage.more_enemies.clones = {}
       storage.more_enemies.clone = { count = 0 }
+      storage.more_enemies.mod.clone = { count = 0 }
+    end
+
+    if (storage.more_enemies.clones) then
+      for k,v in pairs(storage.more_enemies.clones) do
+        if (v and v.obj) then
+          if (Entity_Validations.get_mod_name(v) and optionals.mod_added_clones) then
+            if (storage.more_enemies.mod.clone.count > 0) then
+              storage.more_enemies.mod.clone.count = storage.more_enemies.mod.clone.count - 1
+            end
+            Log.debug("purging" .. serpent.block(v.obj))
+            v.obj.destroy()
+          elseif (optionals.clones) then
+            if (storage.more_enemies.clone.count > 0) then
+              storage.more_enemies.clone.count = storage.more_enemies.clone.count - 1
+            end
+            Log.debug("purging" .. serpent.block(v.obj))
+            v.obj.destroy()
+          end
+        end
+      end
     end
 
     Log.debug("purge staged_clones")
     -- Purge staged_clones
-    if (storage.more_enemies.staged_clones) then
+    if (storage.more_enemies.staged_clones and optionals.clones) then
       for k,v in pairs(storage.more_enemies.staged_clones) do
         if (v and v.obj) then
           Log.debug("purging" .. serpent.block(v.obj))
@@ -58,14 +86,14 @@ function initialization.purge()
 
     Log.debug("purge mod.staged_clones")
     -- Purge staged_clones
-    if (storage.more_enemies.mod and storage.more_enemies.mod.staged_clones) then
+    if (storage.more_enemies.mod and storage.more_enemies.mod.staged_clones and (optionals.all or optionals.mod_added_clones)) then
       for k,v in pairs(storage.more_enemies.mod.staged_clones) do
         if (v and v.obj) then
           Log.debug("purging" .. serpent.block(v.obj))
           v.obj.destroy()
         end
       end
-      storage.more_enemies.staged_clones = {}
+      storage.more_enemies.mod.staged_clones = {}
     end
 
     storage.more_enemies.do_nth_tick = original_do_nth_tick
