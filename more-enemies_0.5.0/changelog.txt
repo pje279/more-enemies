@@ -1,11 +1,24 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.0
-Date: 2025-03-31
+Date: 2025-04-03
   Minor Features:
     - Added infrastructure to detect and support cloning of entities created by other mods, assuming they raise the 'script_raised_built' event
-      -> Most notably, BREAM (does not raise this event yet, sadly)
+      -> Currently only supports BREAM
+      - Added as an optional dependency
+      Adds an additional setting for maximum number of modded clones
+      Mod created entities are tracked ~somewhat independently of vanilla entities
+      -> Allows for cloning of mod added entities even when othwerwise at the the maximum number of clones
+      -> Maximum number of modded clones helps to prevent it froming runnning amok, though
     - Tested compatibility with Cold_Biters, Explosive_Biters, and Toxic_Biters by MFerrari
-      -> No changes necessary, works out of the box
+      Added as optional dependencies
+    - Changed the internal version checking to automatically initialize fresh upon detecting a version change
+    - Cloned entities (and their parent entity) are now purged upon initializing fresh
+    - Updated the purge command
+      Removed /more_enemeies.purge
+      Added
+      -> /more_enemies.purge_all -> Clears all of the cloned enemies, and enemies staged to be cloned
+      -> /more_enemies.purge_clones -> Clears all of the vanilla cloned enemies, and vanilla enemies staged to be cloned
+      -> /more_enemies.purge_modded_clones -> Clears all of the mod added cloned enemies, and mod added enemies staged to be cloned
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.0
 Date: 2025-03-30
