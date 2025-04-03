@@ -3,7 +3,9 @@ if _spawn_service and _spawn_service.more_enemies then
   return _spawn_service
 end
 
+local BREAM_Constants = require("libs.constants.mods.BREAM-constants")
 local Constants = require("libs.constants.constants")
+local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Entity_Validations = require("control.validations.entity-validations")
 local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
@@ -14,6 +16,9 @@ local Settings_Service = require("control.service.settings-service")
 local Spawn_Utils = require("control.utils.spawn-utils")
 
 local spawn_service = {}
+
+spawn_service.BREAM = {}
+spawn_service.BREAM.unit_group = nil
 
 function spawn_service.clone_attempts()
   -- Validate "inputs"
@@ -110,9 +115,36 @@ function spawn_service.do_nth_tick(event)
       if (not storage.more_enemies.mod) then Initialization.reinit() end
       if (not storage.more_enemies.mod.staged_clones) then Initialization.reinit() end
 
+
+      local unit_group = spawn_service.BREAM.unit_group
+      local skip = false
+
+      if (storage.more_enemies.mod.staged_clones) then
+        for _, _staged_clone in pairs(storage.more_enemies.mod.staged_clones) do
+          -- Log.error(_staged_clone)
+          local staged_clone = _staged_clone.obj
+          local mod_name = _staged_clone.mod_name
+
+          if (not unit_group) then
+            if (mod_name and mod_name == BREAM_Constants.name) then
+              if (staged_clone and staged_clone.valid) then
+                -- if (staged_clone) then
+                if (not spawn_service.BREAM.unit_group) then
+                  Log.error("creating unit group from: " .. serpent.block(staged_clone))
+                  -- unit_group = staged_clone.surface.create_unit_group({ position = staged_clone.position, force = "enemy" })
+                  spawn_service.BREAM.unit_group = staged_clone.surface.create_unit_group({ position = staged_clone.position, force = "enemy" })
+                end
+              end
+            end
+          end
+          break
+        end
+      end
+
+      unit_group = spawn_service.BREAM.unit_group
       local j = 0
       for i, _mod_staged_clone in pairs(storage.more_enemies.mod.staged_clones) do
-        local skip = false
+        skip = false
 
         Log.info(i)
         Log.info(_mod_staged_clone)
@@ -144,7 +176,8 @@ function spawn_service.do_nth_tick(event)
           then
             Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_modded_clones))
             Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.count) .. " clones")
-            return
+            -- return
+            break
           end
 
           Log.debug(surface_name)
@@ -156,7 +189,8 @@ function spawn_service.do_nth_tick(event)
           local clone_settings = {
             unit = clone_unit_setting,
             unit_group = clone_unit_group_setting,
-            type = group and "unit-group" or "unit",
+            -- type = group and "unit-group" or "unit",
+            type = unit_group and "unit-group" or "unit",
           }
 
           Log.info("Attempting to clone entity on planet " .. surface_name)
@@ -178,19 +212,101 @@ function spawn_service.do_nth_tick(event)
 
           -- add the new clones to storage
           if (clones and #clones > 0) then
+            -- Log.error("1")
+            if (mod_name and mod_name == BREAM_Constants.name) then
+              -- Log.error("2")
+              if (unit_group and unit_group.valid) then
+              -- if (unit_group) then
+                -- Log.error("3")
+
+                Log.info("Getting difficulty")
+                local difficulty = Difficulty_Utils.get_difficulty(unit_group.surface.name).difficulty
+                if (not difficulty or not difficulty.valid) then
+                  Log.warn("difficulty was nil or invalid; reindexing")
+                  difficulty = Difficulty_Utils.get_difficulty(unit_group.surface.name, true).difficulty
+                end
+                if (not difficulty or not difficulty.valid) then
+                  Log.error("Failed to find a valid difficulty for " .. serpent.block(unit_group.surface.name))
+                  return
+                end
+
+                Log.info("Getting selected_difficulty")
+                local selected_difficulty = difficulty.selected_difficulty
+                if (not selected_difficulty) then return end
+
+                local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(unit_group.surface.name)
+
+                Log.info("Checking for vanilla")
+                if (  ((unit_group.surface.name == Constants.DEFAULTS.planets.nauvis.string_val
+                    and clone_unit_group_setting == Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNIT_GROUPS.default_value)
+                  or (  unit_group.surface.name == Constants.DEFAULTS.planets.gleba.string_val
+                    and clone_unit_group_setting == Gleba_Settings_Constants.settings.CLONE_GLEBA_UNIT_GROUPS.default_value))
+                  and
+                    (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == Constants.difficulty.VANILLA.value))
+                then
+                  Log.error("Difficulty is vanilla; no need to process")
+                  return
+                end
+
+                if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
+                if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
+
+                Log.info("adding unit_group: " .. serpent.block(unit_group))
+
+                Log.info(unit_group.surface.name)
+
+                Log.info("before: " .. serpent.block(storage.more_enemies.groups))
+
+                if (not storage.more_enemies.groups[unit_group.surface.name]) then
+                  storage.more_enemies.groups[unit_group.surface.name] = {}
+                end
+
+                Log.info("after: " .. serpent.block(storage.more_enemies.groups))
+
+                local loop_len = 1
+                local use_evolution_factor = Settings_Service.get_do_evolution_factor(unit_group.surface.name)
+                local evolution_factor = 1
+
+                Log.debug("use_evolution_factor  = "  .. serpent.block(use_evolution_factor))
+                if (use_evolution_factor) then
+                  evolution_factor = unit_group.force.get_evolution_factor()
+                end
+
+                if (selected_difficulty.value > 1) then
+                  loop_len = math.floor((selected_difficulty.value + clone_unit_group_setting) * evolution_factor)
+                else
+                  loop_len = math.floor((selected_difficulty.value * clone_unit_group_setting) * evolution_factor)
+                end
+                Log.info("loop_len: " .. serpent.block(loop_len))
+
+
+                if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
+                if (not storage.more_enemies.groups[unit_group.surface.name]) then storage.more_enemies.groups[unit_group.surface.name] = {} end
+                -- if (not storage.more_enemies.groups[unit_group.surface.name][unit_group.unique_id]) then storage.more_enemies.groups[unit_group.surface.name][unit_group.unique_id] = {} end
+
+                storage.more_enemies.groups[unit_group.surface.name][unit_group.unique_id] = {
+                  valid = true,
+                  group = unit_group,
+                  count = 0,
+                  max_count = loop_len,
+                  mod_name = BREAM_Constants.name,
+                }
+              end
+            end
+
             for j=1, #clones do
               if (clones[j] and clones[j] ~= nil and clones[j].clone.valid) then
                 Log.info("adding clone: " .. serpent.block(clones[j]))
                 storage.more_enemies.clones[clones[j].clone.unit_number] = {
                   obj = clones[j].clone,
-                  type = group and "unit-group" or "unit",
+                  type = unit_group and "unit-group" or "unit",
                   mod_name = clones[j].mod_name,
                 }
               end
 
-              -- if (group and group.valid) then
-              --   group.add_member(clones[j])
-              -- end
+              if (unit_group and unit_group.valid and unit_group.surface.name == clones[j].clone.surface.name) then
+                unit_group.add_member(clones[j].clone)
+              end
 
               clones[j] = nil
 
@@ -202,6 +318,38 @@ function spawn_service.do_nth_tick(event)
 
               storage.more_enemies.mod.clone.count = storage.more_enemies.mod.clone.count + 1
             end
+          end
+
+          if (unit_group and unit_group.valid) then
+            local target_entity = unit_group.surface.find_nearest_enemy({
+              position = unit_group.position,
+              max_distance = 111111, -- TODO: Make this configurable
+              force = "enemy"
+            })
+
+            Log.info(target_entity)
+
+            if (target_entity) then
+              unit_group.set_command({
+                type = defines.command.attack_area,
+                destination = target_entity.position,
+                radius = 1111, -- TODO: Make this configurable
+              })
+              Log.error("releasing from spawner")
+              unit_group.release_from_spawner()
+              Log.error("start moving")
+              unit_group.start_moving()
+            else
+              Log.error("no target; destroying")
+              unit_group.destroy()
+            end
+
+            if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
+            if (not storage.more_enemies.groups[unit_group.surface.name]) then storage.more_enemies.groups[unit_group.surface.name] = {} end
+
+            -- remove the unit_group after processing
+            spawn_service.BREAM.unit_group = nil
+            storage.more_enemies.groups[unit_group.surface.name][unit_group.unique_id] = nil
           end
           -- remove the staged_clone after processing
           storage.more_enemies.mod.staged_clones[unit_number] = nil

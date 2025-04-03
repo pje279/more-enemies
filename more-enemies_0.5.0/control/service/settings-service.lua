@@ -156,6 +156,23 @@ function settings_service.get_do_evolution_factor(surface_name)
   return setting
 end
 
+-- NAUVIS_DIFFICULTY
+-- GLEBA_DIFFICULTY
+function settings_service.get_difficulty(surface_name)
+  local setting = false
+
+  if (  surface_name == Constants.DEFAULTS.planets.nauvis.string_val
+    and settings and settings.startup and settings.startup[Nauvis_Settings_Constants.settings.NAUVIS_DIFFICULTY.name])
+  then
+    setting = settings.startup[Nauvis_Settings_Constants.settings.NAUVIS_DIFFICULTY.name].value
+  elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
+        and settings and settings.startup and settings.startup[Gleba_Settings_Constants.settings.GLEBA_DIFFICULTY.name]) then
+    setting = settings.startup[Gleba_Settings_Constants.settings.GLEBA_DIFFICULTY.name].value
+  end
+
+  return setting
+end
+
 settings_service.more_enemies = true
 
 local _settings_service = settings_service

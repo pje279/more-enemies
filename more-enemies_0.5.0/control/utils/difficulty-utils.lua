@@ -9,6 +9,7 @@ local Gleba_Constants = require("libs.constants.gleba-constants")
 local Log = require("libs.log.log")
 local Log_Constants_Functions = require("libs.log.log-constants-functions")
 local Nauvis_Constants = require("libs.constants.nauvis-constants")
+local Settings_Service = require("control.service.settings-service")
 
 local difficulty_utils = {}
 
@@ -105,10 +106,23 @@ function difficulty_utils.get_difficulty(planet, reindex)
   then
     -- While it may exist, check if it's still valid
     Log.info(storage.more_enemies.difficulties)
-    Log.info(planet)
-    if (storage.more_enemies.difficulties[planet].selected_difficulty and not storage.more_enemies.difficulties[planet].selected_difficulty.valid) then
+    -- Log.error(planet)
+    local planet_difficulty_setting = Settings_Service.get_difficulty(planet)
+    -- Log.error(planet_difficulty_setting)
+    -- Log.error(storage.more_enemies.difficulties[planet].difficulty)
+    -- Log.error(storage.more_enemies.difficulties[planet].difficulty.selected_difficulty.string_val)
+    if ( not storage.more_enemies
+      or not storage.more_enemies.difficulties
+      or not storage.more_enemies.difficulties[planet]
+      or not storage.more_enemies.difficulties[planet].difficulty
+      or not storage.more_enemies.difficulties[planet].difficulty.selected_difficulty
+      or not storage.more_enemies.difficulties[planet].difficulty.selected_difficulty.valid
+      or     storage.more_enemies.difficulties[planet].difficulty.selected_difficulty.string_val ~= planet_difficulty_setting)
+    then
+      -- Log.error("reindexing")
       return difficulty_utils.get_difficulty(planet, true)
     else
+      -- Log.error("dang it")
       return storage.more_enemies.difficulties[planet]
     end
   end
@@ -124,7 +138,6 @@ function difficulty_utils.get_difficulty(planet, reindex)
     return difficulty
   end
 
-
   if (storage and not storage.more_enemies) then storage.more_enemies = {} end
   if (storage and storage.more_enemies and not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
 
@@ -136,9 +149,18 @@ function difficulty_utils.get_difficulty(planet, reindex)
 
   if (storage and storage.more_enemies and storage.more_enemies.difficulties and not storage.more_enemies.difficulties[planet]) then storage.more_enemies.difficulties[planet] = difficulty end
 
-  local planet_difficulty = settings.startup["more-enemies-" .. planet .. "-difficulty"]
+  -- if (storage) then
+  --   Log.error(storage.more_enemies.difficulties)
+  -- end
 
-  local selected_difficulty = Constants.difficulty[Constants.difficulty.difficulties[planet_difficulty.value]]
+  -- local planet_difficulty = settings.startup["more-enemies-" .. planet .. "-difficulty"]
+  local planet_difficulty = Settings_Service.get_difficulty(planet)
+
+  -- Log.error(planet_difficulty)
+
+  local selected_difficulty = Constants.difficulty[Constants.difficulty.difficulties[planet_difficulty]]
+
+  -- Log.error(selected_difficulty)
 
   if (selected_difficulty and selected_difficulty.valid) then
     if (reindex) then

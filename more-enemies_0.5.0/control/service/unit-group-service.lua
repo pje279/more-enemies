@@ -33,7 +33,6 @@ function unit_group_service.unit_group_created(event)
   if (not group.position) then return end
   Log.info(group.position)
 
-
   if (  storage
     and storage.more_enemies
     and storage.more_enemies.groups
@@ -106,10 +105,11 @@ function unit_group_service.unit_group_created(event)
   Log.info("loop_len: " .. serpent.block(loop_len))
 
   storage.more_enemies.groups[group.surface.name][group.unique_id] = {
+    valid = true,
     group = group,
     count = 0,
     max_count = loop_len,
-    valid = true
+    mod_name = nil,
   }
 
   Log.debug(storage.more_enemies.groups[group.surface.name][group.unique_id])
@@ -234,10 +234,12 @@ function unit_group_service.unit_group_finished_gathering(event)
     end
   end
 
-  Log.debug("releasing from spawner")
-  group.release_from_spawner()
-  Log.debug("start moving")
-  group.start_moving()
+  if (more_enemies_group and not more_enemies_group.mod_name) then
+    Log.debug("releasing from spawner")
+    group.release_from_spawner()
+    Log.debug("start moving")
+    group.start_moving()
+  end
 
 end
 

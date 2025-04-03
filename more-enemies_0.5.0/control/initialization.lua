@@ -52,6 +52,14 @@ function initialization.purge(optionals)
       storage.more_enemies.mod.clone = { count = 0 }
     end
 
+    local do_purge = function (k, v)
+      if (k and v and v.obj) then
+        Log.debug("purging" .. serpent.block(v.obj))
+        storage.more_enemies.clones[k] = nil
+        v.obj.destroy()
+      end
+    end
+
     if (storage.more_enemies.clones) then
       for k,v in pairs(storage.more_enemies.clones) do
         if (v and v.obj) then
@@ -59,14 +67,12 @@ function initialization.purge(optionals)
             if (storage.more_enemies.mod.clone.count > 0) then
               storage.more_enemies.mod.clone.count = storage.more_enemies.mod.clone.count - 1
             end
-            Log.debug("purging" .. serpent.block(v.obj))
-            v.obj.destroy()
+            do_purge(k,v)
           elseif (optionals.clones) then
             if (storage.more_enemies.clone.count > 0) then
               storage.more_enemies.clone.count = storage.more_enemies.clone.count - 1
             end
-            Log.debug("purging" .. serpent.block(v.obj))
-            v.obj.destroy()
+            do_purge(k, v)
           end
         end
       end
@@ -85,7 +91,7 @@ function initialization.purge(optionals)
     end
 
     Log.debug("purge mod.staged_clones")
-    -- Purge staged_clones
+    -- Purge mod.staged_clones
     if (storage.more_enemies.mod and storage.more_enemies.mod.staged_clones and (optionals.all or optionals.mod_added_clones)) then
       for k,v in pairs(storage.more_enemies.mod.staged_clones) do
         if (v and v.obj) then
