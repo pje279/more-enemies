@@ -105,12 +105,10 @@ function difficulty_utils.get_difficulty(planet, reindex)
     and storage.more_enemies.difficulties[planet].valid)
   then
     -- While it may exist, check if it's still valid
-    Log.info(storage.more_enemies.difficulties)
-    -- Log.error(planet)
     local planet_difficulty_setting = Settings_Service.get_difficulty(planet)
-    -- Log.error(planet_difficulty_setting)
-    -- Log.error(storage.more_enemies.difficulties[planet].difficulty)
-    -- Log.error(storage.more_enemies.difficulties[planet].difficulty.selected_difficulty.string_val)
+    Log.info(planet_difficulty_setting)
+    Log.info(storage.more_enemies.difficulties)
+
     if ( not storage.more_enemies
       or not storage.more_enemies.difficulties
       or not storage.more_enemies.difficulties[planet]
@@ -119,10 +117,9 @@ function difficulty_utils.get_difficulty(planet, reindex)
       or not storage.more_enemies.difficulties[planet].difficulty.selected_difficulty.valid
       or     storage.more_enemies.difficulties[planet].difficulty.selected_difficulty.string_val ~= planet_difficulty_setting)
     then
-      -- Log.error("reindexing")
+      Log.debug("reindexing")
       return difficulty_utils.get_difficulty(planet, true)
     else
-      -- Log.error("dang it")
       return storage.more_enemies.difficulties[planet]
     end
   end
@@ -149,18 +146,11 @@ function difficulty_utils.get_difficulty(planet, reindex)
 
   if (storage and storage.more_enemies and storage.more_enemies.difficulties and not storage.more_enemies.difficulties[planet]) then storage.more_enemies.difficulties[planet] = difficulty end
 
-  -- if (storage) then
-  --   Log.error(storage.more_enemies.difficulties)
-  -- end
-
-  -- local planet_difficulty = settings.startup["more-enemies-" .. planet .. "-difficulty"]
   local planet_difficulty = Settings_Service.get_difficulty(planet)
-
-  -- Log.error(planet_difficulty)
+  Log.info(planet_difficulty)
 
   local selected_difficulty = Constants.difficulty[Constants.difficulty.difficulties[planet_difficulty]]
-
-  -- Log.error(selected_difficulty)
+  Log.info(selected_difficulty)
 
   if (selected_difficulty and selected_difficulty.valid) then
     if (reindex) then
