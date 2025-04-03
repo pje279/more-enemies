@@ -127,11 +127,11 @@ function unit_group_service.unit_group_finished_gathering(event)
 
   local max_num_clones = Settings_Service.get_maximum_number_of_clones()
 
-  if (  storage.more_enemies.clone and storage.more_enemies.clone.clone_count
-    and storage.more_enemies.clone.clone_count > max_num_clones)
+  if (  storage.more_enemies.clone and storage.more_enemies.clone.count
+    and storage.more_enemies.clone.count > max_num_clones)
   then
     Log.debug("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
-    Log.debug("Currently " .. serpent.block(storage.more_enemies.clone.clone_count) .. " clones")
+    Log.debug("Currently " .. serpent.block(storage.more_enemies.clone.count) .. " clones")
     return
   end
 

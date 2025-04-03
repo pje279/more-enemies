@@ -4,6 +4,7 @@ if _spawn_service and _spawn_service.more_enemies then
 end
 
 local Constants = require("libs.constants.constants")
+local Entity_Validations = require("control.validations.entity-validations")
 local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Initialization = require("control.initialization")
@@ -66,13 +67,11 @@ function spawn_service.do_nth_tick(event)
   if (not storage) then return false end
   Log.info("passed storage")
   if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
-  -- if (not storage.more_enemies.clones) then storage.more_enemies.clones = {} end
-  -- if (not storage.more_enemies.staged_clones) then storage.more_enemies.staged_clones = {} end
-  -- if (not storage.more_enemies.clone_count) then storage.more_enemies.clone_count = { count = 0 } end
   if (not storage.more_enemies.clones) then Initialization.reinit() end
-  if (not storage.more_enemies.staged_clones) then Initialization.reinit() end
-  if (not storage.more_enemies.clone_count) then Initialization.reinit() end
+  if (not storage.more_enemies.clone) then Initialization.reinit() end
+  if (not storage.more_enemies.clone.count) then Initialization.reinit() end
   if (not storage.more_enemies.difficulties) then Initialization.reinit() end
+  if (not storage.more_enemies.staged_clones) then Initialization.reinit() end
 
   if (not storage.more_enemies.do_nth_tick) then return end
 
@@ -84,6 +83,7 @@ function spawn_service.do_nth_tick(event)
   local clone_overflow = 1
 
   local max_num_clones = Settings_Service.get_maximum_number_of_clones()
+  local max_num_modded_clones = Settings_Service.get_maximum_number_of_modded_clones()
   Log.info(max_num_clones)
   Log.info(storage.more_enemies.clone.count)
 
@@ -107,6 +107,110 @@ function spawn_service.do_nth_tick(event)
 
       Log.info("attempting to clone")
 
+      if (not storage.more_enemies) then Initialization.reinit() end
+      if (not storage.more_enemies.mod) then Initialization.reinit() end
+      if (not storage.more_enemies.mod.staged_clones) then Initialization.reinit() end
+
+      local j = 0
+      for i, _mod_staged_clone in pairs(storage.more_enemies.mod.staged_clones) do
+        local skip = false
+
+        Log.info(i)
+        Log.info(_mod_staged_clone)
+        local mod_stage_clone = _mod_staged_clone.obj
+        local unit_number = 1
+        local surface_name = Constants.DEFAULTS.planets.nauvis.string_val
+        local mod_name = nil
+
+        if (j > clones_per_tick) then
+          Log.warn("Tried to clone more than the clone_per_tick limit; breaking inner loop")
+          clone_overflow = clone_overflow + 1
+          break
+        end
+
+        if (not mod_stage_clone or not mod_stage_clone.valid or mod_stage_clone.surface.name ~= planet.string_val) then
+          Log.warn("mod_stage_clone is nil, invalid, or wrong planet for clone; skipping")
+          skip = true
+          -- goto continue_tick
+        else
+          unit_number = mod_stage_clone.unit_number
+          surface_name = mod_stage_clone.surface.name
+          mod_name = _mod_staged_clone.mod_name
+        end
+
+        if (not skip) then
+          if (  storage.more_enemies.mod
+            and storage.more_enemies.mod.clone
+            and storage.more_enemies.mod.clone.count
+            and storage.more_enemies.mod.clone.count > max_num_modded_clones)
+          then
+            Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_modded_clones))
+            Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.count) .. " clones")
+            return
+          end
+
+          Log.debug(surface_name)
+          local clone_unit_setting = Settings_Service.get_clone_unit_setting(surface_name)
+          local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(surface_name)
+          Log.info("clone_unit_setting: " .. serpent.block(clone_unit_setting))
+          Log.info("clone_unit_group_setting: " .. serpent.block(clone_unit_group_setting))
+
+          local clone_settings = {
+            unit = clone_unit_setting,
+            unit_group = clone_unit_group_setting,
+            type = group and "unit-group" or "unit",
+          }
+
+          Log.info("Attempting to clone entity on planet " .. surface_name)
+          Log.debug(clone_settings)
+          if (surface_name == Constants.DEFAULTS.planets.nauvis.string_val) then
+            clones = Spawn_Utils.clone_entity({ value = Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNITS.default_value }, storage.more_enemies.difficulties[surface_name].difficulty, mod_stage_clone, { clone_settings = clone_settings, tick = tick, mod_name = mod_name })
+          elseif (surface_name == Constants.DEFAULTS.planets.gleba.string_val) then
+            clones = Spawn_Utils.clone_entity({ value = Gleba_Settings_Constants.settings.CLONE_GLEBA_UNITS.default_value }, storage.more_enemies.difficulties[surface_name].difficulty, mod_stage_clone, { clone_settings = clone_settings, tick = tick, mod_name = mod_name })
+          else
+            Log.warn("Planet is neither nauvis nor gleba\nPlanet is unsupported; making no changes")
+            return
+          end
+
+          if (clones) then
+            j = j + #clones
+          end
+
+          Log.info("clones = " .. serpent.block(clones))
+
+          -- add the new clones to storage
+          if (clones and #clones > 0) then
+            for j=1, #clones do
+              if (clones[j] and clones[j] ~= nil and clones[j].clone.valid) then
+                Log.info("adding clone: " .. serpent.block(clones[j]))
+                storage.more_enemies.clones[clones[j].clone.unit_number] = {
+                  obj = clones[j].clone,
+                  type = group and "unit-group" or "unit",
+                  mod_name = clones[j].mod_name,
+                }
+              end
+
+              -- if (group and group.valid) then
+              --   group.add_member(clones[j])
+              -- end
+
+              clones[j] = nil
+
+              if (not storage.more_enemies.mod) then storage.more_enemies.mod = {} end
+              if (not storage.more_enemies.mod.clone) then storage.more_enemies.mod.clone = {} end
+              if (storage.more_enemies.mod.clone.count == nil) then storage.more_enemies.mod.clone.count = 0 end
+
+              if (storage.more_enemies.mod.clone.count < 0) then storage.more_enemies.mod.clone.count = 0 end
+
+              storage.more_enemies.mod.clone.count = storage.more_enemies.mod.clone.count + 1
+            end
+          end
+        -- end
+          -- remove the staged_clone after processing
+          storage.more_enemies.mod.staged_clones[unit_number] = nil
+        end
+      end
+
       if (clone_overflow > 1) then
         if (not storage.more_enemies) then Initialization.reinit() end
         if (not storage.more_enemies.valid) then Initialization.reinit() end
@@ -118,7 +222,7 @@ function spawn_service.do_nth_tick(event)
         return
       end
 
-      local j = 0
+      -- j = 0
       for i, _staged_clone in pairs(storage.more_enemies.staged_clones) do
         local skip = false
 
@@ -190,23 +294,23 @@ function spawn_service.do_nth_tick(event)
           -- add the new clones to storage
           if (clones and #clones > 0) then
             for j=1, #clones do
-              if (clones[j] and clones[j].valid) then
+              if (clones[j] and clones[j] ~= nil and clones[j].clone.valid) then
                 Log.info("adding clone: " .. serpent.block(clones[j]))
-                storage.more_enemies.clones[clones[j].unit_number] = {
-                  obj = clones[j],
-                  type = group and "unit-group" or "unit"
+                storage.more_enemies.clones[clones[j].clone.unit_number] = {
+                  obj = clones[j].clone,
+                  type = group and "unit-group" or "unit",
+                  mod_name = nil,
                 }
               end
 
               if (group and group.valid) then
-                group.add_member(clones[j])
+                group.add_member(clones[j].clone)
               end
 
               clones[j] = nil
 
               if (not storage.more_enemies.clone) then storage.more_enemies.clone = {} end
               if (not storage.more_enemies.clone.count) then storage.more_enemies.clone.count = 0 end
-
               if (storage.more_enemies.clone.count < 0) then storage.more_enemies.clone.count = 0 end
 
               storage.more_enemies.clone.count = storage.more_enemies.clone.count + 1
@@ -288,26 +392,65 @@ function spawn_service.entity_died(event)
   if (not entity or not entity.valid) then return end
   if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
 
+  if (not storage.more_enemies.clone) then storage.more_enemies.clone = {} end
+  if (storage.more_enemies.clone.count == nil) then storage.more_enemies.clone.count = 0 end
+  if (storage.more_enemies.clone.count < 0) then storage.more_enemies.clone.count = 0 end
+
+  if (not storage.more_enemies.mod) then storage.more_enemies.mod = {} end
+  if (not storage.more_enemies.mod.clone) then storage.more_enemies.mod.clone = {} end
+  if (storage.more_enemies.mod.clone.count == nil) then storage.more_enemies.mod.clone.count = 0 end
+  if (storage.more_enemies.mod.clone.count < 0) then storage.more_enemies.mod.clone.count = 0 end
+
   Log.info("Attempting to remove entity")
   if (storage.more_enemies.clones and storage.more_enemies.clones[entity.unit_number] ~= nil) then
     Log.debug("Removing entity: " .. serpent.block(entity.unit_number))
+
+    if (Entity_Validations.get_mod_name(storage.more_enemies.clones[entity.unit_number])) then
+      if (storage.more_enemies.mod.clone.count > 0) then storage.more_enemies.mod.clone.count = storage.more_enemies.mod.clone.count - 1 end
+    else
+      if (storage.more_enemies.clone.count > 0) then storage.more_enemies.clone.count = storage.more_enemies.clone.count - 1 end
+    end
+
     storage.more_enemies.clones[entity.unit_number] = nil
-    if (storage.more_enemies.clone.count > 0) then storage.more_enemies.clone.count = storage.more_enemies.clone.count - 1 end
     return
   end
 
   Log.info("Attempting to remove entity again")
-  if (not storage.more_enemies.clone) then storage.more_enemies.clone = {} end
-  if (storage.more_enemies.clone.count == nil) then storage.more_enemies.clone.count = 0 end
+  -- if (not storage.more_enemies.clone) then storage.more_enemies.clone = {} end
+  -- if (storage.more_enemies.clone.count == nil) then storage.more_enemies.clone.count = 0 end
   if (  entity
     and storage.more_enemies.clone.count > 0
     and storage.more_enemies.clones[entity.unit_number])
   then
     Log.debug("removing, second try")
+
+    if (Entity_Validations.get_mod_name(storage.more_enemies.clones[entity.unit_number])) then
+      if (storage.more_enemies.mod.clone.count > 0) then storage.more_enemies.mod.clone.count = storage.more_enemies.mod.clone.count - 1 end
+    else
+      if (storage.more_enemies.clone.count > 0) then storage.more_enemies.clone.count = storage.more_enemies.clone.count - 1 end
+    end
+
     storage.more_enemies.clones[entity.unit_number] = nil
-    if (storage.more_enemies.clone.count > 0) then storage.more_enemies.clone.count = storage.more_enemies.clone.count - 1 end
     return
   end
+
+  if (  entity
+    and storage.more_enemies.mod.clone.count > 0
+    and storage.more_enemies.clones[entity.unit_number])
+  then
+    Log.debug("removing, second try")
+
+    if (Entity_Validations.get_mod_name(storage.more_enemies.clones[entity.unit_number])) then
+      if (storage.more_enemies.mod.clone.count > 0) then storage.more_enemies.mod.clone.count = storage.more_enemies.mod.clone.count - 1 end
+    else
+      if (storage.more_enemies.clone.count > 0) then storage.more_enemies.clone.count = storage.more_enemies.clone.count - 1 end
+    end
+
+    storage.more_enemies.clones[entity.unit_number] = nil
+
+    return
+  end
+
   Log.debug("failed to remove")
 end
 
@@ -319,11 +462,11 @@ function spawn_service.entity_spawned(event)
   if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
 
   local max_num_clones = Settings_Service.get_maximum_number_of_clones()
-  if (  storage.more_enemies.clone and storage.more_enemies.clone.clone_count
-    and storage.more_enemies.clone.clone_count > max_num_clones)
+  if (  storage.more_enemies.clone and storage.more_enemies.clone.count
+    and storage.more_enemies.clone.count > max_num_clones)
   then
     Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
-    Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.clone_count) .. " clones")
+    Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.count) .. " clones")
     return
   end
 
@@ -348,28 +491,33 @@ function spawn_service.entity_built(event)
   local mod_name = event.mod_name
   local entity = event.entity
 
-  if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
-
-  local max_num_clones = Settings_Service.get_maximum_number_of_clones()
-  if (  storage.more_enemies.clone and storage.more_enemies.clone.clone_count
-    and storage.more_enemies.clone.clone_count > max_num_clones)
+  local max_num_modded_clones = Settings_Service.get_maximum_number_of_modded_clones()
+  if (  storage.more_enemies.mod
+    and storage.more_enemies.mod.clone
+    and storage.more_enemies.mod.clone.count
+    and storage.more_enemies.mod.clone.count > max_num_modded_clones)
   then
-    Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
-    Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.clone_count) .. " clones")
+    Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_modded_clones))
+    Log.warn("Currently " .. serpent.block(storage.more_enemies.mod.clone.count) .. " clones")
     return
   end
 
   if (not entity or not entity.valid) then return end
+  if (not mod_name or mod_name ~= "BREAM") then return end
   if (not entity.surface or not entity.surface.name) then return end
+
+  if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
 
   Log.info("Attempting to add to staged_clones")
   if (storage and storage.more_enemies and storage.more_enemies.valid) then
-    Log.debug("entity_built - Adding to staged_clones: " .. serpent.block(entity.unit_number))
-    if (not storage.more_enemies.staged_clones) then storage.more_enemies.staged_clones = {} end
-    storage.more_enemies.staged_clones[entity.unit_number] = {
+    Log.debug("entity_built - Adding to mod.staged_clones: " .. serpent.block(entity.unit_number))
+    if (not storage.more_enemies.mod) then storage.more_enemies.mod = {} end
+    if (not storage.more_enemies.mod.staged_clones) then storage.more_enemies.mod.staged_clones = {} end
+    storage.more_enemies.mod.staged_clones[entity.unit_number] = {
       obj = entity,
       surface = entity.surface,
-      group = nil
+      group = nil,
+      mod_name = mod_name
     }
   end
 end

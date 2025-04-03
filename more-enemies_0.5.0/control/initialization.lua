@@ -56,6 +56,18 @@ function initialization.purge()
       storage.more_enemies.staged_clones = {}
     end
 
+    Log.debug("purge mod.staged_clones")
+    -- Purge staged_clones
+    if (storage.more_enemies.mod and storage.more_enemies.mod.staged_clones) then
+      for k,v in pairs(storage.more_enemies.mod.staged_clones) do
+        if (v and v.obj) then
+          Log.debug("purging" .. serpent.block(v.obj))
+          v.obj.destroy()
+        end
+      end
+      storage.more_enemies.staged_clones = {}
+    end
+
     storage.more_enemies.do_nth_tick = original_do_nth_tick
   end
 end
@@ -73,6 +85,7 @@ function initialize(from_scratch)
   end
 
   if (from_scratch) then
+    player.print("Initializing anew")
     do_purge()
 
     storage = {}
@@ -81,16 +94,31 @@ function initialize(from_scratch)
     storage.more_enemies.version = Constants.meta.version
 
     storage.more_enemies.clones = {}
-    storage.more_enemies.clone_count = {
-      count = 0
-    }
+
+    storage.more_enemies.clone = {}
+    storage.more_enemies.clone.count = 0
+
+    storage.more_enemies.mod = {}
+
+    storage.more_enemies.mod.clone = {}
+    storage.more_enemies.mod.clone.count = 0
+
+    storage.more_enemies.mod.staged_clones = {}
+
+    storage.more_enemies.staged_clones = {}
   else
     -- do_purge()
 
     if (not storage.more_enemies) then storage.more_enemies = {} end
     if (not storage.more_enemies.clones) then storage.more_enemies.clones = {} end
     if (not storage.more_enemies.staged_clones) then storage.more_enemies.staged_clones = {} end
-    if (not storage.more_enemies.clone_count) then storage.more_enemies.clone_count = { count = 0 } end
+    if (not storage.more_enemies.clone) then storage.more_enemies.clone = { count = 0 } end
+    if (storage.more_enemies.clone.count == nil) then storage.more_enemies.clone.count = 0 end
+
+    if (not storage.more_enemies.mod) then storage.more_enemies.mod = {} end
+    if (not storage.more_enemies.mod.staged_clones) then storage.more_enemies.mod.staged_clones = {} end
+    if (not storage.more_enemies.mod.clone) then storage.more_enemies.mod.clone = { count = 0 } end
+    if (storage.more_enemies.mod.clone.count ~= nil) then storage.more_enemies.mod.clone.count = 0 end
   end
 
   if (storage.more_enemies) then
@@ -191,6 +219,7 @@ function initialize(from_scratch)
     storage.more_enemies.valid = true
   end
 
+  if (from_scratch) then player.print("Initialization complete") end
   Log.info(storage)
 end
 

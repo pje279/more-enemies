@@ -70,6 +70,16 @@ global_settings_constants.settings.MAXIMUM_NUMBER_OF_CLONES = {
   minimum_value = 0,
 }
 
+global_settings_constants.settings.MAXIMUM_NUMBER_OF_MODDED_CLONES = {
+  type = "int-setting",
+  name = "more-enemies-maximum-number-of-modded-clones",
+  setting_type = "runtime-global",
+  order = "ddd",
+  default_value = 1000,
+  maximum_value = 111111,
+  minimum_value = 0,
+}
+
 global_settings_constants.more_enemies = true
 
 local _global_settings_constants = global_settings_constants

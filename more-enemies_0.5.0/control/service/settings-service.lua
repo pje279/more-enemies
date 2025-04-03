@@ -128,6 +128,19 @@ function settings_service.get_maximum_number_of_clones()
   return setting
 end
 
+-- MAXIMUM_NUMBER_OF_MODDED_CLONES
+function settings_service.get_maximum_number_of_modded_clones()
+  local setting = Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_MODDED_CLONES.default_value
+
+  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_MODDED_CLONES.name]) then
+    setting = settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_MODDED_CLONES.name].value
+  end
+
+  return setting
+end
+
+-- NAUVIS_DO_EVOLUTION_FACTOR
+-- GLEBA_DO_EVOLUTION_FACTOR
 function settings_service.get_do_evolution_factor(surface_name)
   local setting = false
 

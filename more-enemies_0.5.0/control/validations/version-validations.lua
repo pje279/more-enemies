@@ -43,12 +43,12 @@ function version_validations.validate_version()
       log("Inconsistent version detected ("
         .. Constants.meta.version.string_val ..") with existing data ("
         .. storage.more_enemies.version.string_val
-        .. "); recommend executing command /more_enemies.init")
+        .. ");") -- recommend executing command /more_enemies.init")
 
       game.print("Inconsistent version detected ("
         .. Constants.meta.version.string_val ..") with existing data ("
         .. storage.more_enemies.version.string_val
-        .. "); recommend executing command /more_enemies.init")
+        .. ");") -- recommend executing command /more_enemies.init")
     end
 
     if (not storage.more_enemies.version.major) then storage.more_enemies.version.major = { value = 0, warned = false } end
