@@ -4,6 +4,7 @@ if _spawn_service and _spawn_service.more_enemies then
 end
 
 local BREAM_Constants = require("libs.constants.mods.BREAM-constants")
+local BREAM_Settings_Constants = require("libs.constants.settings.mods.BREAM.BREAM-settings-constants")
 local Constants = require("libs.constants.constants")
 local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Entity_Validations = require("control.validations.entity-validations")
@@ -13,6 +14,7 @@ local Initialization = require("control.initialization")
 local Log = require("libs.log.log")
 local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
 local Settings_Service = require("control.service.settings-service")
+local Settings_Utils = require("control.utils.settings-utils")
 local Spawn_Utils = require("control.utils.spawn-utils")
 
 local spawn_service = {}
@@ -95,26 +97,53 @@ function spawn_service.do_nth_tick(event)
     for k, planet in pairs(Constants.DEFAULTS.planets) do
       Log.info(k)
       Log.debug(planet)
-      if (  storage.more_enemies
-        and storage.more_enemies.difficulties
-        and storage.more_enemies.difficulties[planet.string_val]
-        and storage.more_enemies.difficulties[planet.string_val].selected_difficulty
-        and storage.more_enemies.difficulties[planet.string_val].selected_difficulty.string_val == Constants.difficulty.VANILLA.string_val) then
-        if (Settings_Service.get_clone_unit_setting(planet.string_val) ~= 1) then goto attempt_clone end
-        if (Settings_Service.get_clone_unit_group_setting(planet.string_val) ~= 1) then goto attempt_clone end
-        if (Settings_Service.get_maximum_group_size(planet.string_val) ~= Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.default_value) then goto attempt_clone end
+      -- if (  storage.more_enemies
+      --   and storage.more_enemies.difficulties
+      --   and storage.more_enemies.difficulties[planet.string_val]
+      --   and storage.more_enemies.difficulties[planet.string_val].selected_difficulty
+      --   and storage.more_enemies.difficulties[planet.string_val].selected_difficulty.string_val == Constants.difficulty.VANILLA.string_val) then
+      --   if (Settings_Service.get_clone_unit_setting(planet.string_val) ~= 1) then goto attempt_clone end
+      --   if (Settings_Service.get_clone_unit_group_setting(planet.string_val) ~= 1) then goto attempt_clone end
+      --   if (Settings_Service.get_maximum_group_size() ~= Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.default_value) then goto attempt_clone end
 
-        Log.debug("Vanilla detected for " .. planet.string_val .. "; skipping")
-        break
-        ::attempt_clone::
-      end
+      --   -- Mod added
+      --   if (Settings_Service.get_BREAM_clone_units ~= BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.default_value) then goto attempt_clone end
+      --   if (Settings_Service.get_BREAM_do_clone ~= BREAM_Settings_Constants.settings.BREAM_USE_EVOLUTION_FACTOR.default_value) then goto attempt_clone end
+
+      --   Log.error("Vanilla detected for " .. planet.string_val .. "; skipping")
+      --   break
+      --   ::attempt_clone::
+      -- end
+
+
+
+      -- if (  storage.more_enemies
+      --   and storage.more_enemies.difficulties
+      --   and storage.more_enemies.difficulties[planet.string_val]
+      --   and storage.more_enemies.difficulties[planet.string_val].selected_difficulty
+      --   and storage.more_enemies.difficulties[planet.string_val].selected_difficulty.string_val ~= Constants.difficulty.VANILLA.string_val)
+      -- then
+      --   goto attempt_clone
+      -- end
+      -- if (Settings_Service.get_clone_unit_setting(planet.string_val) ~= 1) then goto attempt_clone end
+      -- if (Settings_Service.get_clone_unit_group_setting(planet.string_val) ~= 1) then goto attempt_clone end
+      -- if (Settings_Service.get_maximum_group_size() ~= Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.default_value) then goto attempt_clone end
+
+      -- -- Mod added
+      -- if (Settings_Service.get_BREAM_do_clone()) then goto attempt_clone end
+      -- if (Settings_Service.get_BREAM_clone_units() ~= BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.default_value) then goto attempt_clone end
+
+      -- Log.error("Vanilla detected for " .. planet.string_val .. "; skipping")
+      -- break
+      -- ::attempt_clone::
+
+      if (Settings_Utils.is_vanilla(planet.string_val)) then break end
 
       Log.info("attempting to clone")
 
       if (not storage.more_enemies) then Initialization.reinit() end
       if (not storage.more_enemies.mod) then Initialization.reinit() end
       if (not storage.more_enemies.mod.staged_clones) then Initialization.reinit() end
-
 
       local unit_group = spawn_service.BREAM.unit_group
       local skip = false
@@ -142,6 +171,14 @@ function spawn_service.do_nth_tick(event)
       unit_group = spawn_service.BREAM.unit_group
       local j = 0
       for i, _mod_staged_clone in pairs(storage.more_enemies.mod.staged_clones) do
+        if (  Settings_Service.get_BREAM_difficulty() == Constants.difficulty.VANILLA.string_val
+          and Settings_Service.get_BREAM_do_clone() == false
+          and Settings_Service.get_BREAM_clone_units() == BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.default_value)
+        then
+          Log.error("found Vanilla settings for BREAM; breaking")
+          break
+        end
+
         skip = false
 
         Log.info(i)
@@ -178,23 +215,57 @@ function spawn_service.do_nth_tick(event)
           end
 
           Log.debug(surface_name)
-          local clone_unit_setting = Settings_Service.get_clone_unit_setting(surface_name)
-          local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(surface_name)
+          local bream_clone_units_setting = Settings_Service.get_BREAM_clone_units(surface_name)
+          -- local clone_unit_group_setting = Settings_Service.get_BREAM_do_clone(surface_name)
           Log.info("clone_unit_setting: " .. serpent.block(clone_unit_setting))
           Log.info("clone_unit_group_setting: " .. serpent.block(clone_unit_group_setting))
 
           local clone_settings = {
-            unit = clone_unit_setting,
-            unit_group = clone_unit_group_setting,
+            unit = bream_clone_units_setting,
+            unit_group = bream_clone_units_setting,
             type = unit_group and "unit-group" or "unit",
           }
 
-          Log.info("Attempting to clone entity on planet " .. surface_name)
-          Log.debug(clone_settings)
+          local difficulty_setting = Settings_Service.get_BREAM_difficulty()
+          Log.error(difficulty_setting)
+          local difficulty =
+          {
+            selected_difficulty = Constants.difficulty[Constants.difficulty.difficulties[difficulty_setting]],
+            valid = true
+          }
+          Log.error(difficulty)
+          Log.error(Constants.difficulty)
+
+          Log.error("mod added: Attempting to clone entity on planet " .. surface_name)
+          Log.error(clone_settings)
           if (surface_name == Constants.DEFAULTS.planets.nauvis.string_val) then
-            clones = Spawn_Utils.clone_entity({ value = Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNITS.default_value }, storage.more_enemies.difficulties[surface_name].difficulty, mod_stage_clone, { clone_settings = clone_settings, tick = tick, mod_name = mod_name })
+            clones = Spawn_Utils.clone_entity(
+              {
+                value = Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNITS.default_value
+              },
+              difficulty,
+              mod_stage_clone,
+              {
+                clone_settings = clone_settings,
+                tick = tick,
+                mod_name = mod_name,
+                surface = surface_name,
+              }
+            )
           elseif (surface_name == Constants.DEFAULTS.planets.gleba.string_val) then
-            clones = Spawn_Utils.clone_entity({ value = Gleba_Settings_Constants.settings.CLONE_GLEBA_UNITS.default_value }, storage.more_enemies.difficulties[surface_name].difficulty, mod_stage_clone, { clone_settings = clone_settings, tick = tick, mod_name = mod_name })
+            clones = Spawn_Utils.clone_entity(
+              {
+                value = Gleba_Settings_Constants.settings.CLONE_GLEBA_UNITS.default_value
+              },
+              difficulty,
+              mod_stage_clone,
+              {
+                clone_settings = clone_settings,
+                tick = tick,
+                mod_name = mod_name,
+                surface = surface_name,
+              }
+            )
           else
             Log.warn("Planet is neither nauvis nor gleba\nPlanet is unsupported; making no changes")
             return
@@ -210,16 +281,16 @@ function spawn_service.do_nth_tick(event)
           if (clones and #clones > 0) then
             if (mod_name and mod_name == BREAM_Constants.name) then
               if (unit_group and unit_group.valid) then
-                Log.info("Getting difficulty")
-                local difficulty = Difficulty_Utils.get_difficulty(unit_group.surface.name).difficulty
-                if (not difficulty or not difficulty.valid) then
-                  Log.warn("difficulty was nil or invalid; reindexing")
-                  difficulty = Difficulty_Utils.get_difficulty(unit_group.surface.name, true).difficulty
-                end
-                if (not difficulty or not difficulty.valid) then
-                  Log.error("Failed to find a valid difficulty for " .. serpent.block(unit_group.surface.name))
-                  return
-                end
+                -- Log.info("Getting difficulty")
+                -- local difficulty = Difficulty_Utils.get_difficulty(unit_group.surface.name).difficulty
+                -- if (not difficulty or not difficulty.valid) then
+                --   Log.warn("difficulty was nil or invalid; reindexing")
+                --   difficulty = Difficulty_Utils.get_difficulty(unit_group.surface.name, true).difficulty
+                -- end
+                -- if (not difficulty or not difficulty.valid) then
+                --   Log.error("Failed to find a valid difficulty for " .. serpent.block(unit_group.surface.name))
+                --   return
+                -- end
 
                 Log.info("Getting selected_difficulty")
                 local selected_difficulty = difficulty.selected_difficulty
@@ -235,8 +306,11 @@ function spawn_service.do_nth_tick(event)
                   and
                     (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == Constants.difficulty.VANILLA.value))
                 then
-                  Log.error("Difficulty is vanilla; no need to process")
-                  return
+                  -- Check mod settings
+                  if (bream_clone_units_setting == BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.default_value) then
+                    Log.error("Difficulty is vanilla; no need to process")
+                    return
+                  end
                 end
 
                 if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
@@ -255,7 +329,7 @@ function spawn_service.do_nth_tick(event)
                 Log.info("after: " .. serpent.block(storage.more_enemies.groups))
 
                 local loop_len = 1
-                local use_evolution_factor = Settings_Service.get_do_evolution_factor(unit_group.surface.name)
+                local use_evolution_factor = Settings_Service.get_BREAM_use_evolution_factor(unit_group.surface.name)
                 local evolution_factor = 1
 
                 Log.debug("use_evolution_factor  = "  .. serpent.block(use_evolution_factor))
@@ -269,7 +343,6 @@ function spawn_service.do_nth_tick(event)
                   loop_len = math.floor((selected_difficulty.value * clone_unit_group_setting) * evolution_factor)
                 end
                 Log.info("loop_len: " .. serpent.block(loop_len))
-
 
                 if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
                 if (not storage.more_enemies.groups[unit_group.surface.name]) then storage.more_enemies.groups[unit_group.surface.name] = {} end

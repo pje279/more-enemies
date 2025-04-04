@@ -200,8 +200,19 @@ end
 function settings_service.get_BREAM_difficulty()
   local setting = BREAM_Settings_Constants.settings.BREAM_DIFFICULTY.default_value
 
-  if (settings and settings.global and settings.global[BREAM_Settings_Constants.settings.BREAM_DIFFICULTY.name]) then
-    setting = settings.global[BREAM_Settings_Constants.settings.BREAM_DIFFICULTY.name].value
+  if (settings and settings.startup and settings.startup[BREAM_Settings_Constants.settings.BREAM_DIFFICULTY.name]) then
+    setting = settings.startup[BREAM_Settings_Constants.settings.BREAM_DIFFICULTY.name].value
+  end
+
+  return setting
+end
+
+-- BREAM_USE_EVOLUTION_FACTOR
+function settings_service.get_BREAM_use_evolution_factor()
+  local setting = BREAM_Settings_Constants.settings.BREAM_USE_EVOLUTION_FACTOR.default_value
+
+  if (settings and settings.global and settings.global[BREAM_Settings_Constants.settings.BREAM_USE_EVOLUTION_FACTOR.name]) then
+    setting = settings.global[BREAM_Settings_Constants.settings.BREAM_USE_EVOLUTION_FACTOR.name].value
   end
 
   return setting
