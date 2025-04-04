@@ -87,17 +87,21 @@ function spawn_controller.do_tick(event)
 end
 
 function spawn_controller.entity_died(event)
-  Log.debug("spawn_controller.entity_died(event)")
+  Log.info("spawn_controller.entity_died(event)")
   Spawn_Service.entity_died(event)
 end
 
 function spawn_controller.entity_spawned(event)
-  Log.debug("spawn_controller.entity_spawned(event)")
+  Log.info("spawn_controller.entity_spawned(event)")
   Spawn_Service.entity_spawned(event)
 end
 
 function spawn_controller.entity_built(event)
-  Log.debug("spawn_controller.entity_built")
+  Log.info("spawn_controller.entity_built")
+  if (not Settings_Service.get_BREAM_do_clone()) then
+    Log.debug("more-enemies cloning of BREAM entities is disabled; returning")
+    return
+  end
   Spawn_Service.entity_built(event)
 end
 

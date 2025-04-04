@@ -620,6 +620,7 @@ end
 
 function spawn_service.entity_built(event)
   Log.info(event)
+
   local mod_name = event.mod_name
   local entity = event.entity
 

@@ -1,4 +1,4 @@
--- local Constants = require("libs.constants.constants")
+local BREAM_Settings_Constants = require("libs.constants.settings.mods.BREAM.BREAM-settings-constants")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 
 data:extend({
@@ -12,5 +12,6 @@ data:extend({
 if (mods and (mods["BREAM"])) then
   data:extend({
     Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_MODDED_CLONES,
+    BREAM_Settings_Constants.settings.BREAM_DO_CLONE,
   })
 end

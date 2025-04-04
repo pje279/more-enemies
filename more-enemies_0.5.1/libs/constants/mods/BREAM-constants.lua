@@ -1,14 +1,15 @@
 -- If already defined, return
-if _bream_constants and _bream_constants.more_enemies then
-  return _bream_constants
+if _BREAM_constants and _BREAM_constants.more_enemies then
+  return _BREAM_constants
 end
 
-local bream_constants = {}
+local BREAM_constants = {}
 
-bream_constants.name = "BREAM"
+BREAM_constants.name = "BREAM"
 
-bream_constants.more_enemies = true
+BREAM_constants.more_enemies = true
+BREAM_constants.do_clone = false
 
-local _bream_constants = bream_constants
+local _BREAM_constants = BREAM_constants
 
-return bream_constants
+return BREAM_constants
