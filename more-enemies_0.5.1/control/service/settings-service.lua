@@ -185,6 +185,28 @@ function settings_service.get_BREAM_do_clone()
   return setting
 end
 
+-- BREAM_DO_CLONE
+function settings_service.get_BREAM_clone_units()
+  local setting = BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.default_value
+
+  if (settings and settings.global and settings.global[BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.name]) then
+    setting = settings.global[BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.name].value
+  end
+
+  return setting
+end
+
+-- BREAM_DIFFICULTY
+function settings_service.get_BREAM_difficulty()
+  local setting = BREAM_Settings_Constants.settings.BREAM_DIFFICULTY.default_value
+
+  if (settings and settings.global and settings.global[BREAM_Settings_Constants.settings.BREAM_DIFFICULTY.name]) then
+    setting = settings.global[BREAM_Settings_Constants.settings.BREAM_DIFFICULTY.name].value
+  end
+
+  return setting
+end
+
 settings_service.more_enemies = true
 
 local _settings_service = settings_service

@@ -81,6 +81,7 @@ function difficulty_utils.set_difficulty(planet, difficulty_setting)
   difficulty = create_difficulty(planet, selected_difficulty, modifier, cooldown_modifier)
 
   if (storage) then
+    if (not storage.more_enemies) then storage.more_enemies = {} end
     if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
     if (not storage.more_enemies.difficulties[planet]) then storage.more_enemies.difficulties[planet] = {} end
     storage.more_enemies.difficulties[planet].difficulty = difficulty
