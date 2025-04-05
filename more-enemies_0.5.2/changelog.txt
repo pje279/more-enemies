@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.2
+Date: 2025-04-05
+  Bug Fixes:
+    - Fixed error on load when ArmouredBiters was present, but did not have its spawner enabled
+    - Added missing existence checks before changing unit-spawner settings
+---------------------------------------------------------------------------------------------------
 Version: 0.5.1
 Date: 2025-04-04
   Bug Fixes:
