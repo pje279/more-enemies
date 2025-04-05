@@ -35,7 +35,7 @@ gleba_settings_constants.settings.GLEBA_DIFFICULTY = {
     type = "string-setting",
     name = "more-enemies-gleba-difficulty",
     setting_type = "startup",
-    order = "bab",
+    order = "aab",
     default_value = "Vanilla",
     allowed_values = Constants.difficulty.difficulties_array
 }

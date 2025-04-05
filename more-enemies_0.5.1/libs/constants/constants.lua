@@ -22,7 +22,7 @@ constants.meta.version.minor.warned = false
 constants.meta.version.minor.valid = true
 
 constants.meta.version.bug_fix = {}
-constants.meta.version.bug_fix.value = 0
+constants.meta.version.bug_fix.value = 1
 constants.meta.version.bug_fix.warned = false
 constants.meta.version.bug_fix.valid = true
 

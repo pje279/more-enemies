@@ -3,6 +3,7 @@ if _settings_service and _settings_service.more_enemies then
   return _settings_service
 end
 
+local BREAM_Settings_Constants = require("libs.constants.settings.mods.BREAM.BREAM-settings-constants")
 local Constants = require("libs.constants.constants")
 local Gleba_Constants = require("libs.constants.gleba-constants")
 local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
@@ -168,6 +169,50 @@ function settings_service.get_difficulty(surface_name)
   elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
         and settings and settings.startup and settings.startup[Gleba_Settings_Constants.settings.GLEBA_DIFFICULTY.name]) then
     setting = settings.startup[Gleba_Settings_Constants.settings.GLEBA_DIFFICULTY.name].value
+  end
+
+  return setting
+end
+
+-- BREAM_DO_CLONE
+function settings_service.get_BREAM_do_clone()
+  local setting = BREAM_Settings_Constants.settings.BREAM_DO_CLONE.default_value
+
+  if (settings and settings.global and settings.global[BREAM_Settings_Constants.settings.BREAM_DO_CLONE.name]) then
+    setting = settings.global[BREAM_Settings_Constants.settings.BREAM_DO_CLONE.name].value
+  end
+
+  return setting
+end
+
+-- BREAM_DO_CLONE
+function settings_service.get_BREAM_clone_units()
+  local setting = BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.default_value
+
+  if (settings and settings.global and settings.global[BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.name]) then
+    setting = settings.global[BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.name].value
+  end
+
+  return setting
+end
+
+-- BREAM_DIFFICULTY
+function settings_service.get_BREAM_difficulty()
+  local setting = BREAM_Settings_Constants.settings.BREAM_DIFFICULTY.default_value
+
+  if (settings and settings.startup and settings.startup[BREAM_Settings_Constants.settings.BREAM_DIFFICULTY.name]) then
+    setting = settings.startup[BREAM_Settings_Constants.settings.BREAM_DIFFICULTY.name].value
+  end
+
+  return setting
+end
+
+-- BREAM_USE_EVOLUTION_FACTOR
+function settings_service.get_BREAM_use_evolution_factor()
+  local setting = BREAM_Settings_Constants.settings.BREAM_USE_EVOLUTION_FACTOR.default_value
+
+  if (settings and settings.global and settings.global[BREAM_Settings_Constants.settings.BREAM_USE_EVOLUTION_FACTOR.name]) then
+    setting = settings.global[BREAM_Settings_Constants.settings.BREAM_USE_EVOLUTION_FACTOR.name].value
   end
 
   return setting
