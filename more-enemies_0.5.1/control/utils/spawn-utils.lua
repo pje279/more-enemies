@@ -15,6 +15,7 @@ local Nauvis_Constants = require("libs.constants.nauvis-constants")
 local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
 local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Settings_Service = require("control.service.settings-service")
+local Settings_Utils = require("control.utils.settings-utils")
 
 local spawn_utils = {}
 
@@ -26,7 +27,8 @@ function spawn_utils.duplicate_unit_group(group, tick)
   end
 
   if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
-  if (not group or not group.valid or not group.surface) then return end
+  if (not group or not group.valid or not group.surface or not group.surface.valid) then return end
+  if (Settings_Utils.is_vanilla(group.surface.name)) then return end
 
   Log.debug("duplicate_unit_group: Getting difficulty")
   local difficulty = Difficulty_Utils.get_difficulty(group.surface.name).difficulty
@@ -43,41 +45,24 @@ function spawn_utils.duplicate_unit_group(group, tick)
   local selected_difficulty = difficulty.selected_difficulty
   Log.info("selected_difficulty: " .. serpent.block(selected_difficulty))
 
-  -- Check for any user settings changes
-  local clone_unit_setting = Settings_Service.get_clone_unit_setting(group.surface.name)
-  local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(group.surface.name)
+  local modifier = 1 / ((Constants.difficulty.INSANITY.value - selected_difficulty.value) + 1)
+  if (modifier < 0) then modifier = 0 end
+  if (modifier > 1) then modifier = 1 end
 
-  Log.info(clone_unit_setting)
-  Log.info(clone_unit_group_setting)
-  if (clone_unit_setting == 1 and clone_unit_group_setting == 1 and (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == 1)) then
-    Log.debug("Difficulty is vanilla; no need to process")
-    return
-  end
+  local len = math.floor(#group.members * (modifier) )
 
-  -- Only try to clone if the difficulty is not equal to Vanilla (1), or other unit group settings have changed
-  if ((selected_difficulty and selected_difficulty.valid and selected_difficulty.value > 1) or clone_unit_group_setting ~= 1) then
+  local clones = {}
 
-    local modifier = 1 / ((Constants.difficulty.INSANITY.value - selected_difficulty.value) + 1)
-    if (modifier < 0) then modifier = 0 end
-    if (modifier > 1) then modifier = 1 end
+  Log.debug("len: " .. serpent.block(len))
+  for i=1, len do
 
-    local len = math.floor(#group.members * (modifier) )
-
-    local clones = {}
-
-    Log.debug("len: " .. serpent.block(len))
-    for i=1, len do
-
-      local member = group.members[i]
-      if (member and member.valid) then
-        Log.info("adding member to staged_clones")
-        storage.more_enemies.staged_clones[member.unit_number] = {
-          obj = member,
-          group = group
-        }
-      end
-
-      ::continue::
+    local member = group.members[i]
+    if (member and member.valid) then
+      Log.info("adding member to staged_clones")
+      storage.more_enemies.staged_clones[member.unit_number] = {
+        obj = member,
+        group = group
+      }
     end
   end
 end
@@ -97,7 +82,8 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     },
     type = "unit",
     tick = 0,
-    mod_name = nil
+    mod_name = nil,
+    surface = nil,
   }
 
   local clone_settings = optionals.clone_settings
@@ -108,10 +94,24 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   Log.info("past 1")
   if (not difficulty.valid or not entity.valid) then return end
   Log.info("past 2")
-  if (not difficulty.selected_difficulty) then return end
+  if (not difficulty.selected_difficulty and optionals.surface) then
+    Log.debug("clone_entity: Getting difficulty")
+    difficulty = Difficulty_Utils.get_difficulty(optionals.surface.name).difficulty
+    if (not difficulty or not difficulty.valid) then
+      Log.warn("difficulty was nil or invalid; reindexing")
+      difficulty = Difficulty_Utils.get_difficulty(optionals.surface.name, true).difficulty
+    end
+    if (not difficulty or not difficulty.valid) then
+      Log.error("Failed to find a valid difficulty for " .. serpent.block(optionals.surface.name))
+      return
+    end
+
+    if (not difficulty.selected_difficulty) then return end
+  end
   Log.info("past 3")
-  if (not entity.surface) then return end
-  Log.info("past validations")
+  if (not entity.surface or not entity.surface.valid) then return end
+  if (Settings_Utils.is_vanilla(entity.surface.name)) then return end
+  Log.debug("past validations")
 
   local use_evolution_factor = Settings_Service.get_do_evolution_factor(entity.surface.name)
 
@@ -126,7 +126,6 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   local loop_len = 0
   local clone_setting = 0
 
-  Log.info(clone_settings)
   Log.info(difficulty.selected_difficulty.value)
   Log.info(evolution_multiplier)
   local loop_len_fun = function (clone_setting, difficulty, evolution_multiplier)
@@ -192,14 +191,14 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
       -- position = entity.position,
       position = {
         -- TODO: Make configurable
-        x = entity.position.x + math.random(-0.05, 0.05),
-        y = entity.position.y + math.random(-0.05, 0.05)
+        x = entity.position.x + math.random(-0.025, 0.025),
+        y = entity.position.y + math.random(-0.025, 0.025)
       },
       surface = entity.surface.name,
       force = entity.force
     })
 
-    if (Entity_Validations.get_mod_name(entity)) then Log.error(clone) end
+    if (Entity_Validations.get_mod_name(entity)) then info(clone) end
 
     Log.debug("Cloned")
     Log.info(clone)

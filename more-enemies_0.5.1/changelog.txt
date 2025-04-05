@@ -1,9 +1,22 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.1
+Date: 2025-04-04
+  Bug Fixes:
+    - Seperated B.R.E.A.M. clone settings from planet clone settings
+      - Added B.R.E.A.M. difficulty (Easy (0.1), Vanilla (1), Vanilla+ (1.75), Hard (4), Insanity (11))
+      - Added B.R.E.A.M. use_evolution_factor
+      - Added B.R.E.A.M. clone_units
+      - Added B.R.E.A.M. do_clone (false by default)
+      By default more-enemies won't track or clone B.R.E.A.M. created entities (toggleable)
+    - Redid some difficulty detection
+      Namely detecting Vanilla
+      - No need to do some processing when difficulty is Vanilla
+---------------------------------------------------------------------------------------------------
 Version: 0.5.0
 Date: 2025-04-03
   Minor Features:
     - Added infrastructure to detect and support cloning of entities created by other mods, assuming they raise the 'script_raised_built' event
-      -> Currently only supports BREAM
+      -> Currently only supports B.R.E.A.M.
       - Added as an optional dependency
       Adds an additional setting for maximum number of modded clones
       Mod created entities are tracked ~somewhat independently of vanilla entities

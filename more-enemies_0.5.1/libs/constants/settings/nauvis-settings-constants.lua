@@ -35,7 +35,7 @@ nauvis_settings_constants.settings.NAUVIS_DIFFICULTY = {
   type = "string-setting",
   name = "more-enemies-nauvis-difficulty",
   setting_type = "startup",
-  order = "baa",
+  order = "aaa",
   default_value = "Vanilla",
   allowed_values = Constants.difficulty.difficulties_array
 }

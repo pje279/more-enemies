@@ -11,13 +11,16 @@ local Initialization = require("control.initialization")
 local Log = require("libs.log.log")
 local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
 local Settings_Service = require("control.service.settings-service")
+local Settings_Utils = require("control.utils.settings-utils")
 local Spawn_Utils = require("control.utils.spawn-utils")
 local Unit_Group_Utils = require("control.utils.unit-group-utils")
 
 local unit_group_service = {}
 
 function unit_group_service.unit_group_created(event)
-  if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
+
+  if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
+  if (not storage.more_enemies.do_nth_tick) then return end
 
   local group = event.group
 
@@ -25,9 +28,12 @@ function unit_group_service.unit_group_created(event)
   Log.info(group)
   if (not group.valid) then return end
   Log.info(group.valid)
-  if (not group.surface or not group.surface.name) then return end
+  if (not group.surface or not group.surface.valid or not group.surface.name) then return end
   Log.info(group.surface)
   Log.info(group.surface.name)
+
+  if (Settings_Utils.is_vanilla(group.surface.name)) then return end
+
   if (not group.is_unit_group) then return end
   Log.info(group.is_unit_group)
   if (not group.position) then return end
@@ -40,7 +46,7 @@ function unit_group_service.unit_group_created(event)
     and storage.more_enemies.groups[group.surface.name][group.unique_id]
     and storage.more_enemies.groups[group.surface.name][group.unique_id].valid)
   then
-    Log.error("group already exists; returning")
+    Log.warn("group already exists; returning")
     return
   end
 
@@ -60,18 +66,6 @@ function unit_group_service.unit_group_created(event)
   if (not selected_difficulty) then return end
 
   local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(group.surface.name)
-
-  Log.info("Checking for vanilla")
-  if (  ((group.surface.name == Constants.DEFAULTS.planets.nauvis.string_val
-      and clone_unit_group_setting == Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNIT_GROUPS.default_value)
-    or (  group.surface.name == Constants.DEFAULTS.planets.gleba.string_val
-      and clone_unit_group_setting == Gleba_Settings_Constants.settings.CLONE_GLEBA_UNIT_GROUPS.default_value))
-    and
-      (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == Constants.difficulty.VANILLA.value))
-  then
-    Log.error("Difficulty is vanilla; no need to process")
-    return
-  end
 
   if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
   if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
@@ -125,6 +119,8 @@ function unit_group_service.unit_group_finished_gathering(event)
 
   Log.info(event.group)
 
+  if (not group or not group.valid or not group.surface or not group.surface.valid or Settings_Utils.is_vanilla(group.surface.name)) then return end
+
   local max_num_clones = Settings_Service.get_maximum_number_of_clones()
 
   if (  storage.more_enemies.clone and storage.more_enemies.clone.count
@@ -165,7 +161,6 @@ function unit_group_service.unit_group_finished_gathering(event)
   if (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == 1) then
     if (    (group.surface.name == Constants.DEFAULTS.planets.gleba.string_val
         and Settings_Service.get_clone_unit_group_setting(group.surface.name) == Gleba_Settings_Constants.settings.CLONE_GLEBA_UNIT_GROUPS.default_value)
-      -- and Settings_Service.get_clone_unit_group_setting(group.surface.name) == Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNIT_GROUPS.default_value)
       or
             (group.surface.name == Constants.DEFAULTS.planets.nauvis.string_val
         and Settings_Service.get_clone_unit_group_setting(group.surface.name) == Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNIT_GROUPS.default_value))
