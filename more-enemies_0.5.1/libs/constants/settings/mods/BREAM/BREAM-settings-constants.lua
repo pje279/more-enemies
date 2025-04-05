@@ -14,7 +14,7 @@ BREAM_settings_constants.settings.BREAM_DIFFICULTY = {
   type = "string-setting",
   name = "more-enemies-BREAM-difficulty",
   setting_type = "startup",
-  order = "bac",
+  order = "aac",
   default_value = "Vanilla",
   allowed_values = Constants.difficulty.difficulties_array
 }
