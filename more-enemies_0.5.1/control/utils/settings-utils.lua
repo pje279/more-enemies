@@ -7,6 +7,7 @@ local BREAM_Settings_Constants = require("libs.constants.settings.mods.BREAM.BRE
 local Constants = require("libs.constants.constants")
 local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
+local Log = require("libs.log.log")
 local Settings_Service = require("control.service.settings-service")
 
 settings_utils = {}
@@ -35,10 +36,10 @@ function settings_utils.is_vanilla(surface_name)
   -- Mod added
   if (return_val and script and script.active_mods and (script.active_mods["BREAM"])) then
     if (return_val and Settings_Service.get_BREAM_difficulty() ~= Constants.difficulty.VANILLA.string_val) then return_val = false end
-    -- if (return_val and Settings_Service.get_BREAM_do_clone()) then return_val = false end
     if (return_val and Settings_Service.get_BREAM_clone_units() ~= BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.default_value) then return_val = false end
   end
 
+  Log.debug(return_val)
   return return_val
 end
 
