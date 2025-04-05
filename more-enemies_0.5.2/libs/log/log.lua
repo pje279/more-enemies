@@ -97,7 +97,7 @@ function Log.set_log_level(new_log_level)
   end
 
   -- log(serpent.block(new_log_level))
-  if (not new_log_level) then return default_return_val() end
+  if (not new_log_level or not storage) then return default_return_val() end
 
   if (  new_log_level.level
   and new_log_level.level.num_val
