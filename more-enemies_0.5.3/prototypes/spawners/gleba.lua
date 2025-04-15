@@ -5,9 +5,6 @@ local Settings_Validations = require("control.validations.settings-validations")
 
 local gleba_difficulty = settings.startup["more-enemies-gleba-difficulty"]
 local difficulty = Difficulty_Utils.get_difficulty("gleba", true)
-if (gleba_difficulty and gleba_difficulty.value) then
-  difficulty = Difficulty_Utils.set_difficulty("gleba", gleba_difficulty.value)
-end
 
 local unit_spawner = "unit-spawner"
 

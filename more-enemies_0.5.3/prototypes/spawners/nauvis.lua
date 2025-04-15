@@ -5,9 +5,6 @@ local Settings_Validations = require("control.validations.settings-validations")
 
 local nauvis_difficulty = settings.startup["more-enemies-nauvis-difficulty"]
 local difficulty = Difficulty_Utils.get_difficulty("nauvis", true)
-if (nauvis_difficulty and nauvis_difficulty.value) then
-  difficulty = Difficulty_Utils.set_difficulty("nauvis", nauvis_difficulty.value)
-end
 
 local unit_spawner = "unit-spawner"
 

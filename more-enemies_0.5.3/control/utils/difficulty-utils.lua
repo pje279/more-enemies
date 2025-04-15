@@ -199,8 +199,6 @@ function create_difficulty(planet, selected_difficulty, vanilla)
 
   log(serpent.block(selected_difficulty))
   if (selected_difficulty and selected_difficulty.valid) then
-    log(serpent.block("1"))
-    Log.error("1")
     modifier = selected_difficulty.value
     cooldown_modifier = selected_difficulty.value
   end

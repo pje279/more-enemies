@@ -5,9 +5,9 @@ local Difficulty_Utils = require("control.utils.difficulty-utils")
 
 local nauvis_difficulty = settings.startup["more-enemies-nauvis-difficulty"]
 local difficulty = Difficulty_Utils.get_difficulty("nauvis", true)
-if (nauvis_difficulty and nauvis_difficulty.value) then
-  difficulty = Difficulty_Utils.set_difficulty("nauvis", nauvis_difficulty.value)
-end
+-- if (nauvis_difficulty and nauvis_difficulty.value) then
+--   difficulty = Difficulty_Utils.set_difficulty("nauvis", nauvis_difficulty.value)
+-- end
 
 --
 -- Armoured Biters
@@ -59,5 +59,5 @@ if (data and data.raw and data.raw[unit_spawner] and data.raw[unit_spawner][spaw
         difficulty.biter_armoured.spawning_cooldown.max,
         difficulty.biter_armoured.spawning_cooldown.min
       }
-end
+  end
 end

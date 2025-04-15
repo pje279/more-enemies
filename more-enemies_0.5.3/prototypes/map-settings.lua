@@ -20,6 +20,7 @@ local radius_modifier = 1
 local vanilla = false
 
 for planet, difficulty in pairs(difficulties) do
+  vanilla = false
 
   if (not planet or not difficulty or not difficulty.valid) then goto continue end
 
@@ -66,7 +67,7 @@ for planet, difficulty in pairs(difficulties) do
     max_unit_group_size = settings.startup[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name].value
   end
 
-  if (not vanilla and modifier >= 0 and radius_modifier >= 0) then
+  if (not vanilla and modifier > 0 and radius_modifier >= 0) then
     data.raw["map-settings"]["map-settings"].max_group_radius = Constants.DEFAULTS.unit_group.max_group_radius * radius_modifier
     -- data.raw["map-settings"]["map-settings"].min_group_radius = unit_group.min_group_radius / radius_modifier
     -- data.raw["map-settings"]["map-settings"].unit_group.max_unit_group_size = Constants.DEFAULTS.unit_group.max_unit_group_size * modifier
@@ -96,7 +97,7 @@ for planet, difficulty in pairs(difficulties) do
   ::continue::
 end
 
-if (modifier >= 0 and mods and mods["space-age"] and mods["behemoth-enemies"]) then
+if (modifier > 0 and mods and mods["space-age"] and mods["behemoth-enemies"]) then
   data.raw["unit"][Behemoth_Enemies_Constants.prefix .. "-wriggler-pentapod"].absorptions_to_join_attack.spores = data.raw["unit"][Behemoth_Enemies_Constants.prefix .. "-wriggler-pentapod"].absorptions_to_join_attack.spores / modifier
   data.raw["spider-unit"][Behemoth_Enemies_Constants.prefix .. "-strafer-pentapod"].absorptions_to_join_attack.spores = data.raw["spider-unit"][Behemoth_Enemies_Constants.prefix .. "-strafer-pentapod"].absorptions_to_join_attack.spores / modifier
   data.raw["spider-unit"][Behemoth_Enemies_Constants.prefix .. "-stomper-pentapod"].absorptions_to_join_attack.spores = data.raw["spider-unit"][Behemoth_Enemies_Constants.prefix .. "-stomper-pentapod"].absorptions_to_join_attack.spores / modifier
