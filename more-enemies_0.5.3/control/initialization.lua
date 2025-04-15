@@ -116,7 +116,6 @@ function initialization.purge(optionals)
 end
 
 function initialize(from_scratch)
-  -- if (not storage.more_enemies) then storage.more_enemies = {} end
   if (not storage.more_enemies) then storage.more_enemies = More_Enemies_Data:new() end
   local more_enemies_data = storage.more_enemies
   storage.more_enemies.do_nth_tick = false
@@ -134,49 +133,15 @@ function initialize(from_scratch)
     do_purge()
 
     storage = {}
-    -- storage.more_enemies = {}
-    -- local more_enemies_data = More_Enemies_Data:new()
     more_enemies_data = More_Enemies_Data:new()
-    Log.error(more_enemies_data)
-    -- more_enemies_data.valid = true
+    -- Log.error(more_enemies_data)
     storage.more_enemies = more_enemies_data
-    -- storage.more_enemies.valid = true
 
-    -- local version_data = Version_Data:new()
-    -- version_data.created = game.tick
-    -- version_data.updated = game.tick
-    -- version_data.valid = true
-    -- storage.more_enemies.version_data = version_data
-    -- local version_data = storage.more_enemies.version_data
     local version_data = more_enemies_data.version_data
     version_data.valid = true
 
-    -- storage.more_enemies.clones = {}
-
-    -- storage.more_enemies.clone = {}
-    -- storage.more_enemies.clone.count = 0
-
-    -- storage.more_enemies.mod = {}
-
-    -- storage.more_enemies.mod.clone = {}
-    -- storage.more_enemies.mod.clone.count = 0
-
-    -- storage.more_enemies.mod.staged_clones = {}
-
-    -- storage.more_enemies.staged_clones = {}
   else
     -- do_purge()
-
-    -- if (not storage.more_enemies) then storage.more_enemies = {} end
-    -- if (not storage.more_enemies.clones) then storage.more_enemies.clones = {} end
-    -- if (not storage.more_enemies.staged_clones) then storage.more_enemies.staged_clones = {} end
-    -- if (not storage.more_enemies.clone) then storage.more_enemies.clone = { count = 0 } end
-    -- if (storage.more_enemies.clone.count == nil) then storage.more_enemies.clone.count = 0 end
-
-    -- if (not storage.more_enemies.mod) then storage.more_enemies.mod = {} end
-    -- if (not storage.more_enemies.mod.staged_clones) then storage.more_enemies.mod.staged_clones = {} end
-    -- if (not storage.more_enemies.mod.clone) then storage.more_enemies.mod.clone = { count = 0 } end
-    -- if (storage.more_enemies.mod.clone.count ~= nil) then storage.more_enemies.mod.clone.count = 0 end
 
     if (not more_enemies_data) then storage.more_enemies = More_Enemies_Data:new() end
     if (not more_enemies_data.clones) then more_enemies_data.clones = More_Enemies_Data.clones end
@@ -189,13 +154,10 @@ function initialize(from_scratch)
     if (not more_enemies_data.mod.clone) then more_enemies_data.mod.clone = More_Enemies_Data.mod.clone end
     if (more_enemies_data.mod.clone.count == nil) then more_enemies_data.mod.clone.count = More_Enemies_Data.mod.clone.count end
 
-    -- if (not more_enemies_data.storage.more_enemies.overflow_clone_attempts) then storage.more_enemies.overflow_clone_attempts = Overflow_Clone_Attempts_Data:new() end
   end
 
-  -- if (storage.more_enemies) then
   if (more_enemies_data) then
 
-    -- local version_data = Version_Repository.get_version_data()
     local version_data = more_enemies_data.version_data
     if (not version_data.valid) then
       -- What do?
@@ -214,24 +176,11 @@ function initialize(from_scratch)
 
     more_enemies_data.overflow_clone_attempts = Overflow_Clone_Attempts_Data:new()
     more_enemies_data.overflow_clone_attempts.valid = true
-    -- storage.more_enemies.overflow_clone_attempts = {
-    --   count = 0,
-    --   warned = {
-    --     none = false,
-    --     error = false,
-    --     warn = false,
-    --     info = false
-    --   },
-    --   valid = true
-    -- }
 
     more_enemies_data.nth_tick_complete = {
       current = true,
       previous = true,
     }
-    -- storage.more_enemies.nth_tick_complete = {}
-    -- storage.more_enemies.nth_tick_complete.current = true
-    -- storage.more_enemies.nth_tick_complete.previous = true
   end
 
   local user_setting = nil
@@ -261,11 +210,9 @@ function initialize(from_scratch)
       Log.info(planet)
       local difficulty = Difficulty_Utils.get_difficulty(planet.string_val, true)
       if (storage) then
-        -- if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
         if (not more_enemies_data.difficulties) then more_enemies_data.difficulties = {} end
 
         if (from_scratch) then
-          -- storage.more_enemies.difficulties[planet.string_val] = {
             more_enemies_data.difficulties[planet.string_val] = {
             valid = true,
             difficulty = difficulty,
@@ -273,15 +220,11 @@ function initialize(from_scratch)
             entities_spawned = 0,
           }
 
-          -- if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
-          -- storage.more_enemies.groups[planet.string_val] = {}
           if (not more_enemies_data.groups) then more_enemies_data.groups = {} end
           more_enemies_data.groups[planet.string_val] = {}
         end
 
-        -- if (not storage.more_enemies.difficulties[planet.string_val] or not storage.more_enemies.difficulties[planet.string_val].valid) then
         if (not more_enemies_data.difficulties[planet.string_val] or not more_enemies_data.difficulties[planet.string_val].valid) then
-          -- storage.more_enemies.difficulties[planet.string_val] = {
             more_enemies_data.difficulties[planet.string_val] = {
             valid = true,
             difficulty = difficulty,
@@ -290,21 +233,16 @@ function initialize(from_scratch)
           }
         end
 
-        -- if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
         if (not more_enemies_data.groups) then storage.more_enemies.groups = {} end
 
-        -- if (not storage.more_enemies.groups[planet.string_val]) then
         if (not more_enemies_data.groups[planet.string_val]) then
-          -- storage.more_enemies.groups[planet.string_val] = {}
           more_enemies_data.groups[planet.string_val] = {}
         end
       end
     end
 
-    -- storage.more_enemies.do_nth_tick = true
     more_enemies_data.do_nth_tick = true
 
-    -- storage.more_enemies.valid = true
     more_enemies_data.valid = true
   end
 

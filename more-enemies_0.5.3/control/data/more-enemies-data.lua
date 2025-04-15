@@ -8,6 +8,8 @@ local more_enemies_data = Data:new()
 more_enemies_data.clones = {}
 more_enemies_data.clone = { count = 0 }
 
+more_enemies_data.difficulties = {}
+
 more_enemies_data.do_nth_tick = false
 
 more_enemies_data.groups = {}
@@ -47,6 +49,7 @@ function more_enemies_data:new(obj)
   local defaults = {
     clones = self.clones,
     clone = self.clone,
+    difficulties = self.difficulties,
     do_nth_tick = self.do_nth_tick,
     groups = self.groups,
     nth_tick_cleanup_complete = self.nth_tick_cleanup_complete,
