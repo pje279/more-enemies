@@ -59,7 +59,6 @@ function version_repository.update_version_data(update_data, optionals)
   end
 
   version_data.updated = game.tick
-  -- version_data.valid = version_data:is_valid()
 
   -- Don't think this is necessary, but oh well
   storage.more_enemies.version_data = version_data

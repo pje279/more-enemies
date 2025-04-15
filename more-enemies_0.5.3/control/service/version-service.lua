@@ -50,7 +50,6 @@ function version_service.validate_version(optionals)
   end
 
   local current_version = Version_Data:new()
-  -- Log.warn(current_version)
 
   -- Compare the version numbers
   if (current_version.major.value <= version_data.major.value) then return_val.major.valid = true end
