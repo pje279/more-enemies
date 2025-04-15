@@ -7,8 +7,6 @@ data.valid = false
 data.created = nil
 data.updated = nil
 
-log(serpent.block(data))
-
 function data:new(obj)
   Log.debug("data:new")
   Log.info(obj)
@@ -31,7 +29,7 @@ function data:new(obj)
 end
 
 function data:is_valid()
-  Log.debug("data.is_valid")
+  Log.debug("data:is_valid")
   return self.created ~= nil and self.created >= 0 and self.updated ~= nil and self.updated >= self.created
 end
 

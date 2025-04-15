@@ -10,7 +10,6 @@ local Gleba_Constants = require("libs.constants.gleba-constants")
 local Hard_Difficulty_Data = require("control.data.difficulties.hard-difficulty-data")
 local Insanity_Difficulty_Data = require("control.data.difficulties.insanity-difficulty-data")
 local Log = require("libs.log.log")
--- local Log_Constants_Functions = require("libs.log.log-constants-functions")
 local More_Enemies_Data = require("control.data.more-enemies-data")
 local Nauvis_Constants = require("libs.constants.nauvis-constants")
 local Settings_Service = require("control.service.settings-service")
@@ -18,112 +17,6 @@ local Vanilla_Plus_Difficulty_Data = require("control.data.difficulties.vanilla-
 local Vanilla_Difficulty_Data = require("control.data.difficulties.vanilla-difficulty-data")
 
 local difficulty_utils = {}
-
-function difficulty_utils.init_difficulty(planet, difficulty_setting)
-  -- difficulty_setting = difficulty_setting or Constants.difficulty.VANILLA
-  difficulty_setting = difficulty_setting or Vanilla_Difficulty_Data:new()
-  planet = planet or "nauvis"
-
-  local difficulty = {
-    valid = false
-  }
-
-  if (not planet) then
-    Log.warn("planet invalid")
-    return difficulty
-  end
-
-  difficulty = create_difficulty(planet, difficulty_setting)
-
-  if (storage) then
-    if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = More_Enemies_Data:new() end
-    if (not storage.more_enemies.difficulties[planet]) then storage.more_enemies.difficulties[planet] = {} end
-    storage.more_enemies.difficulties[planet].difficulty = difficulty
-  end
-
-  return difficulty
-end
-
-function difficulty_utils.set_difficulty(planet, difficulty_setting)
-  difficulty_setting = difficulty_setting or Vanilla_Difficulty_Data:new()
-  planet = planet or "nauvis"
-
-  local difficulty = {
-    valid = false
-  }
-
-  local modifier = 1
-  local cooldown_modifier = 1
-  local vanilla = false
-  local selected_difficulty = nil
-
-  -- Determine difficulty
-  -- if (difficulty_setting == Constants.difficulty.EASY.string_val or difficulty_setting == Constants.difficulty.EASY.value) then
-  --   modifier = Constants.difficulty.EASY.value
-  --   cooldown_modifier = Constants.difficulty.EASY.value
-  --   selected_difficulty = Constants.difficulty.EASY
-  -- elseif (difficulty_setting == Constants.difficulty.VANILLA.string_val or difficulty_setting == Constants.difficulty.VANILLA.value) then
-  --   modifier = Constants.difficulty.VANILLA.value
-  --   cooldown_modifier = Constants.difficulty.VANILLA.value
-  --   vanilla = true
-  --   selected_difficulty = Constants.difficulty.VANILLA
-  -- elseif (difficulty_setting == Constants.difficulty.VANILLA_PLUS.string_val or difficulty_setting == Constants.difficulty.VANILLA_PLUS.value) then
-  --   modifier = Constants.difficulty.VANILLA_PLUS.value
-  --   cooldown_modifier = Constants.difficulty.VANILLA_PLUS.value
-  --   selected_difficulty = Constants.difficulty.VANILLA_PLUS
-  -- elseif (difficulty_setting == Constants.difficulty.HARD.string_val or difficulty_setting == Constants.difficulty.HARD.value) then
-  --   modifier = Constants.difficulty.HARD.value
-  --   cooldown_modifier = Constants.difficulty.HARD.value
-  --   selected_difficulty = Constants.difficulty.HARD
-  -- elseif (difficulty_setting == Constants.difficulty.INSANITY.string_val or difficulty_setting == Constants.difficulty.INSANITY.value) then
-  --   modifier = Constants.difficulty.INSANITY.value
-  --   cooldown_modifier = Constants.difficulty.INSANITY.value
-  --   selected_difficulty = Constants.difficulty.INSANITY
-  -- else
-  --   Log.error("No difficulty detected")
-  --   modifier = -1
-  --   cooldown_modifier = -1
-  -- end
-  if (difficulty_setting == Easy_Difficulty_Data.string_val or difficulty_setting == Easy_Difficulty_Data.value) then
-    modifier = Easy_Difficulty_Data.value
-    cooldown_modifier = Easy_Difficulty_Data.value
-    selected_difficulty = Easy_Difficulty_Data:new()
-  elseif (difficulty_setting == Vanilla_Difficulty_Data.string_val or difficulty_setting == Vanilla_Difficulty_Data.value) then
-    modifier = Vanilla_Difficulty_Data.value
-    cooldown_modifier = Vanilla_Difficulty_Data.value
-    vanilla = true
-    selected_difficulty = Vanilla_Difficulty_Data:new()
-  elseif (difficulty_setting == Vanilla_Plus_Difficulty_Data.string_val or difficulty_setting == Vanilla_Plus_Difficulty_Data.value) then
-    modifier = Vanilla_Plus_Difficulty_Data.value
-    cooldown_modifier = Vanilla_Plus_Difficulty_Data.value
-    selected_difficulty = Vanilla_Plus_Difficulty_Data:new()
-  elseif (difficulty_setting == Hard_Difficulty_Data.string_val or difficulty_setting == Hard_Difficulty_Data.value) then
-    modifier = Hard_Difficulty_Data.value
-    cooldown_modifier = Hard_Difficulty_Data.value
-    selected_difficulty = Hard_Difficulty_Data:new()
-  elseif (difficulty_setting == Insanity_Difficulty_Data.string_val or difficulty_setting == Insanity_Difficulty_Data.value) then
-    modifier = Insanity_Difficulty_Data.value
-    cooldown_modifier = Insanity_Difficulty_Data.value
-    selected_difficulty = Insanity_Difficulty_Data:new()
-  else
-    Log.error("No difficulty detected")
-    modifier = -1
-    cooldown_modifier = -1
-  end
-
-  difficulty = create_difficulty(planet, selected_difficulty, modifier, cooldown_modifier, vanilla)
-
-  if (storage) then
-    if (not storage.more_enemies) then storage.more_enemies = More_Enemies_Data:new() end
-    if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
-    if (not storage.more_enemies.difficulties[planet]) then storage.more_enemies.difficulties[planet] = {} end
-    storage.more_enemies.difficulties[planet].difficulty = difficulty
-  end
-
-  Log.info(difficulty)
-
-  return difficulty
-end
 
 function difficulty_utils.get_difficulty(planet, reindex)
   reindex = reindex or false
@@ -188,12 +81,13 @@ function difficulty_utils.get_difficulty(planet, reindex)
 
   if (selected_difficulty and selected_difficulty.valid) then
     if (reindex) then
-      difficulty = difficulty_utils.init_difficulty(planet, selected_difficulty)
+      difficulty = init_difficulty(planet, selected_difficulty)
     else
-      difficulty = difficulty_utils.set_difficulty(planet, selected_difficulty)
+      -- difficulty = difficulty_utils.set_difficulty(planet, selected_difficulty)
+      difficulty = set_difficulty(planet, selected_difficulty)
     end
   else
-    difficulty = difficulty_utils.init_difficulty(planet)
+    difficulty = init_difficulty(planet)
   end
 
   Log.info(difficulty)
@@ -211,92 +105,133 @@ function difficulty_utils.get_difficulty(planet, reindex)
   return difficulty
 end
 
-function create_difficulty(planet, selected_difficulty, modifier, cooldown_modifier, vanilla)
-  modifier = modifier or 1
-  if (modifier < 0) then modifier = 0 end
-  cooldown_modifier = cooldown_modifier or 1
-  if (cooldown_modifier < 0) then cooldown_modifier = 0.000001 end
+-- function difficulty_utils.set_difficulty(planet, difficulty_setting)
+function set_difficulty(planet, difficulty_setting)
+  difficulty_setting = difficulty_setting or Vanilla_Difficulty_Data:new()
+  planet = planet or "nauvis"
 
   local difficulty = {
     valid = false
   }
 
-  if (selected_difficulty and selected_difficulty.valid) then
+  local modifier = 1
+  local cooldown_modifier = 1
+  local vanilla = false
+  local selected_difficulty = nil
+
+  -- Determine difficulty
+  if (difficulty_setting == Easy_Difficulty_Data.string_val or difficulty_setting == Easy_Difficulty_Data.value) then
+    -- modifier = Easy_Difficulty_Data.value
+    -- cooldown_modifier = Easy_Difficulty_Data.value
+    selected_difficulty = Easy_Difficulty_Data:new()
+  elseif (difficulty_setting == Vanilla_Difficulty_Data.string_val or difficulty_setting == Vanilla_Difficulty_Data.value) then
+    -- modifier = Vanilla_Difficulty_Data.value
+    -- cooldown_modifier = Vanilla_Difficulty_Data.value
+    vanilla = true
+    selected_difficulty = Vanilla_Difficulty_Data:new()
+  elseif (difficulty_setting == Vanilla_Plus_Difficulty_Data.string_val or difficulty_setting == Vanilla_Plus_Difficulty_Data.value) then
+    -- modifier = Vanilla_Plus_Difficulty_Data.value
+    -- cooldown_modifier = Vanilla_Plus_Difficulty_Data.value
+    selected_difficulty = Vanilla_Plus_Difficulty_Data:new()
+  elseif (difficulty_setting == Hard_Difficulty_Data.string_val or difficulty_setting == Hard_Difficulty_Data.value) then
+    -- modifier = Hard_Difficulty_Data.value
+    -- cooldown_modifier = Hard_Difficulty_Data.value
+    selected_difficulty = Hard_Difficulty_Data:new()
+  elseif (difficulty_setting == Insanity_Difficulty_Data.string_val or difficulty_setting == Insanity_Difficulty_Data.value) then
+    -- modifier = Insanity_Difficulty_Data.value
+    -- cooldown_modifier = Insanity_Difficulty_Data.value
+    selected_difficulty = Insanity_Difficulty_Data:new()
+  else
+    Log.error("No difficulty detected")
+    -- modifier = -1
+    -- cooldown_modifier = -1
   end
 
+  -- difficulty = create_difficulty(planet, selected_difficulty, modifier, cooldown_modifier, vanilla)
+  difficulty = create_difficulty(planet, selected_difficulty, vanilla)
 
+  if (storage) then
+    if (not storage.more_enemies) then storage.more_enemies = More_Enemies_Data:new() end
+    if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
+    if (not storage.more_enemies.difficulties[planet]) then storage.more_enemies.difficulties[planet] = {} end
+    storage.more_enemies.difficulties[planet].difficulty = difficulty
+  end
 
+  Log.info(difficulty)
 
-  if (selected_difficulty and selected_difficulty.valid and modifier >= 0 and cooldown_modifier >= 0) then
+  return difficulty
+end
+
+function init_difficulty(planet, difficulty_setting)
+  difficulty_setting = difficulty_setting or Vanilla_Difficulty_Data:new()
+  planet = planet or "nauvis"
+
+  local difficulty = {
+    valid = false
+  }
+
+  if (not planet) then
+    Log.warn("planet invalid")
+    return difficulty
+  end
+
+  difficulty = create_difficulty(planet, difficulty_setting)
+
+  if (storage) then
+    if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = More_Enemies_Data:new() end
+    if (not storage.more_enemies.difficulties[planet]) then storage.more_enemies.difficulties[planet] = {} end
+    storage.more_enemies.difficulties[planet].difficulty = difficulty
+  end
+
+  return difficulty
+end
+
+-- function create_difficulty(planet, selected_difficulty, modifier, cooldown_modifier, vanilla)
+function create_difficulty(planet, selected_difficulty, vanilla)
+  modifier = modifier or 1
+  if (modifier < 0) then modifier = 0 end
+  cooldown_modifier = cooldown_modifier or 1
+  if (cooldown_modifier <= 0) then cooldown_modifier = 0.000001 end
+
+  local difficulty = {
+    valid = false
+  }
+
+  log(serpent.block(selected_difficulty))
+  if (selected_difficulty and selected_difficulty.valid) then
+    log(serpent.block("1"))
+    Log.error("1")
+    modifier = selected_difficulty.value
+    cooldown_modifier = selected_difficulty.value
+  end
+
+  if (selected_difficulty and selected_difficulty.valid and modifier >= 0 and cooldown_modifier > 0) then
     if (planet == Constants.DEFAULTS.planets.nauvis.string_val) then
 
-      -- if ( (script and script.active_mods and script.active_mods["ArmouredBiters"])
-      --   or (mods and mods["ArmouredBiters"]))
-      -- then
-      --   difficulty = {
-      --     valid = true,
-      --     selected_difficulty = selected_difficulty,
-      --     biter = {
-      --       max_count_of_owned_units = vanilla and Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS or (Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
-      --       max_count_of_owned_defensive_units = vanilla and Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
-      --       max_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-      --       max_defensive_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-      --       spawning_cooldown = {
-      --         max = 360 / (cooldown_modifier + 1),
-      --         min = 150 / (cooldown_modifier + 1)
-      --       },
-      --     },
-      --     spitter = {
-      --       max_count_of_owned_units = vanilla and Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS or (Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
-      --       max_count_of_owned_defensive_units = vanilla and Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
-      --       max_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-      --       max_defensive_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-      --       spawning_cooldown = {
-      --         max = 360 / (cooldown_modifier + 1),
-      --         min = 150 / (cooldown_modifier + 1)
-      --       }
-      --     },
-      --     biter_armoured = {
-      --       max_count_of_owned_units = vanilla and Armoured_Biters_Constants.nauvis.biter_armoured.MAX_COUNT_OF_OWNED_UNITS or (Armoured_Biters_Constants.nauvis.biter_armoured.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
-      --       max_count_of_owned_defensive_units = vanilla and Armoured_Biters_Constants.nauvis.biter_armoured.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Armoured_Biters_Constants.nauvis.biter_armoured.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
-      --       max_friends_around_to_spawn = vanilla and Armoured_Biters_Constants.nauvis.biter_armoured.MAX_FRIENDS_AROUND_TO_SPAWN or (Armoured_Biters_Constants.nauvis.biter_armoured.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-      --       max_defensive_friends_around_to_spawn = vanilla and Armoured_Biters_Constants.nauvis.biter_armoured.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Armoured_Biters_Constants.nauvis.biter_armoured.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-      --       spawning_cooldown = {
-      --         max = 360 / (cooldown_modifier + 1),
-      --         min = 150 / (cooldown_modifier + 1)
-      --       },
-      --     }
-      --   }
-      -- else
-        difficulty = {
-          valid = true,
-          selected_difficulty = selected_difficulty,
-          biter = {
-            max_count_of_owned_units = vanilla and Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS or (Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
-            max_count_of_owned_defensive_units = vanilla and Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
-            max_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-            max_defensive_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-            spawning_cooldown = {
-              -- max = 360 / (cooldown_modifier + 1),
-              -- min = 150 / (cooldown_modifier + 1)
-              max = 360 / cooldown_modifier,
-              min = 150 / cooldown_modifier
-            },
+      difficulty = {
+        valid = true,
+        selected_difficulty = selected_difficulty,
+        biter = {
+          max_count_of_owned_units = vanilla and Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS or (Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+          max_count_of_owned_defensive_units = vanilla and Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Nauvis_Constants.nauvis.biter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+          max_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.biter.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+          max_defensive_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.biter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+          spawning_cooldown = {
+            max = 360 / cooldown_modifier,
+            min = 150 / cooldown_modifier
           },
-          spitter = {
-            max_count_of_owned_units = vanilla and Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS or (Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
-            max_count_of_owned_defensive_units = vanilla and Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
-            max_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-            max_defensive_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
-            spawning_cooldown = {
-              -- max = 360 / (cooldown_modifier + 1),
-              -- min = 150 / (cooldown_modifier + 1)
-              max = 360 / cooldown_modifier,
-              min = 150 / cooldown_modifier
-            }
+        },
+        spitter = {
+          max_count_of_owned_units = vanilla and Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS or (Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+          max_count_of_owned_defensive_units = vanilla and Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Nauvis_Constants.nauvis.spitter.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+          max_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.spitter.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+          max_defensive_friends_around_to_spawn = vanilla and Nauvis_Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Nauvis_Constants.nauvis.spitter.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+          spawning_cooldown = {
+            max = 360 / cooldown_modifier,
+            min = 150 / cooldown_modifier
           }
         }
-      -- end
+      }
 
       if ( (script and script.active_mods and script.active_mods["ArmouredBiters"])
         or (mods and mods["ArmouredBiters"]))
@@ -307,8 +242,6 @@ function create_difficulty(planet, selected_difficulty, modifier, cooldown_modif
           max_friends_around_to_spawn = vanilla and Armoured_Biters_Constants.nauvis.biter_armoured.MAX_FRIENDS_AROUND_TO_SPAWN or (Armoured_Biters_Constants.nauvis.biter_armoured.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
           max_defensive_friends_around_to_spawn = vanilla and Armoured_Biters_Constants.nauvis.biter_armoured.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Armoured_Biters_Constants.nauvis.biter_armoured.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
           spawning_cooldown = {
-            -- max = 360 / (cooldown_modifier + 1),
-            -- min = 150 / (cooldown_modifier + 1)
             max = 360 / cooldown_modifier,
             min = 150 / cooldown_modifier
           },
@@ -325,8 +258,6 @@ function create_difficulty(planet, selected_difficulty, modifier, cooldown_modif
           max_friends_around_to_spawn = vanilla and Gleba_Constants.gleba.small.MAX_FRIENDS_AROUND_TO_SPAWN or (Gleba_Constants.gleba.small.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
           max_defensive_friends_around_to_spawn = vanilla and Gleba_Constants.gleba.small.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Gleba_Constants.gleba.small.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
           spawning_cooldown = {
-            -- max = 360 / (cooldown_modifier + 1),
-            -- min = 150 / (cooldown_modifier + 1)
             max = 360 / cooldown_modifier,
             min = 150 / cooldown_modifier
           },
@@ -337,8 +268,6 @@ function create_difficulty(planet, selected_difficulty, modifier, cooldown_modif
           max_friends_around_to_spawn = vanilla and Gleba_Constants.gleba.regular.MAX_FRIENDS_AROUND_TO_SPAWN or (Gleba_Constants.gleba.regular.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
           max_defensive_friends_around_to_spawn = vanilla and Gleba_Constants.gleba.regular.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Gleba_Constants.gleba.regular.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
           spawning_cooldown = {
-            -- max = 360 / (cooldown_modifier + 1),
-            -- min = 150 / (cooldown_modifier + 1)
             max = 360 / cooldown_modifier,
             min = 150 / cooldown_modifier
           }
