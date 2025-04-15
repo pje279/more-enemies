@@ -10,7 +10,7 @@ local Unit_Group_Controller = require("control.controller.unit-group-controller"
 
 Log.info("Registering events")
 
-script.on_init(Initialization.init)
+-- script.on_init(Initialization.init)
 
 script.on_event(defines.events.on_tick, Spawn_Controller.do_tick)
 

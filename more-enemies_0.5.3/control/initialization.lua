@@ -8,6 +8,11 @@ local Entity_Validations = require("control.validations.entity-validations")
 local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Log = require("libs.log.log")
 local Log_Constants = require("libs.log.log-constants")
+local Version_Data = require("control.data.version-data")
+local More_Enemies_Data = require("control.data.more-enemies-data")
+local Overflow_Clone_Attempts_Data = require("control.data.overflow-clone-attempts-data")
+local Version_Repository = require("control.repositories.version-repository")
+local Version_Service = require("control.service.version-service")
 
 local initialization = {}
 
@@ -111,7 +116,9 @@ function initialization.purge(optionals)
 end
 
 function initialize(from_scratch)
-  if (not storage.more_enemies) then storage.more_enemies = {} end
+  -- if (not storage.more_enemies) then storage.more_enemies = {} end
+  if (not storage.more_enemies) then storage.more_enemies = More_Enemies_Data:new() end
+  local more_enemies_data = storage.more_enemies
   storage.more_enemies.do_nth_tick = false
 
   from_scratch = from_scratch or false
@@ -127,42 +134,70 @@ function initialize(from_scratch)
     do_purge()
 
     storage = {}
-    storage.more_enemies = {}
+    -- storage.more_enemies = {}
+    -- local more_enemies_data = More_Enemies_Data:new()
+    more_enemies_data = More_Enemies_Data:new()
+    Log.error(more_enemies_data)
+    -- more_enemies_data.valid = true
+    storage.more_enemies = more_enemies_data
+    -- storage.more_enemies.valid = true
 
-    storage.more_enemies.version = Constants.meta.version
+    -- local version_data = Version_Data:new()
+    -- version_data.created = game.tick
+    -- version_data.updated = game.tick
+    -- version_data.valid = true
+    -- storage.more_enemies.version_data = version_data
+    -- local version_data = storage.more_enemies.version_data
+    local version_data = more_enemies_data.version_data
+    version_data.valid = true
 
-    storage.more_enemies.clones = {}
+    -- storage.more_enemies.clones = {}
 
-    storage.more_enemies.clone = {}
-    storage.more_enemies.clone.count = 0
+    -- storage.more_enemies.clone = {}
+    -- storage.more_enemies.clone.count = 0
 
-    storage.more_enemies.mod = {}
+    -- storage.more_enemies.mod = {}
 
-    storage.more_enemies.mod.clone = {}
-    storage.more_enemies.mod.clone.count = 0
+    -- storage.more_enemies.mod.clone = {}
+    -- storage.more_enemies.mod.clone.count = 0
 
-    storage.more_enemies.mod.staged_clones = {}
+    -- storage.more_enemies.mod.staged_clones = {}
 
-    storage.more_enemies.staged_clones = {}
+    -- storage.more_enemies.staged_clones = {}
   else
     -- do_purge()
 
-    if (not storage.more_enemies) then storage.more_enemies = {} end
-    if (not storage.more_enemies.clones) then storage.more_enemies.clones = {} end
-    if (not storage.more_enemies.staged_clones) then storage.more_enemies.staged_clones = {} end
-    if (not storage.more_enemies.clone) then storage.more_enemies.clone = { count = 0 } end
-    if (storage.more_enemies.clone.count == nil) then storage.more_enemies.clone.count = 0 end
+    -- if (not storage.more_enemies) then storage.more_enemies = {} end
+    -- if (not storage.more_enemies.clones) then storage.more_enemies.clones = {} end
+    -- if (not storage.more_enemies.staged_clones) then storage.more_enemies.staged_clones = {} end
+    -- if (not storage.more_enemies.clone) then storage.more_enemies.clone = { count = 0 } end
+    -- if (storage.more_enemies.clone.count == nil) then storage.more_enemies.clone.count = 0 end
 
-    if (not storage.more_enemies.mod) then storage.more_enemies.mod = {} end
-    if (not storage.more_enemies.mod.staged_clones) then storage.more_enemies.mod.staged_clones = {} end
-    if (not storage.more_enemies.mod.clone) then storage.more_enemies.mod.clone = { count = 0 } end
-    if (storage.more_enemies.mod.clone.count ~= nil) then storage.more_enemies.mod.clone.count = 0 end
+    -- if (not storage.more_enemies.mod) then storage.more_enemies.mod = {} end
+    -- if (not storage.more_enemies.mod.staged_clones) then storage.more_enemies.mod.staged_clones = {} end
+    -- if (not storage.more_enemies.mod.clone) then storage.more_enemies.mod.clone = { count = 0 } end
+    -- if (storage.more_enemies.mod.clone.count ~= nil) then storage.more_enemies.mod.clone.count = 0 end
+
+    if (not more_enemies_data) then storage.more_enemies = More_Enemies_Data:new() end
+    if (not more_enemies_data.clones) then more_enemies_data.clones = More_Enemies_Data.clones end
+    if (not more_enemies_data.staged_clones) then more_enemies_data.staged_clones = More_Enemies_Data.staged_clones end
+    if (not more_enemies_data.clone) then more_enemies_data.clone = More_Enemies_Data.clone end
+    if (more_enemies_data.clone.count == nil) then more_enemies_data.clone.count = More_Enemies_Data.clone.count end
+
+    if (not more_enemies_data.mod) then more_enemies_data.mod = More_Enemies_Data.mod end
+    if (not more_enemies_data.mod.staged_clones) then more_enemies_data.mod.staged_clones = More_Enemies_Data.mod.staged_clones end
+    if (not more_enemies_data.mod.clone) then more_enemies_data.mod.clone = More_Enemies_Data.mod.clone end
+    if (more_enemies_data.mod.clone.count == nil) then more_enemies_data.mod.clone.count = More_Enemies_Data.mod.clone.count end
+
+    -- if (not more_enemies_data.storage.more_enemies.overflow_clone_attempts) then storage.more_enemies.overflow_clone_attempts = Overflow_Clone_Attempts_Data:new() end
   end
 
-  if (storage.more_enemies) then
-    if (not storage.more_enemies.version) then
-      storage.more_enemies.version = Constants.meta.version
-    elseif (not storage.more_enemies.version.valid) then
+  -- if (storage.more_enemies) then
+  if (more_enemies_data) then
+
+    -- local version_data = Version_Repository.get_version_data()
+    local version_data = more_enemies_data.version_data
+    if (not version_data.valid) then
       -- What do?
       -- Log.error("storage version is not valid")
       -- Log.error("If you're seeing this, please report it")
@@ -170,27 +205,33 @@ function initialize(from_scratch)
       initialize(true)
       return
     else
-      local version = Constants.meta.functions.version.validate()
-      if (version and not version.valid) then
-        storage.more_enemies.version.valid = false
+      local version = Version_Service.validate_version()
+      if (not version or not version.valid) then
+        version_data.valid = false
         return
       end
     end
 
-    storage.more_enemies.overflow_clone_attempts = {
-      count = 0,
-      warned = {
-        none = false,
-        error = false,
-        warn = false,
-        info = false
-      },
-      valid = true
-    }
+    more_enemies_data.overflow_clone_attempts = Overflow_Clone_Attempts_Data:new()
+    more_enemies_data.overflow_clone_attempts.valid = true
+    -- storage.more_enemies.overflow_clone_attempts = {
+    --   count = 0,
+    --   warned = {
+    --     none = false,
+    --     error = false,
+    --     warn = false,
+    --     info = false
+    --   },
+    --   valid = true
+    -- }
 
-    storage.more_enemies.nth_tick_complete = {}
-    storage.more_enemies.nth_tick_complete.current = true
-    storage.more_enemies.nth_tick_complete.previous = true
+    more_enemies_data.nth_tick_complete = {
+      current = true,
+      previous = true,
+    }
+    -- storage.more_enemies.nth_tick_complete = {}
+    -- storage.more_enemies.nth_tick_complete.current = true
+    -- storage.more_enemies.nth_tick_complete.previous = true
   end
 
   local user_setting = nil
@@ -220,22 +261,28 @@ function initialize(from_scratch)
       Log.info(planet)
       local difficulty = Difficulty_Utils.get_difficulty(planet.string_val, true)
       if (storage) then
-        if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
+        -- if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
+        if (not more_enemies_data.difficulties) then more_enemies_data.difficulties = {} end
 
         if (from_scratch) then
-          storage.more_enemies.difficulties[planet.string_val] = {
+          -- storage.more_enemies.difficulties[planet.string_val] = {
+            more_enemies_data.difficulties[planet.string_val] = {
             valid = true,
             difficulty = difficulty,
             surface = game.get_surface(planet.string_val),
             entities_spawned = 0,
           }
 
-          if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
-          storage.more_enemies.groups[planet.string_val] = {}
+          -- if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
+          -- storage.more_enemies.groups[planet.string_val] = {}
+          if (not more_enemies_data.groups) then more_enemies_data.groups = {} end
+          more_enemies_data.groups[planet.string_val] = {}
         end
 
-        if (not storage.more_enemies.difficulties[planet.string_val] or not storage.more_enemies.difficulties[planet.string_val].valid) then
-          storage.more_enemies.difficulties[planet.string_val] = {
+        -- if (not storage.more_enemies.difficulties[planet.string_val] or not storage.more_enemies.difficulties[planet.string_val].valid) then
+        if (not more_enemies_data.difficulties[planet.string_val] or not more_enemies_data.difficulties[planet.string_val].valid) then
+          -- storage.more_enemies.difficulties[planet.string_val] = {
+            more_enemies_data.difficulties[planet.string_val] = {
             valid = true,
             difficulty = difficulty,
             surface = game.get_surface(planet.string_val),
@@ -243,17 +290,22 @@ function initialize(from_scratch)
           }
         end
 
-        if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
+        -- if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
+        if (not more_enemies_data.groups) then storage.more_enemies.groups = {} end
 
-        if (not storage.more_enemies.groups[planet.string_val]) then
-          storage.more_enemies.groups[planet.string_val] = {}
+        -- if (not storage.more_enemies.groups[planet.string_val]) then
+        if (not more_enemies_data.groups[planet.string_val]) then
+          -- storage.more_enemies.groups[planet.string_val] = {}
+          more_enemies_data.groups[planet.string_val] = {}
         end
       end
     end
 
-    storage.more_enemies.do_nth_tick = true
+    -- storage.more_enemies.do_nth_tick = true
+    more_enemies_data.do_nth_tick = true
 
-    storage.more_enemies.valid = true
+    -- storage.more_enemies.valid = true
+    more_enemies_data.valid = true
   end
 
   if (from_scratch and game) then game.print("more-enemies: Initialization complete") end

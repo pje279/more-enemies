@@ -8,6 +8,7 @@ local Constants = require("libs.constants.constants")
 local Gleba_Constants = require("libs.constants.gleba-constants")
 local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
+local Log = require("libs.log.log")
 local Nauvis_Constants = require("libs.constants.nauvis-constants")
 local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
 

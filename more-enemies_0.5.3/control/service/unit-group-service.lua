@@ -229,6 +229,8 @@ function unit_group_service.unit_group_finished_gathering(event)
     end
   end
 
+  Log.info("5")
+
   if (more_enemies_group and not more_enemies_group.mod_name) then
     Log.debug("releasing from spawner")
     group.release_from_spawner()
