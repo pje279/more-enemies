@@ -27,17 +27,7 @@ function version_repository.save_version_data(optionals)
 
   return_val = storage.more_enemies.version_data
   return_val.created = return_val.created or game.tick
-  -- if (not return_val.created) then return_val.created = game.tick end
   return_val.updated = return_val.updated or game.tick
-
-  -- for k, v in pairs (return_val) do
-  --   Log.error(k)
-  --   Log.error(v)
-  -- end
-
-  -- return_val.major = Major_Data:new()
-  -- return_val.minor = Minor_Data:new()
-  -- return_val.bug_fix = Bug_Fix_Data:new()
 
   return version_repository.update_version_data(return_val)
 end
@@ -69,8 +59,7 @@ function version_repository.update_version_data(update_data, optionals)
   end
 
   version_data.updated = game.tick
-  -- version_data.valid = version_data.is_valid()
-  version_data.valid = version_data:is_valid()
+  -- version_data.valid = version_data:is_valid()
 
   -- Don't think this is necessary, but oh well
   storage.more_enemies.version_data = version_data

@@ -134,7 +134,6 @@ function initialize(from_scratch)
 
     storage = {}
     more_enemies_data = More_Enemies_Data:new()
-    -- Log.error(more_enemies_data)
     storage.more_enemies = more_enemies_data
 
     local version_data = more_enemies_data.version_data

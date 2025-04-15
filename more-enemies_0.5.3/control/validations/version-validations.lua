@@ -29,9 +29,9 @@ function version_validations.validate_version()
       -- Log.error("more-enemies: invalid version detected relative to version " .. Constants.meta.version.string_val .. "; naive reinitialization failed")
       Log.error("more-enemies: invalid version detected relative to version " .. Version_Data.string_val .. "; naive reinitialization failed")
       -- if (storage.more_enemies and storage.more_enemies.version and storage.more_enemies.version.string_val) then
-      if (version_data.string_val) then
+      if (Version_Data.string_val) then
         -- game.print("more-enemies: Version (" .. storage.more_enemies.version.string_val ..") is invalid relative to current installed version: (" .. Constants.meta.version.string_val .. ")")
-        game.print("more-enemies: Version (" .. version_data.string_val ..") is invalid relative to current installed version: (" .. Version_Data.string_val .. ")")
+        game.print("more-enemies: Version (" .. Version_Data.string_val ..") is invalid relative to current installed version: (" .. Version_Data.string_val .. ")")
       else
         -- game.print("more-enemies: Version is invalid relative to current installed version: (" .. Constants.meta.version.string_val .. ")")
         game.print("more-enemies: Version is invalid relative to current installed version: (" .. Version_Data.string_val .. ")")

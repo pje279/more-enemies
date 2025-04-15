@@ -83,7 +83,6 @@ function difficulty_utils.get_difficulty(planet, reindex)
     if (reindex) then
       difficulty = init_difficulty(planet, selected_difficulty)
     else
-      -- difficulty = difficulty_utils.set_difficulty(planet, selected_difficulty)
       difficulty = set_difficulty(planet, selected_difficulty)
     end
   else
@@ -105,7 +104,6 @@ function difficulty_utils.get_difficulty(planet, reindex)
   return difficulty
 end
 
--- function difficulty_utils.set_difficulty(planet, difficulty_setting)
 function set_difficulty(planet, difficulty_setting)
   difficulty_setting = difficulty_setting or Vanilla_Difficulty_Data:new()
   planet = planet or "nauvis"
@@ -121,33 +119,20 @@ function set_difficulty(planet, difficulty_setting)
 
   -- Determine difficulty
   if (difficulty_setting == Easy_Difficulty_Data.string_val or difficulty_setting == Easy_Difficulty_Data.value) then
-    -- modifier = Easy_Difficulty_Data.value
-    -- cooldown_modifier = Easy_Difficulty_Data.value
     selected_difficulty = Easy_Difficulty_Data:new()
   elseif (difficulty_setting == Vanilla_Difficulty_Data.string_val or difficulty_setting == Vanilla_Difficulty_Data.value) then
-    -- modifier = Vanilla_Difficulty_Data.value
-    -- cooldown_modifier = Vanilla_Difficulty_Data.value
     vanilla = true
     selected_difficulty = Vanilla_Difficulty_Data:new()
   elseif (difficulty_setting == Vanilla_Plus_Difficulty_Data.string_val or difficulty_setting == Vanilla_Plus_Difficulty_Data.value) then
-    -- modifier = Vanilla_Plus_Difficulty_Data.value
-    -- cooldown_modifier = Vanilla_Plus_Difficulty_Data.value
     selected_difficulty = Vanilla_Plus_Difficulty_Data:new()
   elseif (difficulty_setting == Hard_Difficulty_Data.string_val or difficulty_setting == Hard_Difficulty_Data.value) then
-    -- modifier = Hard_Difficulty_Data.value
-    -- cooldown_modifier = Hard_Difficulty_Data.value
     selected_difficulty = Hard_Difficulty_Data:new()
   elseif (difficulty_setting == Insanity_Difficulty_Data.string_val or difficulty_setting == Insanity_Difficulty_Data.value) then
-    -- modifier = Insanity_Difficulty_Data.value
-    -- cooldown_modifier = Insanity_Difficulty_Data.value
     selected_difficulty = Insanity_Difficulty_Data:new()
   else
     Log.error("No difficulty detected")
-    -- modifier = -1
-    -- cooldown_modifier = -1
   end
 
-  -- difficulty = create_difficulty(planet, selected_difficulty, modifier, cooldown_modifier, vanilla)
   difficulty = create_difficulty(planet, selected_difficulty, vanilla)
 
   if (storage) then
@@ -186,7 +171,6 @@ function init_difficulty(planet, difficulty_setting)
   return difficulty
 end
 
--- function create_difficulty(planet, selected_difficulty, modifier, cooldown_modifier, vanilla)
 function create_difficulty(planet, selected_difficulty, vanilla)
   modifier = modifier or 1
   if (modifier < 0) then modifier = 0 end
@@ -197,7 +181,6 @@ function create_difficulty(planet, selected_difficulty, vanilla)
     valid = false
   }
 
-  log(serpent.block(selected_difficulty))
   if (selected_difficulty and selected_difficulty.valid) then
     modifier = selected_difficulty.value
     cooldown_modifier = selected_difficulty.value

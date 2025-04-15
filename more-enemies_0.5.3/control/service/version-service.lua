@@ -30,7 +30,6 @@ function version_service.validate_version(optionals)
   }
 
   local version_data = Version_Repository.get_version_data()
-  -- Log.warn(version_data)
   if (not version_data.valid) then return return_val end
 
   -- Check the version numbers; initialize if necessary
