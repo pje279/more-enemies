@@ -123,12 +123,13 @@ function initialize(from_scratch)
   from_scratch = from_scratch or false
 
   local do_purge = function ()
-    if (storage.more_enemies and (storage.more_enemies.clones or storage.more_enemies.staged_clones)) then
+    if (storage and storage.more_enemies and (storage.more_enemies.clones or storage.more_enemies.staged_clones)) then
       initialization.purge()
     end
   end
 
   if (from_scratch) then
+    log("more-enemies: Initializing anew")
     if (game) then game.print("more-enemies: Initializing anew") end
     do_purge()
 
@@ -247,6 +248,8 @@ function initialize(from_scratch)
 
   if (from_scratch and game) then game.print("more-enemies: Initialization complete") end
   Log.info(storage)
+
+  return more_enemies_data
 end
 
 initialization.more_enemies = true

@@ -35,7 +35,6 @@ function version_validations.validate_version()
   local version_data = Version_Repository.get_version_data()
 
   if ( not version.valid) then
-    -- return_val = validate_fun(version)
     return_val = validate_fun()
   end
 

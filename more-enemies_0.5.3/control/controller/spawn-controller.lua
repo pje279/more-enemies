@@ -59,14 +59,6 @@ function spawn_controller.do_tick(event)
 
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
-  -- if (not storage or not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
-  -- if (not storage.more_enemies.nth_tick_complete) then storage.more_enemies.nth_tick_complete = { current = false, previous = false } end
-  -- if (not storage.more_enemies.nth_tick_cleanup_complete) then storage.more_enemies.nth_tick_cleanup_complete = { current = false, previous = false } end
-
-  -- storage.more_enemies.nth_tick_complete.previous = storage.more_enemies.nth_tick_complete.current
-  -- storage.more_enemies.nth_tick_cleanup_complete.previous = storage.more_enemies.nth_tick_cleanup_complete.current
-  -- storage.more_enemies.nth_tick_complete.current = false
-  -- storage.more_enemies.nth_tick_cleanup_complete.current = false
   if (not more_enemies_data.valid) then Initialization.reinit() end
   if (not more_enemies_data.nth_tick_complete) then more_enemies_data.nth_tick_complete = { current = false, previous = false } end
   if (not more_enemies_data.nth_tick_cleanup_complete) then more_enemies_data.nth_tick_cleanup_complete = { current = false, previous = false } end
@@ -77,28 +69,9 @@ function spawn_controller.do_tick(event)
   more_enemies_data.nth_tick_cleanup_complete.current = false
 
 
-  -- if (storage.more_enemies and storage.more_enemies.do_nth_tick) then
-  --   Log.info("attempt to process")
-  --   if (storage.more_enemies.nth_tick_cleanup_complete.previous and Spawn_Service.do_nth_tick(event)) then
-  --     Log.debug("do_nth_tick completed")
-  --     storage.more_enemies.nth_tick_complete.current = true
-  --   else
-  --     Log.debug("failed to finish processing")
-  --   end
-  -- end
-
-  -- Log.info("attempt to clean up")
-  -- if (storage.more_enemies.nth_tick_complete.current or not storage.more_enemies.nth_tick_cleanup_complete.previous) then
-  --   if (Spawn_Service.do_nth_tick_cleanup(event)) then
-  --     Log.debug("do_nth_tick_cleanup completed")
-  --     storage.more_enemies.nth_tick_cleanup_complete.current = true
-  --   else
-  --     Log.debug("failed to finish cleaning up")
-  --   end
-  -- end
   if (more_enemies_data.do_nth_tick) then
     Log.info("attempt to process")
-    if (more_enemies_data.nth_tick_cleanup_complete.previous and Spawn_Service.do_nth_tick(event)) then
+    if (more_enemies_data.nth_tick_cleanup_complete.previous and Spawn_Service.do_nth_tick(event, more_enemies_data)) then
       Log.debug("do_nth_tick completed")
       more_enemies_data.nth_tick_complete.current = true
     else

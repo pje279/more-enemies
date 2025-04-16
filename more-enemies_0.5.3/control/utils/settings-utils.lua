@@ -20,18 +20,9 @@ function settings_utils.is_vanilla(surface_name)
 
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
-  -- if (storage and not storage.more_enemies) then storage.more_enemies = {} end
-  -- if (storage and not storage.more_enemies.difficulties) then Difficulty_Utils.get_difficulty(surface_name, true) end
   if (not more_enemies_data.valid) then Initialization.reinit() end
   if (not more_enemies_data.difficulties) then Difficulty_Utils.get_difficulty(surface_name, true) end
 
-  -- if ( not storage
-  --   or not storage.more_enemies
-  --   or not storage.more_enemies.difficulties
-  --   or not storage.more_enemies.difficulties[surface_name]
-  --   or not storage.more_enemies.difficulties[surface_name].difficulty
-  --   or not storage.more_enemies.difficulties[surface_name].difficulty.selected_difficulty
-  --   or storage.more_enemies.difficulties[surface_name].difficulty.selected_difficulty.string_val ~= Constants.difficulty.VANILLA.string_val)
   if ( not more_enemies_data
     or not more_enemies_data.difficulties
     or not more_enemies_data.difficulties[surface_name]

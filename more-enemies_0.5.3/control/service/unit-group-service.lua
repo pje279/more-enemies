@@ -23,9 +23,6 @@ function unit_group_service.unit_group_created(event)
   if (not more_enemies_data.valid) then Initialization.reinit() end
   if (not more_enemies_data.do_nth_tick) then return end
 
-  -- if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
-  -- if (not storage.more_enemies.do_nth_tick) then return end
-
   local group = event.group
 
   if (not group) then return end
@@ -43,12 +40,6 @@ function unit_group_service.unit_group_created(event)
   if (not group.position) then return end
   Log.info(group.position)
 
-  -- if (  storage
-  --   and storage.more_enemies
-  --   and storage.more_enemies.groups
-  --   and storage.more_enemies.groups[group.surface.name]
-  --   and storage.more_enemies.groups[group.surface.name][group.unique_id]
-  --   and storage.more_enemies.groups[group.surface.name][group.unique_id].valid)
   if (  more_enemies_data
     and more_enemies_data.groups
     and more_enemies_data.groups[group.surface.name]
@@ -76,24 +67,18 @@ function unit_group_service.unit_group_created(event)
 
   local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(group.surface.name)
 
-  -- if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
-  -- if (not storage.more_enemies.groups) then storage.more_enemies.groups = {} end
   if (not more_enemies_data.groups) then storage.more_enemies.groups = {} end
 
   Log.info("adding group: " .. serpent.block(group))
 
   Log.info(group.surface.name)
 
-  -- Log.info("before: " .. serpent.block(storage.more_enemies.groups))
   Log.info("before: " .. serpent.block(more_enemies_data.groups))
 
-  -- if (not storage.more_enemies.groups[group.surface.name]) then
-  --   storage.more_enemies.groups[group.surface.name] = {}
   if (not more_enemies_data.groups[group.surface.name]) then
     more_enemies_data.groups[group.surface.name] = {}
   end
 
-  -- Log.info("after: " .. serpent.block(storage.more_enemies.groups))
   Log.info("after: " .. serpent.block(more_enemies_data.groups))
 
   local loop_len = 1
@@ -112,7 +97,6 @@ function unit_group_service.unit_group_created(event)
   end
   Log.info("loop_len: " .. serpent.block(loop_len))
 
-  -- storage.more_enemies.groups[group.surface.name][group.unique_id] = {
   more_enemies_data.groups[group.surface.name][group.unique_id] = {
     valid = true,
     group = group,
@@ -121,7 +105,6 @@ function unit_group_service.unit_group_created(event)
     mod_name = nil,
   }
 
-  -- Log.debug(storage.more_enemies.groups[group.surface.name][group.unique_id])
   Log.debug(more_enemies_data.groups[group.surface.name][group.unique_id])
 end
 
@@ -141,13 +124,10 @@ function unit_group_service.unit_group_finished_gathering(event)
 
   local max_num_clones = Settings_Service.get_maximum_number_of_clones()
 
-  -- if (  storage.more_enemies.clone and storage.more_enemies.clone.count
-  --   and storage.more_enemies.clone.count > max_num_clones)
   if (  more_enemies_data.clone and more_enemies_data.clone.count
     and more_enemies_data.clone.count > max_num_clones)
   then
     Log.debug("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
-    -- Log.debug("Currently " .. serpent.block(storage.more_enemies.clone.count) .. " clones")
     Log.debug("Currently " .. serpent.block(more_enemies_data.clone.count) .. " clones")
     return
   end
@@ -218,17 +198,11 @@ function unit_group_service.unit_group_finished_gathering(event)
   Log.info("4")
 
   more_enemies_group = { valid = false }
-  -- if (    storage
-  --     and storage.more_enemies
-  --     and storage.more_enemies.groups
-  --     and storage.more_enemies.groups[group.surface.name]
-  --     and storage.more_enemies.groups[group.surface.name][group.unique_id] ~= nil)
   if (    more_enemies_data
       and more_enemies_data.groups
       and more_enemies_data.groups[group.surface.name]
       and more_enemies_data.groups[group.surface.name][group.unique_id] ~= nil)
   then
-    -- more_enemies_group = storage.more_enemies.groups[group.surface.name][group.unique_id]
     more_enemies_group = more_enemies_data.groups[group.surface.name][group.unique_id]
   end
 

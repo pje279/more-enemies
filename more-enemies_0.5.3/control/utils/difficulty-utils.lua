@@ -27,12 +27,6 @@ function difficulty_utils.get_difficulty(planet, reindex)
   Log.debug(reindex)
   if (storage) then Log.info(storage.more_enemies.difficulties) end
 
-  -- if (  not reindex
-  --   and planet
-  --   and storage
-  --   and storage.more_enemies
-  --   and storage.more_enemies.difficulties
-  --   and storage.more_enemies.difficulties[planet].valid)
   if (  not reindex
     and planet
     and storage
@@ -45,13 +39,6 @@ function difficulty_utils.get_difficulty(planet, reindex)
     Log.info(planet_difficulty_setting)
     Log.info(storage.more_enemies.difficulties)
 
-    -- if ( not storage.more_enemies
-    --   or not storage.more_enemies.difficulties
-    --   or not storage.more_enemies.difficulties[planet]
-    --   or not storage.more_enemies.difficulties[planet].difficulty
-    --   or not storage.more_enemies.difficulties[planet].difficulty.selected_difficulty
-    --   or not storage.more_enemies.difficulties[planet].difficulty.selected_difficulty.valid
-    --   or     storage.more_enemies.difficulties[planet].difficulty.selected_difficulty.string_val ~= planet_difficulty_setting)
     if ( not more_enemies_data.difficulties
       or not more_enemies_data.difficulties[planet]
       or not more_enemies_data.difficulties[planet].difficulty
@@ -62,7 +49,6 @@ function difficulty_utils.get_difficulty(planet, reindex)
       Log.debug("reindexing")
       return difficulty_utils.get_difficulty(planet, true)
     else
-      -- return storage.more_enemies.difficulties[planet]
       return more_enemies_data.difficulties[planet]
     end
   end
@@ -78,8 +64,6 @@ function difficulty_utils.get_difficulty(planet, reindex)
     return difficulty
   end
 
-  -- if (storage and not storage.more_enemies) then storage.more_enemies = {} end
-  -- if (storage and storage.more_enemies and not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
   if (storage and not more_enemies_data) then more_enemies_data = More_Enemies_Data:new() end
   if (storage and not more_enemies_data.difficulties) then more_enemies_data.difficulties = {} end
 
@@ -89,7 +73,6 @@ function difficulty_utils.get_difficulty(planet, reindex)
     return difficulty
   end
 
-  -- if (storage and storage.more_enemies and storage.more_enemies.difficulties and not storage.more_enemies.difficulties[planet]) then storage.more_enemies.difficulties[planet] = difficulty end
   if (storage and more_enemies_data.difficulties and not more_enemies_data.difficulties[planet]) then more_enemies_data.difficulties[planet] = difficulty end
 
   local planet_difficulty = Settings_Service.get_difficulty(planet)
@@ -111,18 +94,12 @@ function difficulty_utils.get_difficulty(planet, reindex)
   Log.info(difficulty)
 
   -- If storage difficulty for the planet is invalid, replace it
-  -- if (  storage
-  --   and storage.more_enemies
-  --   and storage.more_enemies.difficulties
-  --   and storage.more_enemies.difficulties[planet]
-  --   and not storage.more_enemies.difficulties[planet].valid)
   if (  storage
     and more_enemies_data
     and more_enemies_data.difficulties
     and more_enemies_data.difficulties[planet]
     and not more_enemies_data.difficulties[planet].valid)
   then
-    -- storage.more_enemies.difficulties[planet] = difficulty
     more_enemies_data.difficulties[planet] = difficulty
   end
 
@@ -163,10 +140,6 @@ function set_difficulty(planet, difficulty_setting)
   difficulty = create_difficulty(planet, selected_difficulty, vanilla)
 
   if (storage) then
-    -- if (not storage.more_enemies) then storage.more_enemies = More_Enemies_Data:new() end
-    -- if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = {} end
-    -- if (not storage.more_enemies.difficulties[planet]) then storage.more_enemies.difficulties[planet] = {} end
-    -- storage.more_enemies.difficulties[planet].difficulty = difficulty
     if (not more_enemies_data.difficulties) then more_enemies_data.difficulties = {} end
     if (not more_enemies_data.difficulties[planet]) then more_enemies_data.difficulties[planet] = {} end
     more_enemies_data.difficulties[planet].difficulty = difficulty
@@ -195,9 +168,6 @@ function init_difficulty(planet, difficulty_setting)
   difficulty = create_difficulty(planet, difficulty_setting)
 
   if (storage) then
-    -- if (not storage.more_enemies.difficulties) then storage.more_enemies.difficulties = More_Enemies_Data:new() end
-    -- if (not storage.more_enemies.difficulties[planet]) then storage.more_enemies.difficulties[planet] = {} end
-    -- storage.more_enemies.difficulties[planet].difficulty = difficulty
     if (not more_enemies_data.difficulties) then more_enemies_data.difficulties = More_Enemies_Data:new() end
     if (not more_enemies_data.difficulties[planet]) then more_enemies_data.difficulties[planet] = {} end
     more_enemies_data.difficulties[planet].difficulty = difficulty
