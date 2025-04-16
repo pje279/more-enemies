@@ -10,7 +10,8 @@ bug_fix_data.valid = true
 function bug_fix_data:new(obj)
   Log.debug("bug_fix_data:new")
   Log.info(obj)
-  obj = obj or {}
+
+  obj = obj or Data:new()
 
   local defaults = {
     created = game and game.tick or nil,

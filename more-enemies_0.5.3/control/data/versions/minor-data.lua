@@ -11,7 +11,7 @@ function minor_data:new(obj)
   Log.debug("minor_data:new")
   Log.info(obj)
 
-  obj = obj or {}
+  obj = obj or Data:new()
 
   local defaults = {
     created = game and game.tick or nil,

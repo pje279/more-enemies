@@ -15,10 +15,14 @@ local Settings_Service = require("control.service.settings-service")
 local Settings_Utils = require("control.utils.settings-utils")
 local Spawn_Utils = require("control.utils.spawn-utils")
 local Unit_Group_Utils = require("control.utils.unit-group-utils")
+local Unit_Group_Data = require("control.data.unit-group-data")
 
 local unit_group_service = {}
 
 function unit_group_service.unit_group_created(event)
+  Log.debug("unit_group_service.unit_group_created")
+  Log.info(event)
+
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
   if (not more_enemies_data.do_nth_tick) then return end
@@ -40,9 +44,7 @@ function unit_group_service.unit_group_created(event)
   if (not group.position) then return end
   Log.info(group.position)
 
-  if (  more_enemies_data
-    and more_enemies_data.groups
-    and more_enemies_data.groups[group.surface.name]
+  if (  more_enemies_data.groups[group.surface.name]
     and more_enemies_data.groups[group.surface.name][group.unique_id]
     and more_enemies_data.groups[group.surface.name][group.unique_id].valid)
   then
@@ -97,13 +99,19 @@ function unit_group_service.unit_group_created(event)
   end
   Log.info("loop_len: " .. serpent.block(loop_len))
 
-  more_enemies_data.groups[group.surface.name][group.unique_id] = {
-    valid = true,
-    group = group,
-    count = 0,
-    max_count = loop_len,
-    mod_name = nil,
-  }
+  local unit_group_data = Unit_Group_Data:new()
+  unit_group_data.group = group
+  unit_group_data.max_count = loop_len
+  unit_group_data.valid = true
+
+  more_enemies_data.groups[group.surface.name][group.unique_id] = unit_group_data
+  -- more_enemies_data.groups[group.surface.name][group.unique_id] = {
+  --   valid = true,
+  --   group = group,
+  --   count = 0,
+  --   max_count = loop_len,
+  --   mod_name = nil,
+  -- }
 
   Log.debug(more_enemies_data.groups[group.surface.name][group.unique_id])
 end
@@ -113,6 +121,8 @@ end
 --]]
 
 function unit_group_service.unit_group_finished_gathering(event)
+  Log.debug("unit_group_service.unit_group_finished_gathering")
+  Log.info(event)
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
   local group = event.group

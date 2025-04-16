@@ -14,7 +14,8 @@ vanilla_plus_difficulty_data.valid = true
 function vanilla_plus_difficulty_data:new (obj)
   Log.debug("vanilla_plus_difficulty_data:new")
   Log.info(obj)
-  obj = obj or {}
+
+  obj = obj or Data:new()
 
   local defaults = {
     order = self.order,

@@ -44,7 +44,7 @@ function more_enemies_data:new(obj)
   Log.debug("more_enemies_data:new")
   Log.info(obj)
 
-  obj = obj or {}
+  obj = obj or Data:new()
 
   local defaults = {
     clones = self.clones,

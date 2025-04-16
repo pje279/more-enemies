@@ -17,12 +17,9 @@ function overflow_clone_attempts_data:new(obj)
   Log.debug("version_data:new")
   Log.info(obj)
 
-  obj = obj or {}
+  obj = obj or Data:new()
 
   local defaults = {
-    -- created = self.created,
-    -- updated = self.updated,
-    -- valid = self.valid,
     count = self.count,
     warned = self.warned,
   }

@@ -66,32 +66,23 @@ function more_enemies_commands.version(command)
     Log.info("commands.version")
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
-    -- if (not storage.more_enemies or not storage.more_enemies.valid) then
     if (not more_enemies_data.valid) then
       log(serpent.block("storage.more_enemies is nil or invalid; could not obtain version"))
       player.print(serpent.block("storage.more_enemies is nil or invalid; could not obtain version"))
       return
     end
 
-    -- local more_enemies = storage.more_enemies
-
-    -- if (not more_enemies.version or not more_enemies.version.valid) then
     if (not more_enemies_data.version_data.valid) then
       log(serpent.block("storage.more_enemies.version is nil or invalid; could not obtain version"))
       player.print(serpent.block("storage.more_enemies.version is nil or invalid; could not obtain version"))
       return
     end
 
-    -- local version = more_enemies.version
     local version_data = more_enemies_data.version_data
 
-    -- log(serpent.block("more_enemies mod version: " .. Constants.meta.version.string_val))
-    -- player.print(serpent.block("more_enemies mod version: " .. Constants.meta.version.string_val))
     log(serpent.block("more_enemies mod version: " .. Version_Data.string_val))
     player.print(serpent.block("more_enemies mod version: " .. Version_Data.string_val))
 
-    -- log(serpent.block("more_enemies storage version: " .. version.string_val))
-    -- player.print(serpent.block("more_enemies storage version: " .. version.string_val))
     log(serpent.block("more_enemies storage version: " .. version_data.string_val))
     player.print(serpent.block("more_enemies storage version: " .. version_data.string_val))
   end)
@@ -103,17 +94,14 @@ function more_enemies_commands.set_do_nth_tick(command)
     Log.info("commands.set_do_nth_tick", true)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
-    -- if (storage and storage.more_enemies and storage.more_enemies.valid) then
     if (more_enemies_data.valid) then
       if (command.parameter ~= nil and (command.parameter or command.parameter == "true" or command.parameter >= 1)) then
         log("Setting do_nth_tick to true")
         player.print("Setting do_nth_tick to true")
-        -- storage.more_enemies.do_nth_tick = true
         more_enemies_data.do_nth_tick = true
       else
         log("Setting do_nth_tick to false")
         player.print("Setting do_nth_tick to false")
-        -- storage.more_enemies.do_nth_tick = false
         more_enemies_data.do_nth_tick = false
       end
     else
@@ -129,10 +117,7 @@ function more_enemies_commands.get_do_nth_tick(command)
     Log.info("commands.get_do_nth_tick", true)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
-    -- if (storage and storage.more_enemies and storage.more_enemies.valid) then
     if (more_enemies_data.valid) then
-        -- log("do_nth_tick = " .. serpent.block(storage.more_enemies.do_nth_tick))
-        -- player.print("do_nth_tick = " .. serpent.block(storage.more_enemies.do_nth_tick))
         log("do_nth_tick = " .. serpent.block(more_enemies_data.do_nth_tick))
         player.print("do_nth_tick = " .. serpent.block(more_enemies_data.do_nth_tick))
     else
@@ -148,7 +133,6 @@ function more_enemies_commands.purge_all(command)
     Log.info("commands.purge", true)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
-    -- if (  storage and storage.more_enemies and storage.more_enemies.valid) then
     if (more_enemies_data.valid) then
       player.print("Purging all")
       Initialization.purge()
@@ -165,7 +149,6 @@ function more_enemies_commands.purge_clones(command)
     Log.info("commands.purge", true)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
-    -- if (  storage and storage.more_enemies and storage.more_enemies.valid) then
     if (more_enemies_data.valid) then
       player.print("Purging clones")
       Initialization.purge({ clones = true })
@@ -182,7 +165,6 @@ function more_enemies_commands.purge_modded_clones(command)
     Log.info("commands.purge", true)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
-    -- if (  storage and storage.more_enemies and storage.more_enemies.valid) then
     if (more_enemies_data.valid) then
       player.print("Purging mod added clones")
       Initialization.purge({ mod_added_clones = true })

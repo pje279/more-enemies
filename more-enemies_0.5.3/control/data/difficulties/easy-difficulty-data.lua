@@ -14,7 +14,8 @@ easy_difficulty_data.valid = true
 function easy_difficulty_data:new (obj)
   Log.debug("easy_difficulty_data:new")
   Log.info(obj)
-  obj = obj or {}
+
+  obj = obj or Data:new()
 
   local defaults = {
     order = self.order,

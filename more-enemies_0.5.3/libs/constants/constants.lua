@@ -16,18 +16,23 @@ constants.difficulty = {}
 
 constants.difficulty.EASY = Easy_Difficulty_Data:new()
 constants.difficulty.EASY.order = 1
+constants.difficulty.EASY.valid = true
 
 constants.difficulty.VANILLA = Vanilla_Difficulty_Data:new()
 constants.difficulty.VANILLA.order = constants.difficulty.EASY.order + 1
+constants.difficulty.VANILLA.valid = true
 
 constants.difficulty.VANILLA_PLUS = Vanilla_Plus_Difficulty_Data:new()
 constants.difficulty.VANILLA_PLUS.order = constants.difficulty.VANILLA.order + 1
+constants.difficulty.VANILLA_PLUS.valid = true
 
 constants.difficulty.HARD = Hard_Difficulty_Data:new()
 constants.difficulty.HARD.order = constants.difficulty.VANILLA_PLUS.order + 1
+constants.difficulty.HARD.valid = true
 
 constants.difficulty.INSANITY = Insanity_Difficulty_Data:new()
 constants.difficulty.INSANITY.order = constants.difficulty.HARD.order + 1
+constants.difficulty.INSANITY.valid = true
 
 local difficulties = {}
 local difficulties_array = {}
