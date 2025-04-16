@@ -39,46 +39,6 @@ function version_validations.validate_version()
     return_val = validate_fun()
   end
 
-  -- if (storage.more_enemies and storage.more_enemies.version) then
-
-  --   local print_fun = function ()
-  --     if (version_data.string_val == nil) then
-  --       version_data.string_val = "nil"
-  --     end
-
-  --     log("more-enemies: Inconsistent version detected ("
-  --       .. Version_Data.string_val ..") with existing data ("
-  --       .. version_data.string_val
-  --       .. ");") -- recommend executing command /more_enemies.init")
-
-  --     game.print("more-enemies: Inconsistent version detected ("
-  --       .. Version_Data.string_val ..") with existing data ("
-  --       .. version_data.string_val
-  --       .. ");") -- recommend executing command /more_enemies.init")
-  --   end
-
-  --   if (not version_data.major) then version_data.major = { value = 0, warned = false } end
-  --   if (not version_data.minor) then version_data.minor = { value = 0, warned = false } end
-  --   if (not version_data.bug_fix) then version_data.bug_fix = { value = 0, warned = false } end
-
-  --   if (  version_data.major.value ~= Version_Data.major.value
-  --     and not version_data.major.warned) then
-  --     version_data.major.warned = true
-  --     print_fun()
-  --   elseif (version_data.minor.value ~= Version_Data.minor.value
-  --       and not version_data.major.warned
-  --       and not version_data.minor.warned) then
-  --     version_data.minor.warned = true
-  --     print_fun()
-  --   elseif (version_data.bug_fix.value ~= Version_Data.bug_fix.value
-  --       and not version_data.major.warned
-  --       and not version_data.minor.warned
-  --       and not version_data.bug_fix.warned) then
-  --     version_data.bug_fix.warned = true
-  --     print_fun()
-  --   end
-  -- end
-
   return return_val
 end
 

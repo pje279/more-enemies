@@ -7,24 +7,37 @@ local BREAM_Settings_Constants = require("libs.constants.settings.mods.BREAM.BRE
 local Constants = require("libs.constants.constants")
 local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
+local Initialization = require("control.initialization")
 local Log = require("libs.log.log")
+local More_Enemies_Repository = require("control.repositories.more-enemies-repository")
 local Settings_Service = require("control.service.settings-service")
+local Vanilla_Difficulty_Data = require("control.data.difficulties.vanilla-difficulty-data")
 
 settings_utils = {}
 
 function settings_utils.is_vanilla(surface_name)
   local return_val = true
 
-  if (storage and not storage.more_enemies) then storage.more_enemies = {} end
-  if (storage and not storage.more_enemies.difficulties) then Difficulty_Utils.get_difficulty(surface_name, true) end
+  local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
-  if ( not storage
-    or not storage.more_enemies
-    or not storage.more_enemies.difficulties
-    or not storage.more_enemies.difficulties[surface_name]
-    or not storage.more_enemies.difficulties[surface_name].difficulty
-    or not storage.more_enemies.difficulties[surface_name].difficulty.selected_difficulty
-    or storage.more_enemies.difficulties[surface_name].difficulty.selected_difficulty.string_val ~= Constants.difficulty.VANILLA.string_val)
+  -- if (storage and not storage.more_enemies) then storage.more_enemies = {} end
+  -- if (storage and not storage.more_enemies.difficulties) then Difficulty_Utils.get_difficulty(surface_name, true) end
+  if (not more_enemies_data.valid) then Initialization.reinit() end
+  if (not more_enemies_data.difficulties) then Difficulty_Utils.get_difficulty(surface_name, true) end
+
+  -- if ( not storage
+  --   or not storage.more_enemies
+  --   or not storage.more_enemies.difficulties
+  --   or not storage.more_enemies.difficulties[surface_name]
+  --   or not storage.more_enemies.difficulties[surface_name].difficulty
+  --   or not storage.more_enemies.difficulties[surface_name].difficulty.selected_difficulty
+  --   or storage.more_enemies.difficulties[surface_name].difficulty.selected_difficulty.string_val ~= Constants.difficulty.VANILLA.string_val)
+  if ( not more_enemies_data
+    or not more_enemies_data.difficulties
+    or not more_enemies_data.difficulties[surface_name]
+    or not more_enemies_data.difficulties[surface_name].difficulty
+    or not more_enemies_data.difficulties[surface_name].difficulty.selected_difficulty
+    or more_enemies_data.difficulties[surface_name].difficulty.selected_difficulty.string_val ~= Vanilla_Difficulty_Data.string_val)
   then
     return_val = false
   end
@@ -35,7 +48,7 @@ function settings_utils.is_vanilla(surface_name)
 
   -- Mod added
   if (return_val and script and script.active_mods and (script.active_mods["BREAM"])) then
-    if (return_val and Settings_Service.get_BREAM_difficulty() ~= Constants.difficulty.VANILLA.string_val) then return_val = false end
+    if (return_val and Settings_Service.get_BREAM_difficulty() ~= Vanilla_Difficulty_Data.string_val) then return_val = false end
     if (return_val and Settings_Service.get_BREAM_clone_units() ~= BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.default_value) then return_val = false end
   end
 

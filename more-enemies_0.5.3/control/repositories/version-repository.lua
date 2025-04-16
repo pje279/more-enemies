@@ -8,6 +8,7 @@ local Version_Data = require("control.data.version-data")
 local Bug_Fix_Data = require("control.data.versions.bug-fix-data")
 local Major_Data = require("control.data.versions.major-data")
 local Minor_Data = require("control.data.versions.minor-data")
+local More_Enemies_Data = require("control.data.more-enemies-data")
 
 local version_repository = {}
 
@@ -22,12 +23,11 @@ function version_repository.save_version_data(optionals)
   optionals = optionals or {}
 
   if (not storage) then return return_val end
-  if (not storage.more_enemies) then storage.more_enemies = {} end
+  if (not storage.more_enemies) then storage.more_enemies = More_Enemies_Data:new() end
   if (not storage.more_enemies.version_data) then storage.more_enemies.version_data = return_val end
 
   return_val = storage.more_enemies.version_data
   return_val.created = return_val.created or game.tick
-  return_val.updated = return_val.updated or game.tick
 
   return version_repository.update_version_data(return_val)
 end
@@ -45,7 +45,7 @@ function version_repository.update_version_data(update_data, optionals)
   optionals = optionals or {}
 
   if (not storage) then return return_val end
-  if (not storage.more_enemies) then storage.more_enemies = {} end
+  if (not storage.more_enemies) then storage.more_enemies = More_Enemies_Data:new() end
   if (not storage.more_enemies.version_data) then
     -- If it doesn't exist, generate it
     storage.more_enemies.version_data = return_val
@@ -77,7 +77,7 @@ function version_repository.get_version_data(optionals)
   optionals = optionals or {}
 
   if (not storage) then return return_val end
-  if (not storage.more_enemies) then storage.more_enemies = {} end
+  if (not storage.more_enemies) then storage.more_enemies = More_Enemies_Data:new() end
   if (not storage.more_enemies.version_data) then
     -- If it doesn't exist, generate it
     storage.more_enemies.version_data = return_val

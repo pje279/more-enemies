@@ -3,7 +3,7 @@ if _settings_controller and _settings_controller.more_enemies then
   return _settings_controller
 end
 
-local Constants = require("libs.constants.constants")
+-- local Constants = require("libs.constants.constants")
 local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Gleba_Constants = require("libs.constants.gleba-constants")
 local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
@@ -36,7 +36,6 @@ function invoke(event, fun, params)
   Log.info(params)
   fun(params.planet, params.reindex)
 end
-
 
 settings_controller.more_enemies = true
 

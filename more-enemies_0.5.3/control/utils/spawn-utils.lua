@@ -11,6 +11,7 @@ local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Initialization = require("control.initialization")
 local Log = require("libs.log.log")
+local More_Enemies_Repository = require("control.repositories.more-enemies-repository")
 local Nauvis_Constants = require("libs.constants.nauvis-constants")
 local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
 local Difficulty_Utils = require("control.utils.difficulty-utils")
@@ -22,11 +23,14 @@ local spawn_utils = {}
 function spawn_utils.duplicate_unit_group(group, tick)
   Log.info("spawn.duplicate_unit_group" .. serpent.block(tick))
 
-  if (storage) then
-    if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
-  end
+  local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
+  if (not more_enemies_data.valid) then Initialization.reinit() end
+  -- if (storage) then
+  --   if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
+  -- end
 
-  if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
+  -- if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
+  if (not more_enemies_data.do_nth_tick) then return end
   if (not group or not group.valid or not group.surface or not group.surface.valid) then return end
   if (Settings_Utils.is_vanilla(group.surface.name)) then return end
 
@@ -68,11 +72,14 @@ function spawn_utils.duplicate_unit_group(group, tick)
 end
 
 function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
-  if (storage) then
-    if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
-  end
+  -- if (storage) then
+  --   if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
+  -- end
+  local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
+  if (not more_enemies_data.valid) then Initialization.reinit() end
 
-  if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
+  -- if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
+  if (not more_enemies_data.do_nth_tick) then return end
 
   Log.info(optionals)
   optionals = optionals or {
@@ -157,16 +164,21 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     Log.debug("Cloning")
     if (not entity.valid) then return end
 
-    if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
-    if (not storage.more_enemies.clones) then storage.more_enemies.clones = {} end
+    -- if (not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
+    -- if (not storage.more_enemies.clones) then storage.more_enemies.clones = {} end
+    if (not more_enemies_data.valid) then Initialization.reinit() end
+    if (not more_enemies_data.clones) then more_enemies_data.clones = {} end
 
     local clone = nil
 
-    if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return clone end
+    -- if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return clone end
+    if (not more_enemies_data.do_nth_tick) then return clone end
 
     local max_num_clones = Settings_Service.get_maximum_number_of_clones()
-    if (  storage.more_enemies.clone and storage.more_enemies.clone.count
-      and storage.more_enemies.clone.count > max_num_clones)
+    -- if (  storage.more_enemies.clone and storage.more_enemies.clone.count
+    --   and storage.more_enemies.clone.count > max_num_clones)
+    if (  more_enemies_data.clone and more_enemies_data.clone.count
+      and more_enemies_data.clone.count > max_num_clones)
     then
       if (not Entity_Validations.get_mod_name(optionals) or optionals.mod_name ~= "BREAM") then
         Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
@@ -176,14 +188,19 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     end
 
     local max_num_modded_clones = Settings_Service.get_maximum_number_of_modded_clones()
-    if (  storage.more_enemies.mod
-      and storage.more_enemies.mod.clone
-      and storage.more_enemies.mod.clone.count
-      and storage.more_enemies.mod.clone.count > max_num_modded_clones
+    -- if (  storage.more_enemies.mod
+    --   and storage.more_enemies.mod.clone
+    --   and storage.more_enemies.mod.clone.count
+    --   and storage.more_enemies.mod.clone.count > max_num_modded_clones
+    if (  more_enemies_data.mod
+      and more_enemies_data.mod.clone
+      and more_enemies_data.mod.clone.count
+      and more_enemies_data.mod.clone.count > max_num_modded_clones
       and Entity_Validations.get_mod_name(optionals))
     then
       Log.warn("Tried to clone more than the mod unit limit: " .. serpent.block(max_num_clones))
-      Log.warn("Currently " .. serpent.block(storage.more_enemies.mod.clone.count) .. " clones")
+      -- Log.warn("Currently " .. serpent.block(storage.more_enemies.mod.clone.count) .. " clones")
+      Log.warn("Currently " .. serpent.block(more_enemies_data.mod.clone.count) .. " clones")
       return
     end
 
@@ -203,16 +220,23 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     Log.debug("Cloned")
     Log.info(clone)
 
-    if (not storage.more_enemies.clone) then storage.more_enemies.clone = {} end
-    if (not storage.more_enemies.clone.count) then storage.more_enemies.clone.count = 0 end
-    if (not storage.more_enemies.mod) then storage.more_enemies.mod = {} end
-    if (not storage.more_enemies.mod.clone) then storage.more_enemies.mod.clone = {} end
-    if (not storage.more_enemies.mod.clone.count) then storage.more_enemies.mod.clone.count = 0 end
+    -- if (not storage.more_enemies.clone) then storage.more_enemies.clone = {} end
+    -- if (not storage.more_enemies.clone.count) then storage.more_enemies.clone.count = 0 end
+    -- if (not storage.more_enemies.mod) then storage.more_enemies.mod = {} end
+    -- if (not storage.more_enemies.mod.clone) then storage.more_enemies.mod.clone = {} end
+    -- if (not storage.more_enemies.mod.clone.count) then storage.more_enemies.mod.clone.count = 0 end
+    if (not more_enemies_data.clone) then more_enemies_data.clone = {} end
+    if (not more_enemies_data.clone.count) then more_enemies_data.clone.count = 0 end
+    if (not more_enemies_data.mod) then more_enemies_data.mod = {} end
+    if (not more_enemies_data.mod.clone) then more_enemies_data.mod.clone = {} end
+    if (not more_enemies_data.mod.clone.count) then more_enemies_data.mod.clone.count = 0 end
 
     if (Entity_Validations.get_mod_name(optionals)) then
-      storage.more_enemies.mod.clone.count = storage.more_enemies.mod.clone.count + 1
+      -- storage.more_enemies.mod.clone.count = storage.more_enemies.mod.clone.count + 1
+      more_enemies_data.mod.clone.count = more_enemies_data.mod.clone.count + 1
     else
-      storage.more_enemies.clone.count = storage.more_enemies.clone.count + 1
+      -- storage.more_enemies.clone.count = storage.more_enemies.clone.count + 1
+      more_enemies_data.clone.count = more_enemies_data.clone.count + 1
     end
 
     Log.info(clone)
@@ -224,6 +248,9 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
 
   Log.debug("at fun definition")
   local fun = function (loop_len, limit, clones, obj, difficulty, cloner, tick)
+    local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
+    if (not more_enemies_data.valid) then Initialization.reinit() end
+
     tick = tick or -1
 
     local clone_limit = Settings_Service.get_maximum_number_of_clones()
@@ -231,27 +258,36 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     local max_num_modded_clones = Settings_Service.get_maximum_number_of_modded_clones()
     for i=1, math.floor(loop_len) do
       Log.info("i = " .. serpent.block(i))
-      if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
+      -- if (not storage.more_enemies or not storage.more_enemies.do_nth_tick) then return end
+      if (not more_enemies_data.do_nth_tick) then return end
 
-      if (  storage.more_enemies.clone and storage.more_enemies.clone.count
-        and storage.more_enemies.clone.count > max_num_clones)
+      -- if (  storage.more_enemies.clone and storage.more_enemies.clone.count
+      --   and storage.more_enemies.clone.count > max_num_clones)
+      if (  more_enemies_data.clone and more_enemies_data.clone.count
+        and more_enemies_data.clone.count > max_num_clones)
       then
         if (not Entity_Validations.get_mod_name(optionals) or optionals.mod_name ~= "BREAM") then
 
           Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
-          Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.count) .. " clones")
+          -- Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.count) .. " clones")
+          Log.warn("Currently " .. serpent.block(more_enemies_data.clone.count) .. " clones")
           return
         end
       end
 
-      if (  storage.more_enemies.mod
-        and storage.more_enemies.mod.clone
-        and storage.more_enemies.mod.clone.count
-        and storage.more_enemies.mod.clone.count > max_num_modded_clones
+      -- if (  storage.more_enemies.mod
+      --   and storage.more_enemies.mod.clone
+      --   and storage.more_enemies.mod.clone.count
+      --   and storage.more_enemies.mod.clone.count > max_num_modded_clones
+      if (  more_enemies_data.mod
+        and more_enemies_data.mod.clone
+        and more_enemies_data.mod.clone.count
+        and more_enemies_data.mod.clone.count > max_num_modded_clones
         and Entity_Validations.get_mod_name(optionals) ~= nil)
       then
         Log.warn("Tried to clone more than the mod unit limit: " .. serpent.block(max_num_modded_clones))
-        Log.warn("Currently " .. serpent.block(storage.more_enemies.mod.clone.count) .. " clones")
+        -- Log.warn("Currently " .. serpent.block(storage.more_enemies.mod.clone.count) .. " clones")
+        Log.warn("Currently " .. serpent.block(more_enemies_data.mod.clone.count) .. " clones")
         return
       end
 

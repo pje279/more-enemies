@@ -9,6 +9,7 @@ local Behemoth_Enemies_Constants = require("libs.constants.mods.behemoth-enemies
 local Gleba_Constants = require("libs.constants.gleba-constants")
 local Initialization = require("control.initialization")
 local Log = require("libs.log.log")
+local More_Enemies_Repository = require("control.repositories.more-enemies-repository")
 local Nauvis_Constants = require("libs.constants.nauvis-constants")
 local Spawn_Service = require("control.service.spawn-service")
 local Settings_Service = require("control.service.settings-service")
@@ -42,7 +43,8 @@ if ((mods and mods["space-age"] and mods["behemoth-enemies"]) or (script and scr
 end
 
 function spawn_controller.do_tick(event)
-  -- Log.info("spawn_controller.do_tick(event)")
+  -- Log.debug("spawn_controller.do_tick")
+  -- Log.info(event)
 
   local tick = event.tick
   local nth_tick = Settings_Service.get_nth_tick()
@@ -55,31 +57,60 @@ function spawn_controller.do_tick(event)
   -- Check/validate the storage version
   if (not Version_Validations.validate_version()) then return end
 
-  if (not storage or not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
-  if (not storage.more_enemies.nth_tick_complete) then storage.more_enemies.nth_tick_complete = { current = false, previous = false } end
-  if (not storage.more_enemies.nth_tick_cleanup_complete) then storage.more_enemies.nth_tick_cleanup_complete = { current = false, previous = false } end
+  local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
-  storage.more_enemies.nth_tick_complete.previous = storage.more_enemies.nth_tick_complete.current
-  storage.more_enemies.nth_tick_cleanup_complete.previous = storage.more_enemies.nth_tick_cleanup_complete.current
-  storage.more_enemies.nth_tick_complete.current = false
-  storage.more_enemies.nth_tick_cleanup_complete.current = false
+  -- if (not storage or not storage.more_enemies or not storage.more_enemies.valid) then Initialization.reinit() end
+  -- if (not storage.more_enemies.nth_tick_complete) then storage.more_enemies.nth_tick_complete = { current = false, previous = false } end
+  -- if (not storage.more_enemies.nth_tick_cleanup_complete) then storage.more_enemies.nth_tick_cleanup_complete = { current = false, previous = false } end
+
+  -- storage.more_enemies.nth_tick_complete.previous = storage.more_enemies.nth_tick_complete.current
+  -- storage.more_enemies.nth_tick_cleanup_complete.previous = storage.more_enemies.nth_tick_cleanup_complete.current
+  -- storage.more_enemies.nth_tick_complete.current = false
+  -- storage.more_enemies.nth_tick_cleanup_complete.current = false
+  if (not more_enemies_data.valid) then Initialization.reinit() end
+  if (not more_enemies_data.nth_tick_complete) then more_enemies_data.nth_tick_complete = { current = false, previous = false } end
+  if (not more_enemies_data.nth_tick_cleanup_complete) then more_enemies_data.nth_tick_cleanup_complete = { current = false, previous = false } end
+
+  more_enemies_data.nth_tick_complete.previous = more_enemies_data.nth_tick_complete.current
+  more_enemies_data.nth_tick_cleanup_complete.previous = more_enemies_data.nth_tick_cleanup_complete.current
+  more_enemies_data.nth_tick_complete.current = false
+  more_enemies_data.nth_tick_cleanup_complete.current = false
 
 
-  if (storage.more_enemies and storage.more_enemies.do_nth_tick) then
+  -- if (storage.more_enemies and storage.more_enemies.do_nth_tick) then
+  --   Log.info("attempt to process")
+  --   if (storage.more_enemies.nth_tick_cleanup_complete.previous and Spawn_Service.do_nth_tick(event)) then
+  --     Log.debug("do_nth_tick completed")
+  --     storage.more_enemies.nth_tick_complete.current = true
+  --   else
+  --     Log.debug("failed to finish processing")
+  --   end
+  -- end
+
+  -- Log.info("attempt to clean up")
+  -- if (storage.more_enemies.nth_tick_complete.current or not storage.more_enemies.nth_tick_cleanup_complete.previous) then
+  --   if (Spawn_Service.do_nth_tick_cleanup(event)) then
+  --     Log.debug("do_nth_tick_cleanup completed")
+  --     storage.more_enemies.nth_tick_cleanup_complete.current = true
+  --   else
+  --     Log.debug("failed to finish cleaning up")
+  --   end
+  -- end
+  if (more_enemies_data.do_nth_tick) then
     Log.info("attempt to process")
-    if (storage.more_enemies.nth_tick_cleanup_complete.previous and Spawn_Service.do_nth_tick(event)) then
+    if (more_enemies_data.nth_tick_cleanup_complete.previous and Spawn_Service.do_nth_tick(event)) then
       Log.debug("do_nth_tick completed")
-      storage.more_enemies.nth_tick_complete.current = true
+      more_enemies_data.nth_tick_complete.current = true
     else
       Log.debug("failed to finish processing")
     end
   end
 
   Log.info("attempt to clean up")
-  if (storage.more_enemies.nth_tick_complete.current or not storage.more_enemies.nth_tick_cleanup_complete.previous) then
+  if (more_enemies_data.nth_tick_complete.current or not more_enemies_data.nth_tick_cleanup_complete.previous) then
     if (Spawn_Service.do_nth_tick_cleanup(event)) then
       Log.debug("do_nth_tick_cleanup completed")
-      storage.more_enemies.nth_tick_cleanup_complete.current = true
+      more_enemies_data.nth_tick_cleanup_complete.current = true
     else
       Log.debug("failed to finish cleaning up")
     end
@@ -87,19 +118,22 @@ function spawn_controller.do_tick(event)
 end
 
 function spawn_controller.entity_died(event)
-  Log.info("spawn_controller.entity_died(event)")
+  Log.debug("spawn_controller.entity_died")
+  Log.info(event)
   Spawn_Service.entity_died(event)
 end
 
 function spawn_controller.entity_spawned(event)
-  Log.info("spawn_controller.entity_spawned(event)")
+  Log.debug("spawn_controller.entity_spawned")
+  Log.info(event)
   Spawn_Service.entity_spawned(event)
 end
 
 function spawn_controller.entity_built(event)
-  Log.info("spawn_controller.entity_built")
+  Log.debug("spawn_controller.entity_built")
+  Log.info(event)
   if (not Settings_Service.get_BREAM_do_clone()) then
-    Log.debug("more-enemies cloning of BREAM entities is disabled; returning")
+    Log.warn("more-enemies cloning of BREAM entities is disabled; returning")
     return
   end
   Spawn_Service.entity_built(event)
