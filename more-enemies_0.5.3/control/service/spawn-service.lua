@@ -244,8 +244,6 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
 
                   local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(unit_group.surface.name)
 
-                  -- if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
-
                   Log.info("adding unit_group: " .. serpent.block(unit_group))
 
                   Log.info(unit_group.surface.name)
@@ -633,6 +631,7 @@ function spawn_service.entity_built(event)
 
   local mod_name = event.mod_name
   local entity = event.entity
+  local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
   if (not more_enemies_data.do_nth_tick) then return end
@@ -641,7 +640,6 @@ function spawn_service.entity_built(event)
   local max_num_modded_clones = Settings_Service.get_maximum_number_of_modded_clones()
   if (more_enemies_data.mod.clone.count > max_num_modded_clones) then
     Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_modded_clones))
-    -- Log.warn("Currently " .. serpent.block(storage.more_enemies.mod.clone.count) .. " clones")
     Log.warn("Currently " .. serpent.block(more_enemies_data.mod.clone.count) .. " clones")
     return
   end
