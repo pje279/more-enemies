@@ -20,7 +20,7 @@ function settings_utils.is_vanilla(surface_name)
 
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
-  if (not more_enemies_data.valid) then Initialization.reinit() end
+  if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
   if (not more_enemies_data.difficulties) then Difficulty_Utils.get_difficulty(surface_name, true) end
 
   if ( not more_enemies_data

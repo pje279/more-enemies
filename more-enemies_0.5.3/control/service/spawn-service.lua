@@ -27,8 +27,7 @@ function spawn_service.clone_attempts()
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
   -- Validate "inputs"
-  if (not more_enemies_data.valid or not more_enemies_data.clones) then Initialization.reinit() end
-  if (not more_enemies_data.overflow_clone_attempts or not more_enemies_data.overflow_clone_attempts.valid) then Initialization.reinit() end
+  if (not more_enemies_data.valid or not more_enemies_data.clones) then more_enemies_data = Initialization.reinit() end
 
   -- if (#more_enemies_data.clones > Settings_Service.get_maximum_number_of_clones()) then
   --   Log.none("Tried to clone more than the unit limt")
@@ -84,14 +83,6 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
   if (not storage) then return false end
   Log.info("passed storage")
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
-
-  -- if (not more_enemies_data.clones) then Initialization.reinit() end
-  -- if (not more_enemies_data.clone) then Initialization.reinit() end
-  -- if (not more_enemies_data.clone.count) then Initialization.reinit() end
-  -- if (not more_enemies_data.difficulties) then Initialization.reinit() end
-  -- if (not more_enemies_data.staged_clones) then Initialization.reinit() end
-
-  -- if (not storage.more_enemies.do_nth_tick) then return end
   if (not more_enemies_data.do_nth_tick) then return end
 
   Log.info("Clone attempts")
@@ -357,8 +348,6 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
 
         if (clone_overflow > 1) then
           if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
-          -- if (not more_enemies_data.overflow_clone_attempts) then Initialization.reinit() end
-          -- if (more_enemies_data.overflow_clone_attempts.count == nil) then Initialization.reinit() end
 
           more_enemies_data.overflow_clone_attempts.count = more_enemies_data.overflow_clone_attempts.count + 1
           Log.debug("Tried to clone more than the unit limt; returning")
@@ -611,7 +600,7 @@ function spawn_service.entity_spawned(event)
   local spawner = event.spawner
   local entity = event.entity
 
-  if (not more_enemies_data.valid) then Initialization.reinit() end
+  if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
   if (not more_enemies_data.do_nth_tick) then return end
   if (not entity or not entity.valid or not entity.surface or not entity.surface.valid or Settings_Utils.is_vanilla(entity.surface.name)) then return end
 
@@ -661,7 +650,7 @@ function spawn_service.entity_built(event)
   if (not mod_name or mod_name ~= "BREAM") then return end
   if (not entity.surface or not entity.surface.name) then return end
 
-  if (not more_enemies_data.valid) then Initialization.reinit() end
+  if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
 
   Log.info("Attempting to add to staged_clones")
   if (more_enemies_data.valid) then

@@ -59,7 +59,7 @@ function spawn_controller.do_tick(event)
 
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
-  if (not more_enemies_data.valid) then Initialization.reinit() end
+  if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
   if (not more_enemies_data.nth_tick_complete) then more_enemies_data.nth_tick_complete = { current = false, previous = false } end
   if (not more_enemies_data.nth_tick_cleanup_complete) then more_enemies_data.nth_tick_cleanup_complete = { current = false, previous = false } end
 

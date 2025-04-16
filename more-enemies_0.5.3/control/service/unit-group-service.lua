@@ -20,7 +20,7 @@ local unit_group_service = {}
 
 function unit_group_service.unit_group_created(event)
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
-  if (not more_enemies_data.valid) then Initialization.reinit() end
+  if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
   if (not more_enemies_data.do_nth_tick) then return end
 
   local group = event.group

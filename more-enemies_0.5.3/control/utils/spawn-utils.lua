@@ -24,7 +24,7 @@ function spawn_utils.duplicate_unit_group(group, tick)
   Log.info("spawn.duplicate_unit_group" .. serpent.block(tick))
 
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
-  if (not more_enemies_data.valid) then Initialization.reinit() end
+  if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
 
   if (not more_enemies_data.do_nth_tick) then return end
   if (not group or not group.valid or not group.surface or not group.surface.valid) then return end
@@ -69,7 +69,7 @@ end
 
 function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
-  if (not more_enemies_data.valid) then Initialization.reinit() end
+  if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
 
   if (not more_enemies_data.do_nth_tick) then return end
 
@@ -156,7 +156,7 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     Log.debug("Cloning")
     if (not entity.valid) then return end
 
-    if (not more_enemies_data.valid) then Initialization.reinit() end
+    if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
     if (not more_enemies_data.clones) then more_enemies_data.clones = {} end
 
     local clone = nil
@@ -225,7 +225,7 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   Log.debug("at fun definition")
   local fun = function (loop_len, limit, clones, obj, difficulty, cloner, tick)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
-    if (not more_enemies_data.valid) then Initialization.reinit() end
+    if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
 
     tick = tick or -1
 
