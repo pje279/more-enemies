@@ -6,7 +6,7 @@ local difficulty_data = Data:new()
 
 difficulty_data.difficulty = Vanilla_Difficulty_Data:new()
 difficulty_data.surface = nil
-difficulty_data.entities_spawned = 0,
+difficulty_data.entities_spawned = 0
 
 function difficulty_data:new(obj)
   Log.debug("difficulty_data:new")
@@ -29,4 +29,4 @@ function difficulty_data:new(obj)
   return obj
 end
 
-return difficulty_data_data
+return difficulty_data
