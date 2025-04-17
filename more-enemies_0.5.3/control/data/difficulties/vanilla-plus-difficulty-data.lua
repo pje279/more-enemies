@@ -11,11 +11,11 @@ vanilla_plus_difficulty_data.radius = 37.5
 vanilla_plus_difficulty_data.radius_modifier = 1.25
 vanilla_plus_difficulty_data.valid = true
 
-function vanilla_plus_difficulty_data:new (obj)
+function vanilla_plus_difficulty_data:new(obj)
   Log.debug("vanilla_plus_difficulty_data:new")
   Log.info(obj)
 
-  obj = obj or Data:new()
+  obj = Data:new(obj) or Data:new()
 
   local defaults = {
     order = self.order,

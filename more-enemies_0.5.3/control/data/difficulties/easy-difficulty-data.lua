@@ -11,11 +11,11 @@ easy_difficulty_data.radius = 15
 easy_difficulty_data.radius_modifier = 0.5
 easy_difficulty_data.valid = true
 
-function easy_difficulty_data:new (obj)
+function easy_difficulty_data:new(obj)
   Log.debug("easy_difficulty_data:new")
   Log.info(obj)
 
-  obj = obj or Data:new()
+  obj = Data:new(obj) or Data:new()
 
   local defaults = {
     order = self.order,

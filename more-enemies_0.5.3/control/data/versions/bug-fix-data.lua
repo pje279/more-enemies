@@ -11,12 +11,10 @@ function bug_fix_data:new(obj)
   Log.debug("bug_fix_data:new")
   Log.info(obj)
 
-  obj = obj or Data:new()
+  obj = Data:new(obj) or Data:new()
 
   local defaults = {
-    created = game and game.tick or nil,
-    updated = game and game.tick or nil,
-    valid = bug_fix_data.valid,
+    -- valid = bug_fix_data.valid,
     value = bug_fix_data.value,
     warned = bug_fix_data.warned,
   }

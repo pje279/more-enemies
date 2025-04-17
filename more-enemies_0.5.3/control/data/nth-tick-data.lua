@@ -1,22 +1,20 @@
 local Data = require("control.data.data")
 local Log = require("libs.log.log")
 
-local minor_data = Data:new()
+local nth_tick_data = Data:new()
 
-minor_data.value = 0
-minor_data.warned = false
-minor_data.valid = true
+nth_tick_data.current = true
+nth_tick_data.previous = true
 
-function minor_data:new(obj)
-  Log.debug("minor_data:new")
+function nth_tick_data:new(obj)
+  Log.debug("nth_tick_data:new")
   Log.info(obj)
 
   obj = Data:new(obj) or Data:new()
 
   local defaults = {
-    -- valid = minor_data.valid,
-    value = minor_data.value,
-    warned = minor_data.warned,
+    current = self.current,
+    previous = self.previous,
   }
 
   for k, v in pairs(defaults) do
@@ -28,4 +26,4 @@ function minor_data:new(obj)
   return obj
 end
 
-return minor_data
+return nth_tick_data

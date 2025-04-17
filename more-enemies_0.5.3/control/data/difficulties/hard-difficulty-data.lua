@@ -11,11 +11,11 @@ hard_difficulty_data.radius = 46.875
 hard_difficulty_data.radius_modifier = 1.5625
 hard_difficulty_data.valid = true
 
-function hard_difficulty_data:new (obj)
+function hard_difficulty_data:new(obj)
   Log.debug("hard_difficulty_data:new")
   Log.info(obj)
 
-  obj = obj or Data:new()
+  obj = Data:new(obj) or Data:new()
 
   local defaults = {
     order = self.order,

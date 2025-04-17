@@ -11,12 +11,10 @@ function major_data:new(obj)
   Log.debug("major_data:new")
   Log.info(obj)
 
-  obj = obj or Data:new()
+  obj = Data:new(obj) or Data:new()
 
   local defaults = {
-    created = game and game.tick or nil,
-    updated = game and game.tick or nil,
-    valid = major_data.valid,
+    -- valid = major_data.valid,
     value = major_data.value,
     warned = major_data.warned,
   }

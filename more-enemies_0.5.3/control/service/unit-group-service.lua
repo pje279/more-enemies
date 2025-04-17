@@ -105,13 +105,6 @@ function unit_group_service.unit_group_created(event)
   unit_group_data.valid = true
 
   more_enemies_data.groups[group.surface.name][group.unique_id] = unit_group_data
-  -- more_enemies_data.groups[group.surface.name][group.unique_id] = {
-  --   valid = true,
-  --   group = group,
-  --   count = 0,
-  --   max_count = loop_len,
-  --   mod_name = nil,
-  -- }
 
   Log.debug(more_enemies_data.groups[group.surface.name][group.unique_id])
 end
@@ -208,9 +201,7 @@ function unit_group_service.unit_group_finished_gathering(event)
   Log.info("4")
 
   more_enemies_group = { valid = false }
-  if (    more_enemies_data
-      and more_enemies_data.groups
-      and more_enemies_data.groups[group.surface.name]
+  if (    more_enemies_data.groups[group.surface.name]
       and more_enemies_data.groups[group.surface.name][group.unique_id] ~= nil)
   then
     more_enemies_group = more_enemies_data.groups[group.surface.name][group.unique_id]

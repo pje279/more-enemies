@@ -5,11 +5,13 @@ end
 
 local Constants = require("libs.constants.constants")
 local Entity_Validations = require("control.validations.entity-validations")
+local Difficulty_Data = require("control.data.difficulty-data")
 local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Log = require("libs.log.log")
 local Log_Constants = require("libs.log.log-constants")
 local Version_Data = require("control.data.version-data")
 local More_Enemies_Data = require("control.data.more-enemies-data")
+local Nth_Tick_Data = require("control.data.nth-tick-data")
 local Overflow_Clone_Attempts_Data = require("control.data.overflow-clone-attempts-data")
 local Version_Repository = require("control.repositories.version-repository")
 local Version_Service = require("control.service.version-service")
@@ -174,13 +176,18 @@ function initialize(from_scratch)
       end
     end
 
-    more_enemies_data.overflow_clone_attempts = Overflow_Clone_Attempts_Data:new()
-    more_enemies_data.overflow_clone_attempts.valid = true
+    more_enemies_data.overflow_clone_attempts = Overflow_Clone_Attempts_Data:new({ valid = true })
+    -- more_enemies_data.overflow_clone_attempts.valid = true
 
-    more_enemies_data.nth_tick_complete = {
-      current = true,
-      previous = true,
-    }
+    more_enemies_data.nth_tick_complete = Nth_Tick_Data:new({ valid = true })
+    -- more_enemies_data.nth_tick_complete.valid = true
+    -- more_enemies_data.nth_tick_complete = {
+    --   current = true,
+    --   previous = true,
+    -- }
+
+    more_enemies_data.nth_tick_cleanup_complete = Nth_Tick_Data:new({ valid = true })
+    -- more_enemies_data.nth_tick_cleanup_complete.valid = true
   end
 
   local user_setting = nil
@@ -213,27 +220,41 @@ function initialize(from_scratch)
         if (not more_enemies_data.difficulties) then more_enemies_data.difficulties = {} end
 
         if (from_scratch) then
-            more_enemies_data.difficulties[planet.string_val] = {
+          -- more_enemies_data.difficulties[planet.string_val] =
+          -- {
+          --   valid = true,
+          --   difficulty = difficulty,
+          --   surface = game.get_surface(planet.string_val),
+          --   entities_spawned = 0,
+          -- }
+          more_enemies_data.difficulties[planet.string_val] = Difficulty_Data:new({
             valid = true,
             difficulty = difficulty,
             surface = game.get_surface(planet.string_val),
             entities_spawned = 0,
-          }
+          })
 
           if (not more_enemies_data.groups) then more_enemies_data.groups = {} end
           more_enemies_data.groups[planet.string_val] = {}
         end
 
         if (not more_enemies_data.difficulties[planet.string_val] or not more_enemies_data.difficulties[planet.string_val].valid) then
-            more_enemies_data.difficulties[planet.string_val] = {
+          -- more_enemies_data.difficulties[planet.string_val] =
+          -- {
+          --   valid = true,
+          --   difficulty = difficulty,
+          --   surface = game.get_surface(planet.string_val),
+          --   entities_spawned = 0,
+          -- }
+          more_enemies_data.difficulties[planet.string_val] = Difficulty_Data:new({
             valid = true,
             difficulty = difficulty,
             surface = game.get_surface(planet.string_val),
             entities_spawned = 0,
-          }
+          })
         end
 
-        if (not more_enemies_data.groups) then storage.more_enemies.groups = {} end
+        if (not more_enemies_data.groups) then more_enemies_data.groups = {} end
 
         if (not more_enemies_data.groups[planet.string_val]) then
           more_enemies_data.groups[planet.string_val] = {}

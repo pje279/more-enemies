@@ -11,13 +11,13 @@ function data:new(obj)
   Log.debug("data:new")
   Log.info(obj)
 
+  obj = obj or {}
+
   local defaults = {
     valid = self.valid,
     created = self.created or game and game.tick,
     updated = self.updated or game and game.tick,
   }
-
-  obj = obj or {}
 
   for k, v in pairs(defaults) do
     if (obj[k] == nil) then obj[k] = v end

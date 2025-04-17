@@ -33,7 +33,7 @@ function version_repository.save_version_data(optionals)
 end
 
 function version_repository.update_version_data(update_data, optionals)
-  Log.debug("version_repository.save_version_data")
+  Log.debug("version_repository.update_version_data")
   Log.info(update_data)
   Log.info(optionals)
 

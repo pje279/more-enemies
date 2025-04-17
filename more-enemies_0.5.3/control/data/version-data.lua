@@ -22,7 +22,7 @@ function version_data:new(obj)
   Log.debug("version_data:new")
   Log.info(obj)
 
-  obj = obj or Data:new()
+  obj = Data:new(obj) or Data:new()
 
   local defaults = {
     created = self.created,

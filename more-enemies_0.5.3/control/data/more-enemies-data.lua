@@ -1,5 +1,7 @@
 local Data = require("control.data.data")
 local Log = require("libs.log.log")
+local Mod_Data = require("control.data.mod-data")
+local Nth_Tick_Data = require("control.data.nth-tick-data")
 local Version_Data = require("control.data.version-data")
 local Overflow_Clone_Attempts_Data = require("control.data.overflow-clone-attempts-data")
 
@@ -14,25 +16,14 @@ more_enemies_data.do_nth_tick = false
 
 more_enemies_data.groups = {}
 
-more_enemies_data.mod =
-{
-  clone = {
-    count = 0
-  },
-  staged_clones = {},
-}
+more_enemies_data.mod = Mod_Data:new()
+more_enemies_data.valid = true
 
-more_enemies_data.nth_tick_cleanup_complete =
-{
-  current = true,
-  previous = true,
-}
+more_enemies_data.nth_tick_cleanup_complete = Nth_Tick_Data:new()
+more_enemies_data.nth_tick_cleanup_complete.valid = true
 
-more_enemies_data.nth_tick_complete =
-{
-  current = true,
-  previous = true,
-}
+more_enemies_data.nth_tick_complete = Nth_Tick_Data:new()
+more_enemies_data.nth_tick_complete.valid = true
 
 more_enemies_data.overflow_clone_attempts = Overflow_Clone_Attempts_Data:new()
 
@@ -44,7 +35,7 @@ function more_enemies_data:new(obj)
   Log.debug("more_enemies_data:new")
   Log.info(obj)
 
-  obj = obj or Data:new()
+  obj = Data:new(obj) or Data:new()
 
   local defaults = {
     clones = self.clones,
