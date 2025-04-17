@@ -101,10 +101,6 @@ function unit_group_service.unit_group_created(data)
   end
   Log.info("loop_len: " .. serpent.block(loop_len))
 
-  -- local unit_group_data = Unit_Group_Data:new()
-  -- unit_group_data.group = group
-  -- unit_group_data.max_count = loop_len
-  -- unit_group_data.valid = true
   local unit_group_data = Unit_Group_Data:new({
     group = group,
     max_count = loop_len,
@@ -247,6 +243,10 @@ function unit_group_service.unit_group_finished_gathering(data)
     group.release_from_spawner()
     Log.debug("start moving")
     group.start_moving()
+  end
+
+  if (unit_group_data.count >= unit_group_data.max_count) then
+    more_enemies_data.groups[group.surface.name][group.unique_id] = nil
   end
 end
 
