@@ -14,7 +14,6 @@ function bug_fix_data:new(obj)
   obj = Data:new(obj) or Data:new()
 
   local defaults = {
-    -- valid = bug_fix_data.valid,
     value = bug_fix_data.value,
     warned = bug_fix_data.warned,
   }

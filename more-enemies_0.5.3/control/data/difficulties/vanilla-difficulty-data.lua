@@ -9,7 +9,6 @@ vanilla_difficulty_data.string_val = "Vanilla"
 vanilla_difficulty_data.value = 1
 vanilla_difficulty_data.radius = 30
 vanilla_difficulty_data.radius_modifier = 1
-vanilla_difficulty_data.valid = true
 
 function vanilla_difficulty_data:new(obj)
   Log.debug("vanilla_difficulty_data:new")
@@ -24,7 +23,6 @@ function vanilla_difficulty_data:new(obj)
     value = self.value,
     radius = self.radius,
     radius_modifier = self.radius_modifier,
-    valid = self.valid,
   }
 
   for k, v in pairs(defaults) do

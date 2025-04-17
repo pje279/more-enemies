@@ -9,7 +9,6 @@ insanity_difficulty_data.string_val = "Insanity"
 insanity_difficulty_data.value = 11
 insanity_difficulty_data.radius = 58.59375
 insanity_difficulty_data.radius_modifier = 1.953125
-insanity_difficulty_data.valid = true
 
 function insanity_difficulty_data:new(obj)
   Log.debug("insanity_difficulty_data:new")
@@ -24,7 +23,6 @@ function insanity_difficulty_data:new(obj)
     value = self.value,
     radius = self.radius,
     radius_modifier = self.radius_modifier,
-    valid = self.valid,
   }
 
   for k, v in pairs(defaults) do

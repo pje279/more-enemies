@@ -14,7 +14,6 @@ function minor_data:new(obj)
   obj = Data:new(obj) or Data:new()
 
   local defaults = {
-    -- valid = minor_data.valid,
     value = minor_data.value,
     warned = minor_data.warned,
   }

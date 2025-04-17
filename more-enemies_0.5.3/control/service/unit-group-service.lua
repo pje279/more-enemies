@@ -19,30 +19,30 @@ local Unit_Group_Data = require("control.data.unit-group-data")
 
 local unit_group_service = {}
 
-function unit_group_service.unit_group_created(event)
+--- @param data table
+---   @param event table
+---     @param group table
+---   @param more_enemies_data table
+function unit_group_service.unit_group_created(data)
   Log.debug("unit_group_service.unit_group_created")
-  Log.info(event)
+  Log.info(data)
 
-  local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
+  if (not data) then return end
+  if (not data.event) then return end
+
+  local more_enemies_data = data.more_enemies_data or More_Enemies_Repository.get_more_enemies_data()
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
-  if (not more_enemies_data.do_nth_tick) then return end
 
-  local group = event.group
+  local group = data.event.group
 
   if (not group) then return end
-  Log.info(group)
   if (not group.valid) then return end
-  Log.info(group.valid)
   if (not group.surface or not group.surface.valid or not group.surface.name) then return end
-  Log.info(group.surface)
-  Log.info(group.surface.name)
 
   if (Settings_Utils.is_vanilla(group.surface.name)) then return end
 
   if (not group.is_unit_group) then return end
-  Log.info(group.is_unit_group)
   if (not group.position) then return end
-  Log.info(group.position)
 
   if (  more_enemies_data.groups[group.surface.name]
     and more_enemies_data.groups[group.surface.name][group.unique_id]
@@ -69,8 +69,6 @@ function unit_group_service.unit_group_created(event)
 
   local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(group.surface.name)
 
-  if (not more_enemies_data.groups) then storage.more_enemies.groups = {} end
-
   Log.info("adding group: " .. serpent.block(group))
 
   Log.info(group.surface.name)
@@ -93,47 +91,50 @@ function unit_group_service.unit_group_created(event)
   end
 
   if (selected_difficulty.value > 1) then
-    loop_len = math.floor((selected_difficulty.value + clone_unit_group_setting) * evolution_factor)
+    if (clone_unit_group_setting > 1) then
+      loop_len = math.floor((selected_difficulty.value + clone_unit_group_setting - 1) * evolution_factor)
+    else
+      loop_len = math.floor((selected_difficulty.value * clone_unit_group_setting) * evolution_factor)
+    end
   else
     loop_len = math.floor((selected_difficulty.value * clone_unit_group_setting) * evolution_factor)
   end
   Log.info("loop_len: " .. serpent.block(loop_len))
 
-  local unit_group_data = Unit_Group_Data:new()
-  unit_group_data.group = group
-  unit_group_data.max_count = loop_len
-  unit_group_data.valid = true
+  -- local unit_group_data = Unit_Group_Data:new()
+  -- unit_group_data.group = group
+  -- unit_group_data.max_count = loop_len
+  -- unit_group_data.valid = true
+  local unit_group_data = Unit_Group_Data:new({
+    group = group,
+    max_count = loop_len,
+    valid = true,
+  })
 
   more_enemies_data.groups[group.surface.name][group.unique_id] = unit_group_data
 
   Log.debug(more_enemies_data.groups[group.surface.name][group.unique_id])
 end
 
---[[
-    unit_group_service.unit_group_finished_gathering
---]]
-
-function unit_group_service.unit_group_finished_gathering(event)
+--- @param data table
+---   @param event table
+---     @param group table
+---     @param tick number
+---   @param more_enemies_data table
+function unit_group_service.unit_group_finished_gathering(data)
   Log.debug("unit_group_service.unit_group_finished_gathering")
-  Log.info(event)
-  local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
+  Log.info(data)
 
-  local group = event.group
-  local tick = event.tick
+  if (not data) then return end
+  if (not data.event) then return end
 
-  Log.info(event.group)
+  local group = data.event.group
+  local tick = data.event.tick
 
   if (not group or not group.valid or not group.surface or not group.surface.valid or Settings_Utils.is_vanilla(group.surface.name)) then return end
 
-  local max_num_clones = Settings_Service.get_maximum_number_of_clones()
-
-  if (  more_enemies_data.clone and more_enemies_data.clone.count
-    and more_enemies_data.clone.count > max_num_clones)
-  then
-    Log.debug("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
-    Log.debug("Currently " .. serpent.block(more_enemies_data.clone.count) .. " clones")
-    return
-  end
+  local more_enemies_data = data.more_enemies_data or More_Enemies_Repository.get_more_enemies_data()
+  if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
 
   Log.info("1")
   if (not group) then return end
@@ -200,45 +201,53 @@ function unit_group_service.unit_group_finished_gathering(event)
 
   Log.info("4")
 
-  more_enemies_group = { valid = false }
+  local unit_group_data = Unit_Group_Data:new()
   if (    more_enemies_data.groups[group.surface.name]
       and more_enemies_data.groups[group.surface.name][group.unique_id] ~= nil)
   then
-    more_enemies_group = more_enemies_data.groups[group.surface.name][group.unique_id]
+    unit_group_data = more_enemies_data.groups[group.surface.name][group.unique_id]
   end
 
-  if (not more_enemies_group or not more_enemies_group.valid) then
+  if (not unit_group_data or not unit_group_data.valid) then
     Log.debug("returning", true)
     return
   end
 
+  if (unit_group_data.count >= unit_group_data.max_count) then
+    more_enemies_data.groups[group.surface.name][group.unique_id] = nil
+    return
+  end
+
   for i=1, loop_len do
-    if (more_enemies_group and more_enemies_group.valid and more_enemies_group.count >= more_enemies_group.max_count) then
+    if (unit_group_data.count >= unit_group_data.max_count) then
       Log.debug("breaking", true)
       break
     end
 
     Log.debug("attempting to duplicate unit group")
-    if (more_enemies_group and more_enemies_group.valid and more_enemies_group.count < more_enemies_group.max_count) then
+    if (unit_group_data.count < unit_group_data.max_count) then
       Log.debug("duplicating unit group: " .. serpent.block(i))
       Log.info("tick: " .. tick)
       Spawn_Utils.duplicate_unit_group(group, tick)
     end
 
-    if (more_enemies_group and more_enemies_group.valid) then
-      more_enemies_group.count = more_enemies_group.count + 1
+    if (unit_group_data and unit_group_data.valid) then
+      unit_group_data.count = unit_group_data.count + 1
     end
+  end
+
+  if (unit_group_data and unit_group_data.count ~= nil) then
+    unit_group_data.count = unit_group_data.count + 1
   end
 
   Log.info("5")
 
-  if (more_enemies_group and not more_enemies_group.mod_name) then
+  if (unit_group_data and unit_group_data.valid and not unit_group_data.mod_name) then
     Log.debug("releasing from spawner")
     group.release_from_spawner()
     Log.debug("start moving")
     group.start_moving()
   end
-
 end
 
 unit_group_service.more_enemies = true

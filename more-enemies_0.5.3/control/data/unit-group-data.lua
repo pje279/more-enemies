@@ -15,9 +15,6 @@ function unit_group_data:new(obj)
   obj = Data:new(obj) or Data:new()
 
   local defaults = {
-    created = self.created,
-    updated = self.updated,
-    valid = self.valid,
     group = self.group,
     count = self.count,
     max_count = self.max_count,

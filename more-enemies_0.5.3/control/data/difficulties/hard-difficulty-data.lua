@@ -9,7 +9,6 @@ hard_difficulty_data.string_val = "Hard"
 hard_difficulty_data.value = 4
 hard_difficulty_data.radius = 46.875
 hard_difficulty_data.radius_modifier = 1.5625
-hard_difficulty_data.valid = true
 
 function hard_difficulty_data:new(obj)
   Log.debug("hard_difficulty_data:new")
@@ -24,7 +23,6 @@ function hard_difficulty_data:new(obj)
     value = self.value,
     radius = self.radius,
     radius_modifier = self.radius_modifier,
-    valid = self.valid,
   }
 
   for k, v in pairs(defaults) do

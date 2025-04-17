@@ -15,6 +15,14 @@ function settings_validations.validate_setting_not_equal_to(setting, value)
   end
 end
 
+-- function settings_validations.validate_setting_not_equal_to(setting, value)
+--   if (setting and value and setting ~= value) then
+--     return true
+--   else
+--     return false
+--   end
+-- end
+
 settings_validations.more_enemies = true
 
 local _settings_validations = settings_validations

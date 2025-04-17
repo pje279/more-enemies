@@ -9,7 +9,6 @@ easy_difficulty_data.string_val = "Easy"
 easy_difficulty_data.value = 0.1
 easy_difficulty_data.radius = 15
 easy_difficulty_data.radius_modifier = 0.5
-easy_difficulty_data.valid = true
 
 function easy_difficulty_data:new(obj)
   Log.debug("easy_difficulty_data:new")
@@ -24,7 +23,6 @@ function easy_difficulty_data:new(obj)
     value = self.value,
     radius = self.radius,
     radius_modifier = self.radius_modifier,
-    valid = self.valid,
   }
 
   for k, v in pairs(defaults) do
