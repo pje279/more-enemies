@@ -14,7 +14,7 @@ Date: 2025-04-17
       -> To allow finer tuning of performance
       -> Default settings are identical to vanilla
       - Maximum number of gathering unit groups: 30
-      - Maximum clients to accecpt any new request: 10
+      - Maximum clients to accept any new request: 10
       - Maximum clients to accept short new request: 100
       - Direct distance to consider short request: 100
       - Short request max steps: 1000
