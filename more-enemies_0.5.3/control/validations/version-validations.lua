@@ -19,20 +19,20 @@ function version_validations.validate_version()
   local validate_fun = function ()
     Log.warn("more-enemies: Invalid version detected relative to version " .. Version_Data.string_val .. "; reinitializing naively")
     Initialization.reinit()
+    local return_val = true
     if (not Version_Service.validate_version().valid) then
-      local return_val = false
+      local version_data = Version_Repository.get_version_data()
+      return_val = false
       Log.error("more-enemies: invalid version detected relative to version " .. Version_Data.string_val .. "; naive reinitialization failed")
-      if (Version_Data.string_val) then
-        game.print("more-enemies: Version (" .. Version_Data.string_val ..") is invalid relative to current installed version: (" .. Version_Data.string_val .. ")")
+      if (version_data.string_val) then
+        game.print("more-enemies: Version (" .. Version_Data.string_val ..") is invalid relative to current installed version: (" .. version_data.string_val .. ")")
       else
         game.print("more-enemies: Version is invalid relative to current installed version: (" .. Version_Data.string_val .. ")")
       end
       game.print("more-enemies: If this error persists, recommend executing command /more_enemies.init")
     end
     return return_val
-  end -- local validate_fun = function (version)
-
-  local version_data = Version_Repository.get_version_data()
+  end -- local validate_fun = function ()
 
   if ( not version.valid) then
     return_val = validate_fun()
