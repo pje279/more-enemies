@@ -61,15 +61,10 @@ function spawn_controller.do_tick(event)
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
-  -- if (not more_enemies_data.nth_tick_complete) then more_enemies_data.nth_tick_complete = { current = false, previous = false } end
-  -- if (not more_enemies_data.nth_tick_cleanup_complete) then more_enemies_data.nth_tick_cleanup_complete = { current = false, previous = false } end
 
-  -- more_enemies_data.nth_tick_complete.previous = more_enemies_data.nth_tick_complete.current
-  -- more_enemies_data.nth_tick_cleanup_complete.previous = more_enemies_data.nth_tick_cleanup_complete.current
-  -- more_enemies_data.nth_tick_complete.current = false
-  -- more_enemies_data.nth_tick_cleanup_complete.current = false
   local nth_tick_complete_data = Nth_Tick_Repository.get_nth_tick_complete_data()
   local nth_tick_cleanup_complete_data = Nth_Tick_Repository.get_nth_tick_cleanup_complete_data()
+
   nth_tick_complete_data.previous = nth_tick_complete_data.current
   nth_tick_cleanup_complete_data.previous = nth_tick_cleanup_complete_data.current
   nth_tick_complete_data.current = false
@@ -77,10 +72,8 @@ function spawn_controller.do_tick(event)
 
   if (more_enemies_data.do_nth_tick) then
     Log.info("attempt to process")
-    -- if (more_enemies_data.nth_tick_cleanup_complete.previous and Spawn_Service.do_nth_tick(event, more_enemies_data)) then
     if (nth_tick_cleanup_complete_data.previous and Spawn_Service.do_nth_tick(event, more_enemies_data)) then
       Log.debug("do_nth_tick completed")
-      -- more_enemies_data.nth_tick_complete.current = true
       nth_tick_complete_data.current = true
     else
       Log.debug("failed to finish processing")
@@ -88,12 +81,9 @@ function spawn_controller.do_tick(event)
   end
 
   Log.info("attempt to clean up")
-  -- if (more_enemies_data.nth_tick_complete.current or not more_enemies_data.nth_tick_cleanup_complete.previous) then
   if (nth_tick_complete_data.current or not nth_tick_cleanup_complete_data.previous) then
-    -- if (Spawn_Service.do_nth_tick_cleanup(event)) then
     if (Spawn_Service.do_nth_tick_cleanup(event, more_enemies_data)) then
       Log.debug("do_nth_tick_cleanup completed")
-      -- more_enemies_data.nth_tick_cleanup_complete.current = true
       nth_tick_cleanup_complete_data.current = true
     else
       Log.debug("failed to finish cleaning up")
@@ -117,7 +107,7 @@ function spawn_controller.entity_built(event)
   Log.debug("spawn_controller.entity_built")
   Log.info(event)
   if (not Settings_Service.get_BREAM_do_clone()) then
-    Log.warn("more-enemies cloning of BREAM entities is disabled; returning")
+    Log.debug("more-enemies cloning of BREAM entities is disabled; returning")
     return
   end
   Spawn_Service.entity_built(event)

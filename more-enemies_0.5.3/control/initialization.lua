@@ -117,8 +117,6 @@ function initialize(from_scratch)
   if (not storage.more_enemies) then storage.more_enemies = More_Enemies_Data:new() end
   local more_enemies_data = storage.more_enemies
 
-  log(serpent.block(more_enemies_data))
-
   storage.more_enemies.do_nth_tick = false
 
   from_scratch = from_scratch or false
@@ -144,8 +142,6 @@ function initialize(from_scratch)
   else
     -- do_purge()
 
-    log(serpent.block(more_enemies_data))
-
     if (not more_enemies_data) then
       storage.more_enemies = More_Enemies_Data:new()
       more_enemies_data = storage.more_enemies
@@ -166,10 +162,6 @@ function initialize(from_scratch)
 
     local version_data = more_enemies_data.version_data
     if (not version_data.valid) then
-      -- What do?
-      -- Log.error("storage version is not valid")
-      -- Log.error("If you're seeing this, please report it")
-      -- Log.error("To stop seeing this, try executing the command /more_enemies.init")
       return initialize(true)
     else
       local version = Version_Service.validate_version()

@@ -5,9 +5,6 @@ local Difficulty_Utils = require("control.utils.difficulty-utils")
 
 local nauvis_difficulty = settings.startup["more-enemies-nauvis-difficulty"]
 local difficulty = Difficulty_Utils.get_difficulty("nauvis", true)
--- if (nauvis_difficulty and nauvis_difficulty.value) then
---   difficulty = Difficulty_Utils.set_difficulty("nauvis", nauvis_difficulty.value)
--- end
 
 --
 -- Armoured Biters
