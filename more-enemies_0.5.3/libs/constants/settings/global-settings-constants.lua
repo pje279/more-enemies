@@ -17,23 +17,63 @@ global_settings_constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME = {
   minimum_value = 0,
 }
 
-global_settings_constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP = {
+global_settings_constants.settings.MAX_GATHERING_UNIT_GROUPS = {
   type = "int-setting",
-  name = "more-enemies-max-unit-group-size-startup",
+  name = "more-enemies-max-gathering-unit-groups",
   setting_type = "startup",
-  order = "edd",
-  default_value = 200,
+  order = "eda",
+  default_value = 30,
   maximum_value = 1111,
   minimum_value = 0,
 }
 
-global_settings_constants.settings.TICKS_TO_TRY_CLONING = {
+global_settings_constants.settings.MAX_CLIENTS_TO_ACCEPT_ANY_NEW_REQUEST = {
   type = "int-setting",
-  name = "more-enemies-ticks-to-try-cloning",
+  name = "more-enemies-max-clients-to-accept-any-new-request",
+  setting_type = "startup",
+  order = "edb",
+  default_value = 10,
+  maximum_value = 1111,
+  minimum_value = 0,
+}
+
+global_settings_constants.settings.MAX_CLIENTS_TO_ACCEPT_SHORT_NEW_REQUEST = {
+  type = "int-setting",
+  name = "more-enemies-max-clients-to-accept-short-new-request",
+  setting_type = "startup",
+  order = "edb",
+  default_value = 100,
+  maximum_value = 1111,
+  minimum_value = 0,
+}
+
+global_settings_constants.settings.DIRECT_DISTANCE_TO_CONSIDER_SHORT_REQUEST = {
+  type = "int-setting",
+  name = "more-enemies-direct-distance-to-consider-short-request",
+  setting_type = "startup",
+  order = "edc",
+  default_value = 100,
+  maximum_value = 1111,
+  minimum_value = 0,
+}
+
+global_settings_constants.settings.SHORT_REQUEST_MAX_STEPS = {
+  type = "int-setting",
+  name = "more-enemies-short-request-max-steps",
   setting_type = "startup",
   order = "edd",
-  default_value = 15,
-  maximum_value = 111,
+  default_value = 1000,
+  maximum_value = 11111,
+  minimum_value = 0,
+}
+
+global_settings_constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP = {
+  type = "int-setting",
+  name = "more-enemies-max-unit-group-size-startup",
+  setting_type = "startup",
+  order = "eed",
+  default_value = 200,
+  maximum_value = 1111,
   minimum_value = 0,
 }
 

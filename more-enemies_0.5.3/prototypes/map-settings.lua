@@ -1,11 +1,12 @@
 local Armoured_Biters_Constants = require("libs.constants.mods.armoured-biters-constants")
+local Behemoth_Enemies_Constants = require("libs.constants.mods.behemoth-enemies-constants")
 local Constants = require("libs.constants.constants")
+local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Gleba_Constants = require("libs.constants.gleba-constants")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
-local Behemoth_Enemies_Constants = require("libs.constants.mods.behemoth-enemies-constants")
-local Nauvis_Constants = require("libs.constants.nauvis-constants")
-local Difficulty_Utils = require("control.utils.difficulty-utils")
 local Log = require("libs.log.log")
+local Nauvis_Constants = require("libs.constants.nauvis-constants")
+local Settings_Service = require("control.service.settings-service")
 
 local difficulties = {}
 
@@ -18,6 +19,16 @@ end
 local modifier = 1
 local radius_modifier = 1
 local vanilla = false
+
+if (data and data.raw and data.raw["map-settings"] and data.raw["map-settings"]["map-settings"]) then
+  local map_settings = data.raw["map-settings"]["map-settings"]
+  map_settings.max_gathering_unit_groups = Settings_Service.get_max_gathering_unit_groups()
+  map_settings.path_finder.clients_to_accept_any_new_request = Settings_Service.get_max_clients_to_accept_any_new_request()
+  map_settings.path_finder.clients_to_accept_short_new_request = Settings_Service.get_max_clients_to_accept_short_new_request()
+  map_settings.path_finder.direct_distance_to_consider_short_request = Settings_Service.get_direct_distance_to_consider_short_request()
+  map_settings.path_finder.short_request_max_steps = Settings_Service.get_short_request_max_steps()
+  map_settings.unit_group.max_unit_group_size = Settings_Service.get_max_unit_group_size_startup()
+end
 
 for planet, difficulty in pairs(difficulties) do
   vanilla = false
@@ -62,16 +73,10 @@ for planet, difficulty in pairs(difficulties) do
     modifier = -1
   end
 
-  local max_unit_group_size = Constants.DEFAULTS.unit_group.max_unit_group_size
-  if (settings and settings.startup and settings.startup[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name]) then
-    max_unit_group_size = settings.startup[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name].value
-  end
-
   if (not vanilla and modifier > 0 and radius_modifier >= 0) then
     data.raw["map-settings"]["map-settings"].max_group_radius = Constants.DEFAULTS.unit_group.max_group_radius * radius_modifier
     -- data.raw["map-settings"]["map-settings"].min_group_radius = unit_group.min_group_radius / radius_modifier
     -- data.raw["map-settings"]["map-settings"].unit_group.max_unit_group_size = Constants.DEFAULTS.unit_group.max_unit_group_size * modifier
-    data.raw["map-settings"]["map-settings"].unit_group.max_unit_group_size = max_unit_group_size * modifier
 
     if (planet == "nauvis") then
       for k,v in pairs(Nauvis_Constants.nauvis.categories) do

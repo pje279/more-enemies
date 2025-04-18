@@ -181,13 +181,16 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
       return
     end
 
+    local position = entity.surface.find_non_colliding_position(entity, entity.position, math.random(0.01, 1.1), 0.01)
+
     clone = entity.clone({
       -- position = entity.position,
-      position = {
-        -- TODO: Make configurable
-        x = entity.position.x + math.random(-0.0025, 0.0025),
-        y = entity.position.y + math.random(-0.0025, 0.0025)
-      },
+      position = position or entity.position,
+      -- position = {
+      --   -- TODO: Make configurable
+      --   x = entity.position.x + math.random(-0.0025, 0.0025),
+      --   y = entity.position.y + math.random(-0.0025, 0.0025)
+      -- },
       surface = entity.surface.name,
       force = entity.force
     })

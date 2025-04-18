@@ -70,6 +70,30 @@ function settings_service.get_maximum_group_size()
   return limit_runtime
 end
 
+-- MAX_UNIT_GROUP_SIZE_RUNTIME
+function settings_service.get_max_unit_group_size_runtime()
+
+  local limit_runtime = Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.default_value
+
+  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.name]) then
+    limit_runtime = settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.name].value
+  end
+
+  return limit_runtime
+end
+
+-- MAX_UNIT_GROUP_SIZE_STARTUP
+function settings_service.get_max_unit_group_size_startup()
+
+  local limit_startup = Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.default_value
+
+  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name]) then
+    limit_startup = settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name].value
+  end
+
+  return limit_startup
+end
+
 -- CLONES_PER_TICK
 function settings_service.get_clones_per_tick()
   local setting = 1
@@ -174,6 +198,65 @@ function settings_service.get_difficulty(surface_name)
 
   return setting
 end
+
+-- MAX_GATHERING_UNIT_GROUPS
+function settings_service.get_max_gathering_unit_groups()
+  local setting = Global_Settings_Constants.settings.MAX_GATHERING_UNIT_GROUPS.default_value
+
+  if (settings and settings.startup and settings.startup[Global_Settings_Constants.settings.MAX_GATHERING_UNIT_GROUPS.name]) then
+    setting = settings.startup[Global_Settings_Constants.settings.MAX_GATHERING_UNIT_GROUPS.name].value
+  end
+
+  return setting
+end
+
+-- MAX_CLIENTS_TO_ACCEPT_ANY_NEW_REQUEST
+function settings_service.get_max_clients_to_accept_any_new_request()
+  local setting = Global_Settings_Constants.settings.MAX_CLIENTS_TO_ACCEPT_ANY_NEW_REQUEST.default_value
+
+  if (settings and settings.startup and settings.startup[Global_Settings_Constants.settings.MAX_CLIENTS_TO_ACCEPT_ANY_NEW_REQUEST.name]) then
+    setting = settings.startup[Global_Settings_Constants.settings.MAX_CLIENTS_TO_ACCEPT_ANY_NEW_REQUEST.name].value
+  end
+
+  return setting
+end
+
+-- MAX_CLIENTS_TO_ACCEPT_SHORT_NEW_REQUEST
+function settings_service.get_max_clients_to_accept_short_new_request()
+  local setting = Global_Settings_Constants.settings.MAX_CLIENTS_TO_ACCEPT_SHORT_NEW_REQUEST.default_value
+
+  if (settings and settings.startup and settings.startup[Global_Settings_Constants.settings.MAX_CLIENTS_TO_ACCEPT_SHORT_NEW_REQUEST.name]) then
+    setting = settings.startup[Global_Settings_Constants.settings.MAX_CLIENTS_TO_ACCEPT_SHORT_NEW_REQUEST.name].value
+  end
+
+  return setting
+end
+
+-- DIRECT_DISTANCE_TO_CONSIDER_SHORT_REQUEST
+function settings_service.get_direct_distance_to_consider_short_request()
+  local setting = Global_Settings_Constants.settings.DIRECT_DISTANCE_TO_CONSIDER_SHORT_REQUEST.default_value
+
+  if (settings and settings.startup and settings.startup[Global_Settings_Constants.settings.DIRECT_DISTANCE_TO_CONSIDER_SHORT_REQUEST.name]) then
+    setting = settings.startup[Global_Settings_Constants.settings.DIRECT_DISTANCE_TO_CONSIDER_SHORT_REQUEST.name].value
+  end
+
+  return setting
+end
+
+-- SHORT_REQUEST_MAX_STEPS
+function settings_service.get_short_request_max_steps()
+  local setting = Global_Settings_Constants.settings.SHORT_REQUEST_MAX_STEPS.default_value
+
+  if (settings and settings.startup and settings.startup[Global_Settings_Constants.settings.SHORT_REQUEST_MAX_STEPS.name]) then
+    setting = settings.startup[Global_Settings_Constants.settings.SHORT_REQUEST_MAX_STEPS.name].value
+  end
+
+  return setting
+end
+
+--[[
+      BREAM
+  ]]
 
 -- BREAM_DO_CLONE
 function settings_service.get_BREAM_do_clone()

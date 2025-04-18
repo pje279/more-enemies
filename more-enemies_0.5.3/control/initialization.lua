@@ -19,19 +19,15 @@ local Version_Service = require("control.service.version-service")
 local initialization = {}
 
 function initialization.init()
-  Log.debug("Initializing More Enemies")
+  Log.debug("initialization.init")
 
-  initialize(true) -- from_scratch
-
-  Log.debug("Finished initializing More Enemies")
+  return initialize(true) -- from_scratch
 end
 
 function initialization.reinit()
-  Log.debug("Reinitializing More Enemies")
+  Log.debug("initialization.reinit")
 
-  initialize(false) -- as is
-
-  Log.debug("Finished reinitializing More Enemies")
+  return initialize(false) -- as is
 end
 
 function initialization.purge(optionals)
@@ -120,6 +116,9 @@ end
 function initialize(from_scratch)
   if (not storage.more_enemies) then storage.more_enemies = More_Enemies_Data:new() end
   local more_enemies_data = storage.more_enemies
+
+  log(serpent.block(more_enemies_data))
+
   storage.more_enemies.do_nth_tick = false
 
   from_scratch = from_scratch or false
@@ -145,7 +144,12 @@ function initialize(from_scratch)
   else
     -- do_purge()
 
-    if (not more_enemies_data) then storage.more_enemies = More_Enemies_Data:new() end
+    log(serpent.block(more_enemies_data))
+
+    if (not more_enemies_data) then
+      storage.more_enemies = More_Enemies_Data:new()
+      more_enemies_data = storage.more_enemies
+    end
     if (not more_enemies_data.clones) then more_enemies_data.clones = More_Enemies_Data.clones end
     if (not more_enemies_data.staged_clones) then more_enemies_data.staged_clones = More_Enemies_Data.staged_clones end
     if (not more_enemies_data.clone) then more_enemies_data.clone = More_Enemies_Data.clone end
@@ -166,28 +170,18 @@ function initialize(from_scratch)
       -- Log.error("storage version is not valid")
       -- Log.error("If you're seeing this, please report it")
       -- Log.error("To stop seeing this, try executing the command /more_enemies.init")
-      initialize(true)
-      return
+      return initialize(true)
     else
       local version = Version_Service.validate_version()
       if (not version or not version.valid) then
         version_data.valid = false
-        return
+        return more_enemies_data
       end
     end
 
     more_enemies_data.overflow_clone_attempts = Overflow_Clone_Attempts_Data:new({ valid = true })
-    -- more_enemies_data.overflow_clone_attempts.valid = true
-
     more_enemies_data.nth_tick_complete = Nth_Tick_Data:new({ valid = true })
-    -- more_enemies_data.nth_tick_complete.valid = true
-    -- more_enemies_data.nth_tick_complete = {
-    --   current = true,
-    --   previous = true,
-    -- }
-
     more_enemies_data.nth_tick_cleanup_complete = Nth_Tick_Data:new({ valid = true })
-    -- more_enemies_data.nth_tick_cleanup_complete.valid = true
   end
 
   local user_setting = nil
@@ -220,13 +214,6 @@ function initialize(from_scratch)
         if (not more_enemies_data.difficulties) then more_enemies_data.difficulties = {} end
 
         if (from_scratch) then
-          -- more_enemies_data.difficulties[planet.string_val] =
-          -- {
-          --   valid = true,
-          --   difficulty = difficulty,
-          --   surface = game.get_surface(planet.string_val),
-          --   entities_spawned = 0,
-          -- }
           more_enemies_data.difficulties[planet.string_val] = Difficulty_Data:new({
             valid = true,
             difficulty = difficulty,
@@ -239,13 +226,6 @@ function initialize(from_scratch)
         end
 
         if (not more_enemies_data.difficulties[planet.string_val] or not more_enemies_data.difficulties[planet.string_val].valid) then
-          -- more_enemies_data.difficulties[planet.string_val] =
-          -- {
-          --   valid = true,
-          --   difficulty = difficulty,
-          --   surface = game.get_surface(planet.string_val),
-          --   entities_spawned = 0,
-          -- }
           more_enemies_data.difficulties[planet.string_val] = Difficulty_Data:new({
             valid = true,
             difficulty = difficulty,
@@ -267,6 +247,7 @@ function initialize(from_scratch)
     more_enemies_data.valid = true
   end
 
+  if (from_scratch) then log("more-enemies: Initialization complete") end
   if (from_scratch and game) then game.print("more-enemies: Initialization complete") end
   Log.info(storage)
 

@@ -117,9 +117,7 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
         local unit_group = spawn_service.BREAM.unit_group
         local skip = false
 
-        -- if (more_enemies_data.mod.staged_clones) then
         if (mod_data.staged_clones) then
-          -- for _, _staged_clone in pairs(more_enemies_data.mod.staged_clones) do
           for _, _staged_clone in pairs(mod_data.staged_clones) do
             Log.info(_staged_clone)
             local staged_clone = _staged_clone.obj
@@ -141,7 +139,6 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
 
         unit_group = spawn_service.BREAM.unit_group
         local j = 0
-        -- for i, _mod_staged_clone in pairs(more_enemies_data.mod.staged_clones) do
         for i, _mod_staged_clone in pairs(mod_data.staged_clones) do
           if (  Settings_Service.get_BREAM_difficulty() == Constants.difficulty.VANILLA.string_val
             and Settings_Service.get_BREAM_do_clone() == false
@@ -176,7 +173,6 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
           end
 
           if (not skip) then
-            -- if (more_enemies_data.mod.clone.count > max_num_modded_clones) then
             if (mod_data.clone.count > max_num_modded_clones) then
               Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_modded_clones))
               Log.warn("Currently " .. serpent.block(more_enemies_data.clone.count) .. " clones")
@@ -288,13 +284,6 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
 
                   if (not more_enemies_data.groups[unit_group.surface.name]) then more_enemies_data.groups[unit_group.surface.name] = {} end
 
-                  -- local unit_group_data = Unit_Group_Data:new()
-                  -- unit_group_data.group = unit_group
-                  -- unit_group_data.max_count = loop_len
-                  -- unit_group_data.mod_name = BREAM_Constants.name
-                  -- unit_group_data.valid = true
-
-                  -- more_enemies_data.groups[unit_group.surface.name][unit_group.unique_id] = unit_group_data
                   more_enemies_data.groups[unit_group.surface.name][unit_group.unique_id] = Unit_Group_Data:new({
                     valid = true,
                     group = unit_group,
@@ -302,26 +291,12 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
                     max_count = loop_len,
                     mod_name = BREAM_Constants.name,
                   })
-                  -- more_enemies_data.groups[unit_group.surface.name][unit_group.unique_id] = {
-                  --   valid = true,
-                  --   group = unit_group,
-                  --   count = 0,
-                  --   max_count = loop_len,
-                  --   mod_name = BREAM_Constants.name,
-                  -- }
                 end
               end
 
               for j=1, #clones do
                 if (clones[j] and clones[j] ~= nil and clones[j].clone.valid) then
                   Log.info("adding clone: " .. serpent.block(clones[j]))
-                  -- more_enemies_data.clones[clones[j].clone.unit_number] = {
-                  --   obj = clones[j].clone,
-                  --   type = unit_group and "unit-group" or "unit",
-                  --   mod_name = clones[j].mod_name,
-                  --   surface = clones[j].clone.surface,
-                  --   valid = clones[j].clone.valid
-                  -- }
                   more_enemies_data.clones[clones[j].clone.unit_number] = Clone_Data:new({
                     obj = clones[j].clone,
                     type = unit_group and "unit-group" or "unit",
@@ -337,13 +312,8 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
 
                 clones[j] = nil
 
-                -- if (not more_enemies_data.mod.clone) then more_enemies_data.mod.clone = {} end
-                -- if (more_enemies_data.mod.clone.count == nil) then more_enemies_data.mod.clone.count = 0 end
-
-                -- if (more_enemies_data.mod.clone.count < 0) then more_enemies_data.mod.clone.count = 0 end
                 if (mod_data.clone.count < 0) then mod_data.clone.count = 0 end
 
-                -- more_enemies_data.mod.clone.count = more_enemies_data.mod.clone.count + 1
                 mod_data.clone.count = mod_data.clone.count + 1
               end
             end
@@ -481,11 +451,6 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
               for j=1, #clones do
                 if (clones[j] and clones[j] ~= nil and clones[j].clone.valid) then
                   Log.info("adding clone: " .. serpent.block(clones[j]))
-                  -- more_enemies_data.clones[clones[j].clone.unit_number] = {
-                  --   obj = clones[j].clone,
-                  --   type = group and "unit-group" or "unit",
-                  --   mod_name = nil,
-                  -- }
                   more_enemies_data.clones[clones[j].clone.unit_number] = Clone_Data:new({
                     obj = clones[j].clone,
                     type = group and "unit-group" or "unit",
@@ -533,7 +498,6 @@ function spawn_service.do_nth_tick_cleanup(event, more_enemies_data)
   Log.info(event)
   Log.info(more_enemies_data)
 
-  -- local more_enemies_data = more_enemies_data or More_Enemies_Repository.get_more_enemies_data()
   more_enemies_data = more_enemies_data or More_Enemies_Repository.get_more_enemies_data()
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
 
@@ -588,7 +552,6 @@ function spawn_service.entity_died(event)
 
   if (more_enemies_data.clone.count < 0) then more_enemies_data.clone.count = 0 end
 
-  -- if (more_enemies_data.mod.clone.count < 0) then more_enemies_data.mod.clone.count = 0 end
   if (mod_data.clone.count < 0) then mod_data.clone.count = 0 end
 
   Log.info("Attempting to remove entity")
@@ -596,7 +559,6 @@ function spawn_service.entity_died(event)
     Log.debug("Removing entity: " .. serpent.block(entity.unit_number))
 
     if (Entity_Validations.get_mod_name(more_enemies_data.clones[entity.unit_number])) then
-      -- if (more_enemies_data.mod.clone.count > 0) then more_enemies_data.mod.clone.count = more_enemies_data.mod.clone.count - 1 end
       if (mod_data.clone.count > 0) then mod_data.clone.count = mod_data.clone.count - 1 end
     else
       if (more_enemies_data.clone.count > 0) then more_enemies_data.clone.count = more_enemies_data.clone.count - 1 end
@@ -614,7 +576,6 @@ function spawn_service.entity_died(event)
     Log.debug("removing, second try")
 
     if (Entity_Validations.get_mod_name(more_enemies_data.clones[entity.unit_number])) then
-      -- if (more_enemies_data.mod.clone.count > 0) then more_enemies_data.mod.clone.count = more_enemies_data.mod.clone.count - 1 end
       if (mod_data.clone.count > 0) then mod_data.clone.count = mod_data.clone.count - 1 end
     else
       if (more_enemies_data.clone.count > 0) then more_enemies_data.clone.count = more_enemies_data.clone.count - 1 end
@@ -625,14 +586,12 @@ function spawn_service.entity_died(event)
   end
 
   if (  entity
-    -- and more_enemies_data.mod.clone.count > 0
     and mod_data.clone.count > 0
     and more_enemies_data.clones[entity.unit_number])
   then
     Log.debug("mod removing, second try")
 
     if (Entity_Validations.get_mod_name(more_enemies_data.clones[entity.unit_number])) then
-      -- if (more_enemies_data.mod.clone.count > 0) then more_enemies_data.mod.clone.count = more_enemies_data.mod.clone.count - 1 end
       if (mod_data.clone.count > 0) then mod_data.clone.count = mod_data.clone.count - 1 end
     else
       if (more_enemies_data.clone.count > 0) then more_enemies_data.clone.count = more_enemies_data.clone.count - 1 end
@@ -673,12 +632,6 @@ function spawn_service.entity_spawned(event)
   if (more_enemies_data.valid) then
     Log.debug("Adding to staged_clones: " .. serpent.block(entity.unit_number))
 
-    -- more_enemies_data.staged_clones[entity.unit_number] = {
-    --   obj = entity,
-    --   surface = entity.surface,
-    --   group = nil,
-    --   mod_name = nil,
-    -- }
     more_enemies_data.staged_clones[entity.unit_number] = Clone_Data:new({
       obj = entity,
       surface = entity.surface,
