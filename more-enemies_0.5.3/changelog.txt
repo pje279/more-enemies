@@ -1,4 +1,26 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.3
+Date: 2025-04-17
+  Bug Fixes:
+    - Fixed difficulty level not applying appropriately to startup settings
+      -> Makes "Easy" easier, and "Vanilla+", "Hard", and "Insanity" harder
+      -> Only applies to startup settings at default values
+      -> i.e. Any startup setting left at its default value will be modified by the chosen difficulty level
+    - Added additional logic to try and further prevent infinite unit group cloning
+    - Should now properly clean up unit groups from storage after they've finished gathering/been ordered to move
+    - Created schema for storage objects to be based from
+      -> Allows for simpler logic and greater maintainability
+    - Added/exposed several additional settings
+      -> To allow finer tuning of performance
+      -> Default settings are identical to vanilla
+      - Maximum number of gathering unit groups: 30
+      - Maximum clients to accecpt any new request: 10
+      - Maximum clients to accept short new request: 100
+      - Direct distance to consider short request: 100
+      - Short request max steps: 1000
+    - Fixed a few typos that could have caused errors
+      -> Were only in a few scenarios where the mod would have already been in an error state
+---------------------------------------------------------------------------------------------------
 Version: 0.5.2
 Date: 2025-04-05
   Bug Fixes:
@@ -98,7 +120,7 @@ Date: 2025-03-27
       If > 1, or above difficulty Vanilla, entities will be cloned when they spawn according to difficulty settings and evolution factor
       If < 1, fewer entities will be cloned for the given difficulty setting
     - Added unit group cloning. Applies to Nauvis and Gleba, both configurable
-      If > 1, or above difficulty Vanilla, unit groups (enemy attack groups) will be cloned when they finish gathereing according to difficulty settings and evolution factor
+      If > 1, or above difficulty Vanilla, unit groups (enemy attack groups) will be cloned when they finish gathering according to difficulty settings and evolution factor
       If < 1, unit groups will be cloned fewer times
     - Added evolution factor [0 - 1] as a means of scaling the entity and unit group cloning more appropriately
       Can be toggled on or off. Toggling off causes the maximum amount to be spawned at the very beginning of the game.
