@@ -25,19 +25,20 @@ function difficulty_utils.get_difficulty(planet, reindex)
   reindex = reindex or false
 
   Log.debug(reindex)
-  if (storage) then Log.info(storage.more_enemies.difficulties) end
+  -- if (storage) then Log.info(storage.more_enemies.difficulties) end
 
   if (  not reindex
     and planet
     and storage
     and more_enemies_data
     and more_enemies_data.difficulties
+    and more_enemies_data.difficulties[planet]
     and more_enemies_data.difficulties[planet].valid)
   then
     -- While it may exist, check if it's still valid
     local planet_difficulty_setting = Settings_Service.get_difficulty(planet)
     Log.info(planet_difficulty_setting)
-    Log.info(storage.more_enemies.difficulties)
+    -- Log.info(storage.more_enemies.difficulties)
 
     if ( not more_enemies_data.difficulties
       or not more_enemies_data.difficulties[planet]
