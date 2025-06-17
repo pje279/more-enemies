@@ -1,7 +1,7 @@
 local Armoured_Biters_Constants = require("libs.constants.mods.armoured-biters-constants")
 local Armoured_Biters_Settings_Constants = require("libs.constants.settings.mods.armoured-biters.armoured-biters-settings-constants")
-local Settings_Validations = require("control.validations.settings-validations")
-local Difficulty_Utils = require("control.utils.difficulty-utils")
+local Settings_Validations = require("scripts.validations.settings-validations")
+local Difficulty_Utils = require("scripts.utils.difficulty-utils")
 
 local nauvis_difficulty = settings.startup["more-enemies-nauvis-difficulty"]
 local difficulty = Difficulty_Utils.get_difficulty("nauvis", true)

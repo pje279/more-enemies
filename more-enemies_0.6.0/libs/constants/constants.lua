@@ -4,11 +4,11 @@ if _constants and _constants.more_enemies then
 end
 
 local Log = require("libs.log.log")
-local Easy_Difficulty_Data = require("control.data.difficulties.easy-difficulty-data")
-local Hard_Difficulty_Data = require("control.data.difficulties.hard-difficulty-data")
-local Insanity_Difficulty_Data = require("control.data.difficulties.insanity-difficulty-data")
-local Vanilla_Plus_Difficulty_Data = require("control.data.difficulties.vanilla-plus-difficulty-data")
-local Vanilla_Difficulty_Data = require("control.data.difficulties.vanilla-difficulty-data")
+local Easy_Difficulty_Data = require("scripts.data.difficulties.easy-difficulty-data")
+local Hard_Difficulty_Data = require("scripts.data.difficulties.hard-difficulty-data")
+local Insanity_Difficulty_Data = require("scripts.data.difficulties.insanity-difficulty-data")
+local Vanilla_Plus_Difficulty_Data = require("scripts.data.difficulties.vanilla-plus-difficulty-data")
+local Vanilla_Difficulty_Data = require("scripts.data.difficulties.vanilla-difficulty-data")
 
 local constants = {}
 

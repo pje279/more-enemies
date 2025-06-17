@@ -4,10 +4,10 @@ if _more_enemies_commands and _more_enemies_commands.more_enemies then
 end
 
 local Constants = require("libs.constants.constants")
-local Initialization = require("control.initialization")
-local More_Enemies_Repository = require("control.repositories.more-enemies-repository")
+local Initialization = require("scripts.initialization")
+local More_Enemies_Repository = require("scripts.repositories.more-enemies-repository")
 local Log = require("libs.log.log")
-local Version_Data = require("control.data.version-data")
+local Version_Data = require("scripts.data.version-data")
 
 local more_enemies_commands = {}
 

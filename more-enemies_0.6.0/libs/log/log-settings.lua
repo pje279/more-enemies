@@ -1,6 +1,12 @@
+-- If already defined, return
+if _log_settings and _log_settings.more_enemies then
+  return _log_settings
+end
+
 local Log_Constants = require("libs.log.log-constants")
 local Log_Constants_Functions = require("libs.log.log-constants-functions")
 
+local log_settings = {}
 
 data:extend({
   {
@@ -15,3 +21,9 @@ data:extend({
   Log_Constants.settings.DO_TRACEBACK,
   Log_Constants.settings.DO_NOT_PRINT,
 })
+
+log_settings.more_enemies = true
+
+local _log_settings = log_settings
+
+return log_settings

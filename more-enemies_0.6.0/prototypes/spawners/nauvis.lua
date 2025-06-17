@@ -1,7 +1,7 @@
 
-local Difficulty_Utils = require("control.utils.difficulty-utils")
+local Difficulty_Utils = require("scripts.utils.difficulty-utils")
 local Nauvis_Constants = require("libs.constants.nauvis-constants")
-local Settings_Validations = require("control.validations.settings-validations")
+local Settings_Validations = require("scripts.validations.settings-validations")
 
 local nauvis_difficulty = settings.startup["more-enemies-nauvis-difficulty"]
 local difficulty = Difficulty_Utils.get_difficulty("nauvis", true)

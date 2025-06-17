@@ -1,12 +1,12 @@
 local Armoured_Biters_Constants = require("libs.constants.mods.armoured-biters-constants")
 local Behemoth_Enemies_Constants = require("libs.constants.mods.behemoth-enemies-constants")
 local Constants = require("libs.constants.constants")
-local Difficulty_Utils = require("control.utils.difficulty-utils")
+local Difficulty_Utils = require("scripts.utils.difficulty-utils")
 local Gleba_Constants = require("libs.constants.gleba-constants")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Log = require("libs.log.log")
 local Nauvis_Constants = require("libs.constants.nauvis-constants")
-local Settings_Service = require("control.service.settings-service")
+local Settings_Service = require("scripts.service.settings-service")
 
 local difficulties = {}
 

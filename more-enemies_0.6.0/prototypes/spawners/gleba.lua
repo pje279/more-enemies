@@ -1,7 +1,7 @@
 
 local Gleba_Constants = require("libs.constants.gleba-constants")
-local Difficulty_Utils = require("control.utils.difficulty-utils")
-local Settings_Validations = require("control.validations.settings-validations")
+local Difficulty_Utils = require("scripts.utils.difficulty-utils")
+local Settings_Validations = require("scripts.validations.settings-validations")
 
 local gleba_difficulty = settings.startup["more-enemies-gleba-difficulty"]
 local difficulty = Difficulty_Utils.get_difficulty("gleba", true)
