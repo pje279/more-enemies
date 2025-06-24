@@ -7,6 +7,10 @@ local Log = require("libs.log.log")
 
 local entity_validations = {}
 
+local check_for_mod_name = function (entity)
+  return entity.mod_name and true or false
+end
+
 function entity_validations.get_mod_name(entity)
   local return_val = nil
 
@@ -15,10 +19,6 @@ function entity_validations.get_mod_name(entity)
   end
 
   return return_val
-end
-
-function check_for_mod_name(entity)
-  return entity.mod_name and true or false
 end
 
 entity_validations.more_enemies = true

@@ -5,6 +5,7 @@ end
 
 local Log = require("libs.log.log")
 local More_Enemies_Data = require("scripts.data.more-enemies-data")
+local Version_Data = require("scripts.data.version-data")
 
 local more_enemies_repository = {}
 
@@ -76,6 +77,12 @@ function more_enemies_repository.get_more_enemies_data(optionals)
     -- If it doesn't exist, generate it
     storage.more_enemies = return_val
     more_enemies_repository.save_more_enemies_data()
+  end
+
+  -- if (storage.more_enemies.version_data:to_string() ~= return_val.version_data:to_string()) then
+  if (storage.more_enemies.version_data.string_val ~= Version_Data:to_string()) then
+  -- if (storage.more_enemies.version_data.string_val ~= return_val.version_data.string_val) then
+    storage.more_enemies.valid = false
   end
 
   return storage.more_enemies

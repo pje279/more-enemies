@@ -3,7 +3,7 @@ if _unit_group_utils and _unit_group_utils.more_enemies then
   return _unit_group_utils
 end
 
-unit_group_utils = {}
+local unit_group_utils = {}
 
 function unit_group_utils.get_spawner(group, radius, limit)
   radius = radius or 1

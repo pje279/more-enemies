@@ -4,7 +4,7 @@ if _settings_utils and _settings_utils.more_enemies then
 end
 
 local BREAM_Settings_Constants = require("libs.constants.settings.mods.BREAM.BREAM-settings-constants")
-local Constants = require("libs.constants.constants")
+-- local Constants = require("libs.constants.constants")
 local Difficulty_Utils = require("scripts.utils.difficulty-utils")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Initialization = require("scripts.initialization")
@@ -13,7 +13,7 @@ local More_Enemies_Repository = require("scripts.repositories.more-enemies-repos
 local Settings_Service = require("scripts.service.settings-service")
 local Vanilla_Difficulty_Data = require("scripts.data.difficulties.vanilla-difficulty-data")
 
-settings_utils = {}
+local settings_utils = {}
 
 function settings_utils.is_vanilla(surface_name)
   local return_val = true

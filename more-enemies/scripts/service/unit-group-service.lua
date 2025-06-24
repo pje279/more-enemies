@@ -3,26 +3,21 @@ if _unit_group_service and _unit_group_service.more_enemies then
   return _unit_group_service
 end
 
-local Constants = require("libs.constants.constants")
+-- local Constants = require("libs.constants.constants")
 local Difficulty_Utils = require("scripts.utils.difficulty-utils")
-local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
-local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
+-- local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
+-- local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Initialization = require("scripts.initialization")
 local Log = require("libs.log.log")
 local More_Enemies_Repository = require("scripts.repositories.more-enemies-repository")
-local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
+-- local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
 local Settings_Service = require("scripts.service.settings-service")
 local Settings_Utils = require("scripts.utils.settings-utils")
 local Spawn_Utils = require("scripts.utils.spawn-utils")
-local Unit_Group_Utils = require("scripts.utils.unit-group-utils")
 local Unit_Group_Data = require("scripts.data.unit-group-data")
 
 local unit_group_service = {}
 
---- @param data table
----   @param event table
----     @param group table
----   @param more_enemies_data table
 function unit_group_service.unit_group_created(data)
   Log.debug("unit_group_service.unit_group_created")
   Log.info(data)
@@ -34,7 +29,6 @@ function unit_group_service.unit_group_created(data)
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
 
   local group = data.event.group
-
   if (not group) then return end
   if (not group.valid) then return end
   if (not group.surface or not group.surface.valid or not group.surface.name) then return end
@@ -112,14 +106,9 @@ function unit_group_service.unit_group_created(data)
   Log.debug(more_enemies_data.groups[group.surface.name][group.unique_id])
 end
 
---- @param data table
----   @param event table
----     @param group table
----     @param tick number
----   @param more_enemies_data table
 function unit_group_service.unit_group_finished_gathering(data)
-  Log.debug("unit_group_service.unit_group_finished_gathering")
-  Log.info(data)
+  Log.error("unit_group_service.unit_group_finished_gathering")
+  Log.warn(data)
 
   if (not data) then return end
   if (not data.event) then return end
@@ -132,14 +121,14 @@ function unit_group_service.unit_group_finished_gathering(data)
   local more_enemies_data = data.more_enemies_data or More_Enemies_Repository.get_more_enemies_data()
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
 
-  Log.info("1")
+  Log.error("1")
   if (not group) then return end
   if (not group.valid) then return end
   if (not group.surface or not group.surface.name) then return end
   if (not group.is_unit_group) then return end
   if (not group.force) then return end
 
-  Log.info("2")
+  Log.error("2")
 
   local difficulty = Difficulty_Utils.get_difficulty(group.surface.name).difficulty
   if (not difficulty or not difficulty.valid) then
@@ -158,23 +147,24 @@ function unit_group_service.unit_group_finished_gathering(data)
   Log.debug(selected_difficulty)
   if (not selected_difficulty) then return end
 
-  local vanilla = 1
-  if (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == 1) then
-    if (    (group.surface.name == Constants.DEFAULTS.planets.gleba.string_val
-        and Settings_Service.get_clone_unit_group_setting(group.surface.name) == Gleba_Settings_Constants.settings.CLONE_GLEBA_UNIT_GROUPS.default_value)
-      or
-            (group.surface.name == Constants.DEFAULTS.planets.nauvis.string_val
-        and Settings_Service.get_clone_unit_group_setting(group.surface.name) == Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNIT_GROUPS.default_value))
-    then
-      vanilla = vanilla + 1
-    end
-    if (Settings_Service.get_maximum_group_size(group.surface.name) == Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.default_value) then vanilla = vanilla + 1 end
-  end
+  -- local vanilla = 1
+  -- if (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == 1) then
+  --   if (    (group.surface.name == Constants.DEFAULTS.planets.gleba.string_val
+  --       and Settings_Service.get_clone_unit_group_setting(group.surface.name) == Gleba_Settings_Constants.settings.CLONE_GLEBA_UNIT_GROUPS.default_value)
+  --     or
+  --           (group.surface.name == Constants.DEFAULTS.planets.nauvis.string_val
+  --       and Settings_Service.get_clone_unit_group_setting(group.surface.name) == Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNIT_GROUPS.default_value))
+  --   then
+  --     vanilla = vanilla + 1
+  --   end
+  --   -- if (Settings_Service.get_maximum_group_size(group.surface.name) == Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.default_value) then vanilla = vanilla + 1 end
+  --   if (Settings_Service.get_maximum_group_size() == Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.default_value) then vanilla = vanilla + 1 end
+  -- end
 
-  Log.debug("vanilla: " .. serpent.block(vanilla))
-  if (vanilla > 2) then return end
+  -- Log.debug("vanilla: " .. serpent.block(vanilla))
+  -- if (vanilla > 2) then return end
 
-  Log.info("3")
+  Log.error("3")
 
   local loop_len = 1
 
@@ -195,7 +185,7 @@ function unit_group_service.unit_group_finished_gathering(data)
   loop_len = math.floor((selected_difficulty.value * clone_unit_group_setting) * evolution_factor)
   Log.info("loop_len: " .. serpent.block(loop_len))
 
-  Log.info("4")
+  Log.error("4")
 
   local unit_group_data = Unit_Group_Data:new()
   if (    more_enemies_data.groups[group.surface.name]
@@ -216,15 +206,15 @@ function unit_group_service.unit_group_finished_gathering(data)
 
   for i=1, loop_len do
     if (unit_group_data.count >= unit_group_data.max_count) then
-      Log.debug("breaking", true)
+      Log.error("breaking", true)
       break
     end
 
     Log.debug("attempting to duplicate unit group")
     if (unit_group_data.count < unit_group_data.max_count) then
-      Log.debug("duplicating unit group: " .. serpent.block(i))
+      Log.error("duplicating unit group: " .. serpent.block(i))
       Log.info("tick: " .. tick)
-      Spawn_Utils.duplicate_unit_group(group, tick)
+      Spawn_Utils.duplicate_unit_group(group)
     end
 
     if (unit_group_data and unit_group_data.valid) then
@@ -233,15 +223,17 @@ function unit_group_service.unit_group_finished_gathering(data)
   end
 
   if (unit_group_data and unit_group_data.count ~= nil) then
+    Log.error("before: " .. unit_group_data.count)
     unit_group_data.count = unit_group_data.count + 1
+    Log.error("after: " .. unit_group_data.count)
   end
 
-  Log.info("5")
+  Log.error("5")
 
   if (unit_group_data and unit_group_data.valid and not unit_group_data.mod_name) then
-    Log.debug("releasing from spawner")
+    Log.error("releasing from spawner")
     group.release_from_spawner()
-    Log.debug("start moving")
+    Log.error("start moving")
     group.start_moving()
   end
 

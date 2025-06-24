@@ -9,11 +9,11 @@ local Difficulty_Data = require("scripts.data.difficulty-data")
 local Difficulty_Utils = require("scripts.utils.difficulty-utils")
 local Log = require("libs.log.log")
 local Log_Constants = require("libs.log.log-constants")
-local Version_Data = require("scripts.data.version-data")
+-- local Version_Data = require("scripts.data.version-data")
 local More_Enemies_Data = require("scripts.data.more-enemies-data")
 local Nth_Tick_Data = require("scripts.data.nth-tick-data")
 local Overflow_Clone_Attempts_Data = require("scripts.data.overflow-clone-attempts-data")
-local Version_Repository = require("scripts.repositories.version-repository")
+-- local Version_Repository = require("scripts.repositories.version-repository")
 local Version_Service = require("scripts.service.version-service")
 
 local initialization = {}
@@ -51,7 +51,10 @@ function initialization.purge(optionals)
         end
       end
       storage.more_enemies.clones = {}
-      storage.more_enemies.clone = { count = 0 }
+      -- storage.more_enemies.clone = { count = 0 }
+      storage.more_enemies.clone = {}
+      storage.more_enemies.clone.unit = 0
+      storage.more_enemies.clone.unit_group = 0
       storage.more_enemies.mod.clone = { count = 0 }
     end
 
@@ -72,10 +75,17 @@ function initialization.purge(optionals)
             end
             do_purge(k,v)
           elseif (optionals.clones) then
-            if (storage.more_enemies.clone.count > 0) then
-              storage.more_enemies.clone.count = storage.more_enemies.clone.count - 1
+            if (v.type == "unit-group") then
+              if (storage.more_enemies.clone.unit_group > 0) then
+                storage.more_enemies.clone.unit_group = storage.more_enemies.clone.unit_group - 1
+              end
+              do_purge(k, v)
+            else
+              if (storage.more_enemies.clone.unit > 0) then
+                storage.more_enemies.clone.unit = storage.more_enemies.clone.unit - 1
+              end
+              do_purge(k, v)
             end
-            do_purge(k, v)
           end
         end
       end
@@ -91,7 +101,9 @@ function initialization.purge(optionals)
         end
       end
       storage.more_enemies.clone = {}
-      storage.more_enemies.clone.count = 0
+      -- storage.more_enemies.clone.count = 0
+      storage.more_enemies.clone.unit = 0
+      storage.more_enemies.clone.unit_group = 0
       storage.more_enemies.staged_clones = {}
     end
 
@@ -149,7 +161,9 @@ function initialize(from_scratch)
     if (not more_enemies_data.clones) then more_enemies_data.clones = More_Enemies_Data.clones end
     if (not more_enemies_data.staged_clones) then more_enemies_data.staged_clones = More_Enemies_Data.staged_clones end
     if (not more_enemies_data.clone) then more_enemies_data.clone = More_Enemies_Data.clone end
-    if (more_enemies_data.clone.count == nil) then more_enemies_data.clone.count = More_Enemies_Data.clone.count end
+    -- if (more_enemies_data.clone.count == nil) then more_enemies_data.clone.count = More_Enemies_Data.clone.count end
+    if (more_enemies_data.clone.unit == nil) then more_enemies_data.clone.unit = More_Enemies_Data.clone.unit end
+    if (more_enemies_data.clone.unit_group == nil) then more_enemies_data.clone.unit_group = More_Enemies_Data.clone.unit_group end
 
     if (not more_enemies_data.mod) then more_enemies_data.mod = More_Enemies_Data.mod end
     if (not more_enemies_data.mod.staged_clones) then more_enemies_data.mod.staged_clones = More_Enemies_Data.mod.staged_clones end

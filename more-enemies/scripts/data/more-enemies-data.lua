@@ -8,7 +8,8 @@ local Overflow_Clone_Attempts_Data = require("scripts.data.overflow-clone-attemp
 local more_enemies_data = Data:new()
 
 more_enemies_data.clones = {}
-more_enemies_data.clone = { count = 0 }
+-- more_enemies_data.clone = { count = 0 }
+more_enemies_data.clone = { unit = 0, unit_group = 0 }
 
 more_enemies_data.difficulties = {}
 
@@ -58,6 +59,15 @@ function more_enemies_data:new(obj)
   setmetatable(obj, self)
   self.__index = self
   return obj
+end
+
+function more_enemies_data:is_valid()
+  Log.debug("more_enemies_data:is_valid")
+
+  if (not self.valid) then return false end
+  if (self.version_data:to_string() ~= (Version_Data:new()):to_string()) then return false end
+
+  return true
 end
 
 return more_enemies_data

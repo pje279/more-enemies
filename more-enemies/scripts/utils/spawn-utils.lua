@@ -4,24 +4,37 @@ if _spawn_utils and _spawn_utils.more_enemies then
 end
 
 local Constants = require("libs.constants.constants")
-local Behemoth_Enemies_Constants = require("libs.constants.mods.behemoth-enemies-constants")
+-- local Behemoth_Enemies_Constants = require("libs.constants.mods.behemoth-enemies-constants")
 local Entity_Validations = require("scripts.validations.entity-validations")
-local Gleba_Constants = require("libs.constants.gleba-constants")
-local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
-local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
+-- local Gleba_Constants = require("libs.constants.gleba-constants")
+-- local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
+-- local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Initialization = require("scripts.initialization")
 local Log = require("libs.log.log")
 local More_Enemies_Repository = require("scripts.repositories.more-enemies-repository")
-local Nauvis_Constants = require("libs.constants.nauvis-constants")
-local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
+-- local Nauvis_Constants = require("libs.constants.nauvis-constants")
+-- local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
 local Difficulty_Utils = require("scripts.utils.difficulty-utils")
 local Settings_Service = require("scripts.service.settings-service")
 local Settings_Utils = require("scripts.utils.settings-utils")
 
 local spawn_utils = {}
 
-function spawn_utils.duplicate_unit_group(group, tick)
-  Log.info("spawn.duplicate_unit_group" .. serpent.block(tick))
+local calc_evolution_multiplier = function(selected_difficulty, evolution_factor)
+  -- Validate inputs
+  evolution_factor = evolution_factor or 0
+  if (not selected_difficulty or not selected_difficulty.valid) then return evolution_factor end
+
+  -- Calculate the evolution factor
+  -- https://www.wolframalpha.com/input?i=x%5E%28y%2F%28x%5E%28y%2Fx%29%29%29+*+%28y%5Ex%29
+  local value = ((selected_difficulty.value ^ (evolution_factor / (selected_difficulty.value ^ (evolution_factor / selected_difficulty.value)))) * (evolution_factor ^ selected_difficulty.value))
+  Log.debug("evolution multiplier: " .. value)
+  return value
+end
+
+function spawn_utils.duplicate_unit_group(group)
+  Log.error("spawn.duplicate_unit_group")
+  Log.warn(group)
 
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
@@ -45,20 +58,21 @@ function spawn_utils.duplicate_unit_group(group, tick)
   local selected_difficulty = difficulty.selected_difficulty
   Log.info("selected_difficulty: " .. serpent.block(selected_difficulty))
 
-  local modifier = 1 / ((Constants.difficulty.INSANITY.value - selected_difficulty.value) + 1)
-  if (modifier < 0) then modifier = 0 end
+  local evolution_factor = group.force.get_evolution_factor()
+
+  local modifier = evolution_factor ^ (((Constants.difficulty.INSANITY.value - selected_difficulty.value) + selected_difficulty.value)/(evolution_factor * selected_difficulty.value))
+
+  if (modifier < 0) then modifier = modifier * -1 end
   if (modifier > 1) then modifier = 1 end
 
-  local len = math.floor(#group.members * (modifier) )
+  local len = math.ceil(#group.members * (modifier))
 
-  local clones = {}
-
-  Log.debug("len: " .. serpent.block(len))
+  Log.error("len: " .. serpent.block(len))
   for i=1, len do
 
     local member = group.members[i]
     if (member and member.valid) then
-      Log.info("adding member to staged_clones")
+      Log.warn("adding member to staged_clones")
       storage.more_enemies.staged_clones[member.unit_number] = {
         obj = member,
         group = group
@@ -86,13 +100,13 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   }
 
   local clone_settings = optionals.clone_settings
-  local tick = optionals.tick
+  -- local tick = optionals.tick
 
   -- Validate inputs
   if (clone_settings == nil or not default_value or not difficulty or not entity) then return end
-  Log.info("past 1")
+  Log.warn("past 1")
   if (not difficulty.valid or not entity.valid) then return end
-  Log.info("past 2")
+  Log.warn("past 2")
   if (not difficulty.selected_difficulty and optionals.surface) then
     Log.debug("clone_entity: Getting difficulty")
     difficulty = Difficulty_Utils.get_difficulty(optionals.surface.name).difficulty
@@ -107,10 +121,10 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
 
     if (not difficulty.selected_difficulty) then return end
   end
-  Log.info("past 3")
+  Log.warn("past 3")
   if (not entity.surface or not entity.surface.valid) then return end
   if (Settings_Utils.is_vanilla(entity.surface.name)) then return end
-  Log.debug("past validations")
+  Log.warn("past validations")
 
   local use_evolution_factor = Settings_Service.get_do_evolution_factor(entity.surface.name)
 
@@ -144,16 +158,14 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   else
     loop_len = difficulty.selected_difficulty.value * evolution_multiplier
   end
-  Log.debug("loop_len after calcs")
-  Log.info(loop_len)
+  Log.warn("loop_len after calcs")
+  Log.warn(loop_len)
 
   local clones = {}
 
-  local limit_runtime = Settings_Service.get_maximum_group_size()
-
-  Log.info("at cloner definition")
-  local cloner = function (entity)
-    Log.debug("Cloning")
+  Log.warn("at cloner definition")
+  local cloner = function (entity, clone_limit, type)
+    Log.warn("Cloning")
     if (not entity.valid) then return end
 
     if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
@@ -162,12 +174,19 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
 
     if (not more_enemies_data.do_nth_tick) then return clone end
 
-    local max_num_clones = Settings_Service.get_maximum_number_of_clones()
-    if (more_enemies_data.clone.count > max_num_clones)
+    -- local max_num_clones = Settings_Service.get_maximum_number_of_clones()
+    -- if (more_enemies_data.clone.count > max_num_clones)
+    -- then
+    if (    (type == "unit-group"
+        and more_enemies_data.clone.unit_group > clone_limit)
+      or    (type == "unit"
+        and more_enemies_data.clone.unit > clone_limit))
     then
       if (not Entity_Validations.get_mod_name(optionals) or optionals.mod_name ~= "BREAM") then
-        Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
-        Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.count) .. " clones")
+        -- Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
+        -- Log.warn("Currently " .. serpent.block(storage.more_enemies.clone.count) .. " clones")
+        Log.warn("Tried to clone more than the " .. type .. " limit: " .. serpent.block(clone_limit))
+        Log.warn("Currently " .. serpent.block(clone_limit) .. " clones")
         return
       end
     end
@@ -203,7 +222,12 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     if (Entity_Validations.get_mod_name(optionals)) then
       more_enemies_data.mod.clone.count = more_enemies_data.mod.clone.count + 1
     else
-      more_enemies_data.clone.count = more_enemies_data.clone.count + 1
+      -- more_enemies_data.clone.count = more_enemies_data.clone.count + 1
+      if (type == "unit-group") then
+        more_enemies_data.clone.unit_group = more_enemies_data.clone.unit_group + 1
+      else
+        more_enemies_data.clone.unit = more_enemies_data.clone.unit + 1
+      end
     end
 
     Log.info(clone)
@@ -211,32 +235,61 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
       clone = clone,
       mod_name = Entity_Validations.get_mod_name(optionals)
     }
-  end
+  end -- End cloner = function (entity)
 
   Log.debug("at fun definition")
-  local fun = function (loop_len, limit, clones, obj, difficulty, cloner, tick)
+  local fun = function (loop_len, clones, obj, cloner, type)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
     if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
 
-    tick = tick or -1
+    -- tick = tick or -1
 
-    local clone_limit = Settings_Service.get_maximum_number_of_clones()
-    local max_num_clones = Settings_Service.get_maximum_number_of_clones()
+    local clone_limit = 0
+    if (type == "unit-group") then
+      clone_limit = Settings_Service.get_maximum_number_of_unit_group_clones()
+    else
+      clone_limit = Settings_Service.get_maximum_number_of_spawned_clones()
+    end
+
+    if (not clone_limit or clone_limit < 1) then return end
+
+    -- local max_num_clones = Settings_Service.get_maximum_number_of_clones()
     local max_num_modded_clones = Settings_Service.get_maximum_number_of_modded_clones()
     for i=1, math.floor(loop_len) do
       Log.info("i = " .. serpent.block(i))
       if (not more_enemies_data.do_nth_tick) then return end
 
-      if (  more_enemies_data.clone and more_enemies_data.clone.count
-        and more_enemies_data.clone.count > max_num_clones)
-      then
-        if (not Entity_Validations.get_mod_name(optionals) or optionals.mod_name ~= "BREAM") then
+      -- if (  more_enemies_data.clone and more_enemies_data.clone.count
+      --   and more_enemies_data.clone.count > max_num_clones)
+      -- then
+      -- if (more_enemies_data.clone
+      --   and (   (type == "unit-group"
+      --       and more_enemies_data.clone.unit_group > clone_limit)
+      --     or    (type == "unit"
+      --       and more_enemies_data.clone.unit > clone_limit)))
+      -- then
+      --   -- if (not Entity_Validations.get_mod_name(optionals) or optionals.mod_name ~= "BREAM") then
 
-          Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
-          Log.warn("Currently " .. serpent.block(more_enemies_data.clone.count) .. " clones")
-          return
+      --   --   -- Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
+      --   --   -- Log.warn("Currently " .. serpent.block(more_enemies_data.clone.count) .. " clones")
+      --   --   Log.warn("Tried to clone more than the unit limit: " .. serpent.block(clone_limit))
+      --   --   -- Log.warn("Currently " .. serpent.block(more_enemies_data.clone.count) .. " clones")
+      --   --   return
+      --   -- end
+      --   return
+      -- end
+      if (more_enemies_data.clone) then
+        Log.error("spawn_utils.fun definition: 1")
+        if (type == "unit-group") then
+          Log.error("spawn_utils.fun definition: 2")
+          if (not more_enemies_data.clone.unit_group or more_enemies_data.clone.unit_group > Settings_Service.get_maximum_number_of_unit_group_clones()) then return end
+        else
+          Log.error("spawn_utils.fun definition: 3")
+          if (not more_enemies_data.clone.unit or more_enemies_data.clone.unit > Settings_Service.get_maximum_number_of_spawned_clones()) then return end
         end
+        Log.error("spawn_utils.fun definition: 4")
       end
+      Log.error("spawn_utils.fun definition: 5")
 
       if (  more_enemies_data.mod.clone.count > max_num_modded_clones
         and Entity_Validations.get_mod_name(optionals) ~= nil)
@@ -246,9 +299,9 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
         return
       end
 
-      clones[i] = cloner(obj)
+      clones[i] = cloner(obj, clone_limit, type)
     end
-  end
+  end -- End fun = function (loop_len, limit, clones, obj, cloner)
 
   if (clone_setting ~= default_value.value) then
     -- Settings are different from default
@@ -256,39 +309,27 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     if (use_evolution_factor) then
       Log.debug("user settings with evolution_factor")
       Log.debug(loop_len)
-      fun(loop_len, limit_runtime, clones, entity, difficulty, cloner)
+      fun(loop_len, clones, entity, cloner, clone_settings.type)
     else
       Log.debug("user settings without evolution_factor")
       Log.debug(clone_setting + difficulty.selected_difficulty.value)
-      fun(clone_setting + difficulty.selected_difficulty.value, limit_runtime, clones, entity, difficulty, cloner)
+      fun(clone_setting + difficulty.selected_difficulty.value, clones, entity, cloner, clone_settings.type)
     end
   else
     if (use_evolution_factor) then
       Log.debug("standard settings with evolution_factor")
       Log.debug(loop_len)
-      fun(loop_len, limit_runtime, clones, entity, difficulty, cloner)
+      fun(loop_len, clones, entity, cloner, clone_settings.type)
     else
       Log.debug("standard settings without evolution_factor")
       -- No changes -> use selected difficulty
       Log.debug(difficulty.selected_difficulty.value)
-      fun(difficulty.selected_difficulty.value, limit_runtime, clones, entity, difficulty, cloner)
+      fun(difficulty.selected_difficulty.value, clones, entity, cloner, clone_settings.type)
     end
   end
 
   -- Log.info(clones)
   return clones
-end
-
-function calc_evolution_multiplier(selected_difficulty, evolution_factor)
-  -- Validate inputs
-  evolution_factor = evolution_factor or 0
-  if (not selected_difficulty or not selected_difficulty.valid) then return evolution_factor end
-
-  -- Calculate the evolution factor
-  -- https://www.wolframalpha.com/input?i=x%5E%28y%2F%28x%5E%28y%2Fx%29%29%29+*+%28y%5Ex%29
-  local value = ((selected_difficulty.value ^ (evolution_factor / (selected_difficulty.value ^ (evolution_factor / selected_difficulty.value)))) * (evolution_factor ^ selected_difficulty.value))
-  Log.debug("evolution multiplier: " .. value)
-  return value
 end
 
 spawn_utils.more_enemies = true

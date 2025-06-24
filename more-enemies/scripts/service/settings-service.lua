@@ -55,13 +55,15 @@ function settings_service.get_maximum_group_size()
   local limit_runtime = Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.default_value
   local limit_startup = Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.default_value
 
-  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.name]) then
-    limit_runtime = settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.name].value
-  end
+  -- if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.name]) then
+  --   limit_runtime = settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME.name].value
+  -- end
+  limit_runtime = settings_service.get_max_unit_group_size_runtime()
 
-  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name]) then
-    limit_startup = settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name].value
-  end
+  -- if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name]) then
+  --   limit_startup = settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name].value
+  -- end
+  limit_startup = settings_service.get_max_unit_group_size_startup()
 
   if (limit_runtime > limit_startup) then
     limit_runtime = limit_startup
@@ -94,16 +96,16 @@ function settings_service.get_max_unit_group_size_startup()
   return limit_startup
 end
 
--- CLONES_PER_TICK
-function settings_service.get_clones_per_tick()
-  local setting = 1
+-- -- CLONES_PER_TICK
+-- function settings_service.get_clones_per_tick()
+--   local setting = 1
 
-  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.CLONES_PER_TICK.name]) then
-    setting = settings.global[Global_Settings_Constants.settings.CLONES_PER_TICK.name].value
-  end
+--   if (settings and settings.global and settings.global[Global_Settings_Constants.settings.CLONES_PER_TICK.name]) then
+--     setting = settings.global[Global_Settings_Constants.settings.CLONES_PER_TICK.name].value
+--   end
 
-  return setting
-end
+--   return setting
+-- end
 
 -- NTH_TICK
 function settings_service.get_nth_tick()
@@ -116,21 +118,21 @@ function settings_service.get_nth_tick()
   return setting
 end
 
--- NAUVIS_DO_EVOLUTION_FACTOR
--- GLEBA_DO_EVOLUTION_FACTOR
-function settings_service.get_do_evolution_factor(surface_name)
-  local setting = true
-  if (  surface_name == Constants.DEFAULTS.planets.nauvis.string_val
-  and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name])
-  then
-    setting = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name].value
-  elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
-  and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name]) then
-    setting = settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name].value
-  end
+-- -- NAUVIS_DO_EVOLUTION_FACTOR
+-- -- GLEBA_DO_EVOLUTION_FACTOR
+-- function settings_service.get_do_evolution_factor(surface_name)
+--   local setting = true
+--   if (  surface_name == Constants.DEFAULTS.planets.nauvis.string_val
+--   and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name])
+--   then
+--     setting = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR.name].value
+--   elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
+--   and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name]) then
+--     setting = settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR.name].value
+--   end
 
-  return setting
-end
+--   return setting
+-- end
 
 -- CLONES_PER_TICK
 function settings_service.get_clones_per_tick()
@@ -149,6 +151,28 @@ function settings_service.get_maximum_number_of_clones()
 
   if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_CLONES.name]) then
     setting = settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_CLONES.name].value
+  end
+
+  return setting
+end
+
+-- MAXIMUM_NUMBER_OF_SPAWNED_CLONES
+function settings_service.get_maximum_number_of_spawned_clones()
+  local setting = Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES.default_value
+
+  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES.name]) then
+    setting = settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES.name].value
+  end
+
+  return setting
+end
+
+-- MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES
+function settings_service.get_maximum_number_of_unit_group_clones()
+  local setting = Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES.default_value
+
+  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES.name]) then
+    setting = settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES.name].value
   end
 
   return setting
@@ -269,7 +293,7 @@ function settings_service.get_BREAM_do_clone()
   return setting
 end
 
--- BREAM_DO_CLONE
+-- BREAM_CLONE_UNITS
 function settings_service.get_BREAM_clone_units()
   local setting = BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.default_value
 

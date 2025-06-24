@@ -110,6 +110,26 @@ global_settings_constants.settings.MAXIMUM_NUMBER_OF_CLONES = {
   minimum_value = 0,
 }
 
+global_settings_constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES = {
+  type = "int-setting",
+  name = "more-enemies-maximum-number-of-spawned-clones",
+  setting_type = "runtime-global",
+  order = "dde",
+  default_value = 1000,
+  maximum_value = 111111,
+  minimum_value = 0,
+}
+
+global_settings_constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES = {
+  type = "int-setting",
+  name = "more-enemies-maximum-number-of-unit-group-clones",
+  setting_type = "runtime-global",
+  order = "ddf",
+  default_value = 1000,
+  maximum_value = 111111,
+  minimum_value = 0,
+}
+
 global_settings_constants.settings.MAXIMUM_NUMBER_OF_MODDED_CLONES = {
   type = "int-setting",
   name = "more-enemies-maximum-number-of-modded-clones",
