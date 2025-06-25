@@ -374,37 +374,6 @@ function spawn_service.do_nth_tick_cleanup(event, more_enemies_data)
 
   Log.warn("Starting iteration of staged_clones")
   for _, planet in pairs(Constants.DEFAULTS.planets) do
-    -- i = 1
-    -- -- for k,v in pairs(more_enemies_data.staged_clones) do
-    -- if (not more_enemies_data.staged_clones[planet.string_val]) then
-    --   more_enemies_data.staged_clones[planet.string_val] = {}
-    -- end
-    -- for k,v in pairs(more_enemies_data.staged_clones[planet.string_val]) do
-    --   Log.warn(v)
-    --   -- TODO: Come back to this; seems to be erroneously detecting valid objects as invalid
-    --   if (not v or not v.obj or not v.obj.valid or v.obj == planet.string_val) then
-    --     Log.warn("Found nil or invalid clone")
-    --     _invalids[k] = v
-    --   end
-    --   i = i + 1
-    --   if (i > limit) then
-    --     Log.warn("breaking from initial step of cleanup")
-    --     break
-    --   end
-    -- end
-
-    -- i = 1
-    -- Log.warn("Starting iteration of _invalids")
-    -- for k,v in pairs(_invalids) do
-    --   Log.warn("Removing invalids")
-    --   table.remove(more_enemies_data.staged_clones[planet.string_val], k)
-
-    --   i = i + 1
-    --   if (i > limit) then
-    --     Log.warn("breaking from second step of cleanup")
-    --     break
-    --   end
-    -- end
 
     if (not more_enemies_data.staged_clones[planet.string_val]) then
       more_enemies_data.staged_clones[planet.string_val] = {}
@@ -415,7 +384,17 @@ function spawn_service.do_nth_tick_cleanup(event, more_enemies_data)
     if (not more_enemies_data.staged_clones[planet.string_val].unit_group) then
       more_enemies_data.staged_clones[planet.string_val].unit_group = {}
     end
+    if (not more_enemies_data.clones[planet.string_val]) then
+      more_enemies_data.clones[planet.string_val] = {}
+    end
+    if (not more_enemies_data.clones[planet.string_val].unit) then
+      more_enemies_data.clones[planet.string_val].unit = {}
+    end
+    if (not more_enemies_data.clones[planet.string_val].unit_group) then
+      more_enemies_data.clones[planet.string_val].unit_group = {}
+    end
 
+    Log.warn("staged_clones.unit")
     i = 1
     for k,v in pairs(more_enemies_data.staged_clones[planet.string_val].unit) do
       Log.info(v)
@@ -445,7 +424,9 @@ function spawn_service.do_nth_tick_cleanup(event, more_enemies_data)
       end
     end
 
+    Log.warn("staged_clones.unit_group")
     i = 1
+    _invalids = {}
     for k,v in pairs(more_enemies_data.staged_clones[planet.string_val].unit_group) do
       Log.warn(v)
       -- TODO: Come back to this; seems to be erroneously detecting valid objects as invalid
@@ -472,6 +453,44 @@ function spawn_service.do_nth_tick_cleanup(event, more_enemies_data)
         break
       end
     end
+
+    Log.warn("clones.unit_group")
+    i = 1
+    _invalids = {}
+    for k,v in pairs(more_enemies_data.clones[planet.string_val].unit_group) do
+      Log.warn(v)
+      -- TODO: Come back to this; seems to be erroneously detecting valid objects as invalid
+      -- if (not v or not v.obj or not v.obj.valid or v.obj == planet.string_val) then
+      if (not v or not v.obj or not v.obj.valid) then
+        Log.warn("Found nil or invalid clone")
+        _invalids[k] = v
+      end
+      i = i + 1
+      if (i > limit) then
+        Log.warn("breaking from initial step of cleanup")
+        break
+      end
+    end
+
+    i = 1
+    Log.warn("Starting iteration of _invalids")
+    for k,v in pairs(_invalids) do
+      Log.warn("Removing invalids")
+      -- table.remove(more_enemies_data.clones[planet.string_val].unit_group, k)
+      more_enemies_data.clones[planet.string_val].unit_group[k] = nil
+
+      if (more_enemies_data.clone.unit_group > 0) then
+        more_enemies_data.clone.unit_group = more_enemies_data.clone.unit_group - 1
+      else
+        more_enemies_data.clone.unit_group = 0
+      end
+
+      i = i + 1
+      if (i > limit) then
+        Log.warn("breaking from second step of cleanup")
+        break
+      end
+    end
   end
 
   return true
@@ -491,7 +510,6 @@ function spawn_service.entity_died(event)
 
   local mod_data = Mod_Repository.get_mod_data()
 
-  -- if (more_enemies_data.clone.count < 0) then more_enemies_data.clone.count = 0 end
   if (more_enemies_data.clone.unit_group < 0) then more_enemies_data.clone.unit_group = 0 end
   if (more_enemies_data.clone.unit < 0) then more_enemies_data.clone.unit = 0 end
 
@@ -504,20 +522,16 @@ function spawn_service.entity_died(event)
   end
 
   Log.info("Attempting to remove entity")
-  -- if (more_enemies_data.clones[surface.name][entity.unit_number] ~= nil) then
   if (more_enemies_data.clones[surface.name].unit[entity.unit_number] ~= nil
     or more_enemies_data.clones[surface.name].unit_group[entity.unit_number] ~= nil)
   then
     Log.debug("Removing entity: " .. serpent.block(entity.unit_number))
 
-    -- if (Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name][entity.unit_number])) then
     if (Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name].unit[entity.unit_number])
       or Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name].unit_group[entity.unit_number]))
     then
       if (mod_data.clone.count > 0) then mod_data.clone.count = mod_data.clone.count - 1 end
     else
-      -- if (more_enemies_data.clone.count > 0) then more_enemies_data.clone.count = more_enemies_data.clone.count - 1 end
-      -- if (more_enemies_data.clones[surface.name][entity.unit_number].type == "unit-group") then
       if (more_enemies_data.clones[surface.name].unit_group[entity.unit_number]) then
         if (more_enemies_data.clone.unit_group > 0) then more_enemies_data.clone.unit_group = more_enemies_data.clone.unit_group - 1 end
       else
@@ -525,7 +539,6 @@ function spawn_service.entity_died(event)
       end
     end
 
-    -- more_enemies_data.clones[surface.name][entity.unit_number] = nil
     if (more_enemies_data.clones[surface.name].unit[entity.unit_number]) then
       more_enemies_data.clones[surface.name].unit[entity.unit_number] = nil
     elseif (more_enemies_data.clones[surface.name].unit_group[entity.unit_number]) then
@@ -536,10 +549,6 @@ function spawn_service.entity_died(event)
   end
 
   Log.info("Attempting to remove entity again")
-  -- if (  entity
-  --   and (more_enemies_data.clone.unit > 0 or more_enemies_data.clone.unit_group > 0)
-  --   and more_enemies_data.clones[surface.name][entity.unit_number])
-  -- then
   if (  entity
     and (more_enemies_data.clone.unit > 0 or more_enemies_data.clone.unit_group > 0)
     and (more_enemies_data.clones[surface.name].unit[entity.unit_number]
@@ -547,13 +556,11 @@ function spawn_service.entity_died(event)
     ) then
     Log.debug("removing, second try")
 
-    -- if (Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name][entity.unit_number])) then
     if (Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name].unit[entity.unit_number])
       or Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name].unit_group[entity.unit_number]))
     then
       if (mod_data.clone.count > 0) then mod_data.clone.count = mod_data.clone.count - 1 end
     else
-      -- if (more_enemies_data.clones[surface.name][entity.unit_number].type == "unit-group") then
       if (more_enemies_data.clones[surface.name].unit_group[entity.unit_number]) then
         if (more_enemies_data.clone.unit_group > 0) then more_enemies_data.clone.unit_group = more_enemies_data.clone.unit_group - 1 end
       else
@@ -561,7 +568,6 @@ function spawn_service.entity_died(event)
       end
     end
 
-    -- more_enemies_data.clones[surface.name][entity.unit_number] = nil
     if (more_enemies_data.clones[surface.name].unit[entity.unit_number]) then
       more_enemies_data.clones[surface.name].unit[entity.unit_number] = nil
     elseif (more_enemies_data.clones[surface.name].unit_group[entity.unit_number]) then
@@ -571,10 +577,6 @@ function spawn_service.entity_died(event)
     return
   end
 
-  -- if (  entity
-  --   and mod_data.clone.count > 0
-  --   and more_enemies_data.clones[surface.name][entity.unit_number])
-  -- then
   if (  entity
     and mod_data.clone.count > 0
     and (more_enemies_data.clones[surface.name].unit[entity.unit_number] ~= nil
@@ -582,13 +584,11 @@ function spawn_service.entity_died(event)
   then
     Log.debug("mod removing, second try")
 
-    -- if (Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name][entity.unit_number])) then
     if (Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name].unit[entity.unit_number])
       or Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name].unit_group[entity.unit_number]))
     then
       if (mod_data.clone.count > 0) then mod_data.clone.count = mod_data.clone.count - 1 end
     else
-      -- if (more_enemies_data.clones[surface.name][entity.unit_number].type == "unit-group") then
       if (more_enemies_data.clones[surface.name].unit_group[entity.unit_number]) then
         if (more_enemies_data.clone.unit_group > 0) then more_enemies_data.clone.unit_group = more_enemies_data.clone.unit_group - 1 end
       else
@@ -596,7 +596,6 @@ function spawn_service.entity_died(event)
       end
     end
 
-    -- more_enemies_data.clones[surface.name][entity.unit_number] = nil
     if (more_enemies_data.clones[surface.name].unit[entity.unit_number]) then
       more_enemies_data.clones[surface.name].unit[entity.unit_number] = nil
     elseif (more_enemies_data.clones[surface.name].unit_group[entity.unit_number]) then
@@ -624,12 +623,9 @@ function spawn_service.entity_spawned(event)
   if (not entity or not entity.valid or not entity.surface or not entity.surface.valid or Settings_Utils.is_vanilla(entity.surface.name)) then return end
 
   -- TODO: Change this to it's own setting
-  -- local max_num_clones = Settings_Service.get_maximum_number_of_clones()
   local max_num_clones = Settings_Service.get_maximum_number_of_spawned_clones()
-  -- if (more_enemies_data.clone.count > max_num_clones) then
   if (more_enemies_data.clone.unit > max_num_clones) then
     Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
-    -- Log.warn("Currently " .. serpent.block(more_enemies_data.clone.count) .. " clones")
     Log.warn("Currently " .. serpent.block(more_enemies_data.clone.unit) .. " unit clones")
     return
   end
@@ -649,8 +645,6 @@ function spawn_service.entity_spawned(event)
       more_enemies_data.staged_clones[entity.surface.name].unit = {}
     end
 
-    -- more_enemies_data.staged_clones[entity.unit_number] = Clone_Data:new({
-    -- more_enemies_data.staged_clones[entity.surface.name][entity.unit_number] = Clone_Data:new({
     more_enemies_data.staged_clones[entity.surface.name].unit[entity.unit_number] = Clone_Data:new({
       obj = entity,
       surface = entity.surface,
@@ -675,10 +669,8 @@ function spawn_service.entity_built(event)
   local mod_data = Mod_Repository.get_mod_data()
 
   local max_num_modded_clones = Settings_Service.get_maximum_number_of_modded_clones()
-  -- if (more_enemies_data.mod.clone.count > max_num_modded_clones) then
   if (mod_data.clone.count > max_num_modded_clones) then
     Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_modded_clones))
-    -- Log.warn("Currently " .. serpent.block(more_enemies_data.mod.clone.count) .. " clones")
     Log.warn("Currently " .. serpent.block(mod_data.clone.count) .. " clones")
     return
   end
