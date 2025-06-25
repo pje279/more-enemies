@@ -81,13 +81,46 @@ function spawn_controller.do_tick(event)
   end
 
   Log.info("attempt to clean up")
-  if (nth_tick_complete_data.current or not nth_tick_cleanup_complete_data.previous) then
+  -- if (nth_tick_complete_data.current or not nth_tick_cleanup_complete_data.previous) then
+  if (not more_enemies_data.do_nth_tick or nth_tick_complete_data.current or not nth_tick_cleanup_complete_data.previous) then
     if (Spawn_Service.do_nth_tick_cleanup(event, more_enemies_data)) then
       Log.debug("do_nth_tick_cleanup completed")
       nth_tick_cleanup_complete_data.current = true
     else
       Log.debug("failed to finish cleaning up")
     end
+  end
+
+  if (not more_enemies_data.do_nth_tick) then
+    local max_num_unit_clones = Settings_Service.get_maximum_number_of_spawned_clones()
+    local max_num_unit_group_clones = Settings_Service.get_maximum_number_of_unit_group_clones()
+    local at_capacity = 0
+
+    if (more_enemies_data.clone.unit_group > max_num_unit_group_clones) then
+      Log.warn("Tried to clone more than the unit-group limit: " .. serpent.block(max_num_unit_group_clones))
+      Log.warn("Currently " .. serpent.block(more_enemies_data.clone.unit) .. " unit clones")
+      Log.warn("Currently " .. serpent.block(more_enemies_data.clone.unit_group) .. " unit-group clones")
+
+      at_capacity = at_capacity + 1
+    end
+    if (more_enemies_data.clone.unit > max_num_unit_clones) then
+      Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_unit_clones))
+      Log.warn("Currently " .. serpent.block(more_enemies_data.clone.unit) .. " unit clones")
+      Log.warn("Currently " .. serpent.block(more_enemies_data.clone.unit_group) .. " unit-group clones")
+
+      at_capacity = at_capacity + 1
+    end
+
+    -- if (at_capacity > 0) then
+    --   if (at_capacity > 1) then
+    --     more_enemies_data.do_nth_tick = false
+    --   end
+    -- end
+
+    if (nth_tick_cleanup_complete_data.current and at_capacity < 2) then
+      more_enemies_data.do_nth_tick = true
+    end
+
   end
 end
 

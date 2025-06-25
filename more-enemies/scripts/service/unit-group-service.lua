@@ -147,23 +147,6 @@ function unit_group_service.unit_group_finished_gathering(data)
   Log.debug(selected_difficulty)
   if (not selected_difficulty) then return end
 
-  -- local vanilla = 1
-  -- if (selected_difficulty.string_val == "Vanilla" or selected_difficulty.value == 1) then
-  --   if (    (group.surface.name == Constants.DEFAULTS.planets.gleba.string_val
-  --       and Settings_Service.get_clone_unit_group_setting(group.surface.name) == Gleba_Settings_Constants.settings.CLONE_GLEBA_UNIT_GROUPS.default_value)
-  --     or
-  --           (group.surface.name == Constants.DEFAULTS.planets.nauvis.string_val
-  --       and Settings_Service.get_clone_unit_group_setting(group.surface.name) == Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNIT_GROUPS.default_value))
-  --   then
-  --     vanilla = vanilla + 1
-  --   end
-  --   -- if (Settings_Service.get_maximum_group_size(group.surface.name) == Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.default_value) then vanilla = vanilla + 1 end
-  --   if (Settings_Service.get_maximum_group_size() == Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.default_value) then vanilla = vanilla + 1 end
-  -- end
-
-  -- Log.debug("vanilla: " .. serpent.block(vanilla))
-  -- if (vanilla > 2) then return end
-
   Log.error("3")
 
   local loop_len = 1
