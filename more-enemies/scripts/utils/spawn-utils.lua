@@ -14,17 +14,7 @@ local Settings_Utils = require("scripts.utils.settings-utils")
 
 local spawn_utils = {}
 
-local calc_evolution_multiplier = function(selected_difficulty, evolution_factor)
-  -- Validate inputs
-  evolution_factor = evolution_factor or 0
-  if (not selected_difficulty or not selected_difficulty.valid) then return evolution_factor end
-
-  -- Calculate the evolution factor
-  -- https://www.wolframalpha.com/input?i=x%5E%28y%2F%28x%5E%28y%2Fx%29%29%29+*+%28y%5Ex%29
-  local value = ((selected_difficulty.value ^ (evolution_factor / (selected_difficulty.value ^ (evolution_factor / selected_difficulty.value)))) * (evolution_factor ^ selected_difficulty.value))
-  Log.debug("evolution multiplier: " .. value)
-  return value
-end
+local locals = {}
 
 function spawn_utils.duplicate_unit_group(group)
   Log.error("spawn.duplicate_unit_group")
@@ -106,9 +96,9 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
 
   -- Validate inputs
   if (clone_settings == nil or not default_value or not difficulty or not entity) then return end
-  Log.warn("past 1")
+  Log.info("past 1")
   if (not difficulty.valid or not entity.valid) then return end
-  Log.warn("past 2")
+  Log.info("past 2")
   if (not difficulty.selected_difficulty and optionals.surface) then
     Log.debug("clone_entity: Getting difficulty")
     difficulty = Difficulty_Utils.get_difficulty(optionals.surface.name).difficulty
@@ -123,11 +113,11 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
 
     if (not difficulty.selected_difficulty) then return end
   end
-  Log.warn("past 3")
+  Log.info("past 3")
   local surface = entity.surface
   if (not surface or not surface.valid) then return end
   if (Settings_Utils.is_vanilla(surface.name)) then return end
-  Log.warn("past validations")
+  Log.info("past validations")
 
   local use_evolution_factor = Settings_Service.get_do_evolution_factor(surface.name)
 
@@ -136,7 +126,7 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   if (use_evolution_factor) then
     evolution_factor = entity.force.get_evolution_factor()
   end
-  evolution_multiplier = calc_evolution_multiplier(difficulty.selected_difficulty, evolution_factor)
+  evolution_multiplier = locals.calc_evolution_multiplier(difficulty.selected_difficulty, evolution_factor)
   Log.debug(evolution_multiplier)
 
   local loop_len = 0
@@ -161,14 +151,14 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   else
     loop_len = difficulty.selected_difficulty.value * evolution_multiplier
   end
-  Log.warn("loop_len after calcs")
-  Log.warn(loop_len)
+  Log.info("loop_len after calcs")
+  Log.info(loop_len)
 
   local clones = {}
 
-  Log.warn("at cloner definition")
+  Log.info("at cloner definition")
   local cloner = function (entity, clone_limit, type)
-    Log.warn("Cloning")
+    Log.info("Cloning")
     if (not entity.valid) then return end
     local surface = entity.surface
     if (not surface or not surface.valid) then return end
@@ -222,15 +212,6 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     Log.debug("Cloned")
     Log.info(clone)
 
-    -- if (Entity_Validations.get_mod_name(optionals)) then
-    --   more_enemies_data.mod.clone.count = more_enemies_data.mod.clone.count + 1
-    -- else
-    --   if (type == "unit-group") then
-    --     more_enemies_data.clone.unit_group = more_enemies_data.clone.unit_group + 1
-    --   else
-    --     more_enemies_data.clone.unit = more_enemies_data.clone.unit + 1
-    --   end
-    -- end
     if (Entity_Validations.get_mod_name(optionals)) then
       more_enemies_data.mod.clone.count = more_enemies_data.mod.clone.count + 1
     else
@@ -256,8 +237,6 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     local surface = obj.surface
     if (not surface or not surface.valid) then return end
 
-    -- tick = tick or -1
-
     local clone_limit = 0
     if (type == "unit-group") then
       clone_limit = Settings_Service.get_maximum_number_of_unit_group_clones()
@@ -273,24 +252,12 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
       if (not more_enemies_data.do_nth_tick) then return end
 
       if (more_enemies_data.clone) then
-        Log.error("spawn_utils.fun definition: 1")
-        -- if (type == "unit-group") then
-        --   Log.error("spawn_utils.fun definition: 2")
-        --   if (not more_enemies_data.clone.unit_group or more_enemies_data.clone.unit_group > Settings_Service.get_maximum_number_of_unit_group_clones()) then return end
-        -- else
-        --   Log.error("spawn_utils.fun definition: 3")
-        --   if (not more_enemies_data.clone.unit or more_enemies_data.clone.unit > Settings_Service.get_maximum_number_of_spawned_clones()) then return end
-        -- end
         if (type == "unit-group") then
-          Log.error("spawn_utils.fun definition: 2")
           if (not more_enemies_data.clone[surface.name].unit_group or more_enemies_data.clone[surface.name].unit_group > Settings_Service.get_maximum_number_of_unit_group_clones()) then return end
         else
-          Log.error("spawn_utils.fun definition: 3")
           if (not more_enemies_data.clone[surface.name].unit or more_enemies_data.clone[surface.name].unit > Settings_Service.get_maximum_number_of_spawned_clones()) then return end
         end
-        Log.error("spawn_utils.fun definition: 4")
       end
-      Log.error("spawn_utils.fun definition: 5")
 
       if (  more_enemies_data.mod.clone.count > max_num_modded_clones
         and Entity_Validations.get_mod_name(optionals) ~= nil)
@@ -330,6 +297,18 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   end
 
   return clones
+end
+
+function locals.calc_evolution_multiplier(selected_difficulty, evolution_factor)
+  -- Validate inputs
+  evolution_factor = evolution_factor or 0
+  if (not selected_difficulty or not selected_difficulty.valid) then return evolution_factor end
+
+  -- Calculate the evolution factor
+  -- https://www.wolframalpha.com/input?i=x%5E%28y%2F%28x%5E%28y%2Fx%29%29%29+*+%28y%5Ex%29
+  local value = ((selected_difficulty.value ^ (evolution_factor / (selected_difficulty.value ^ (evolution_factor / selected_difficulty.value)))) * (evolution_factor ^ selected_difficulty.value))
+  Log.debug("evolution multiplier: " .. value)
+  return value
 end
 
 spawn_utils.more_enemies = true

@@ -26,18 +26,9 @@ function unit_group_controller.unit_group_created(event)
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
   if (not more_enemies_data.do_nth_tick) then return end
 
-  -- local max_num_clones = Settings_Service.get_maximum_number_of_clones()
   local max_num_clones = Settings_Service.get_maximum_number_of_unit_group_clones()
-  -- if (more_enemies_data.clone.count > max_num_clones) then
-  -- if (more_enemies_data.clone.unit_group > max_num_clones) then
-  --   Log.debug("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
-  --   -- Log.debug("Currently " .. serpent.block(more_enemies_data.clone.count) .. " clones")
-  --   Log.debug("Currently " .. serpent.block(more_enemies_data.clone.unit_group) .. " unit-group clones")
-  --   return
-  -- end
   if (more_enemies_data.clone[surface.name].unit_group > max_num_clones) then
     Log.debug("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
-    -- Log.debug("Currently " .. serpent.block(more_enemies_data.clone.count) .. " clones")
     Log.debug("Currently " .. serpent.block(more_enemies_data.clone[surface.name].unit_group) .. " unit-group clones")
     return
   end
@@ -60,18 +51,9 @@ function unit_group_controller.unit_group_finished_gathering(event)
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
   if (not more_enemies_data.do_nth_tick) then return end
 
-  -- local max_num_clones = Settings_Service.get_maximum_number_of_clones()
   local max_num_clones = Settings_Service.get_maximum_number_of_unit_group_clones()
-  -- if (more_enemies_data.clone.count > max_num_clones) then
-  -- if (more_enemies_data.clone.unit_group > max_num_clones) then
-  --   Log.debug("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
-  --   -- Log.debug("Currently " .. serpent.block(more_enemies_data.clone.count) .. " clones")
-  --   Log.debug("Currently " .. serpent.block(more_enemies_data.clone.unit_group) .. " unit-group clones")
-  --   return
-  -- end
   if (more_enemies_data.clone[surface.name].unit_group > max_num_clones) then
     Log.debug("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
-    -- Log.debug("Currently " .. serpent.block(more_enemies_data.clone.count) .. " clones")
     Log.debug("Currently " .. serpent.block(more_enemies_data.clone[surface.name].unit_group) .. " unit-group clones")
     return
   end

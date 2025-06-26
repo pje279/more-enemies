@@ -167,21 +167,8 @@ function locals.initialize(from_scratch)
       storage.more_enemies = More_Enemies_Data:new()
       more_enemies_data = storage.more_enemies
     end
-    -- if (not more_enemies_data.clones) then more_enemies_data.clones = More_Enemies_Data.clones end
-    -- if (not more_enemies_data.staged_clones) then more_enemies_data.staged_clones = More_Enemies_Data.staged_clones end
-    -- if (not more_enemies_data.clone) then more_enemies_data.clone = More_Enemies_Data.clone end
-    -- -- if (more_enemies_data.clone.count == nil) then more_enemies_data.clone.count = More_Enemies_Data.clone.count end
-    -- if (more_enemies_data.clone.unit == nil) then more_enemies_data.clone.unit = More_Enemies_Data.clone.unit end
-    -- if (more_enemies_data.clone.unit_group == nil) then more_enemies_data.clone.unit_group = More_Enemies_Data.clone.unit_group end
-
-    -- if (not more_enemies_data.mod) then more_enemies_data.mod = More_Enemies_Data.mod end
-    -- if (not more_enemies_data.mod.staged_clones) then more_enemies_data.mod.staged_clones = More_Enemies_Data.mod.staged_clones end
-    -- if (not more_enemies_data.mod.clone) then more_enemies_data.mod.clone = More_Enemies_Data.mod.clone end
-    -- if (more_enemies_data.mod.clone.count == nil) then more_enemies_data.mod.clone.count = More_Enemies_Data.mod.clone.count end
 
     for _, planet in pairs(Constants.DEFAULTS.planets) do
-      -- if (not more_enemies_data.clones) then more_enemies_data.clones = More_Enemies_Data.clones end
-      -- if (not more_enemies_data.staged_clones) then more_enemies_data.staged_clones = More_Enemies_Data.staged_clones end
       if (not more_enemies_data.clones) then more_enemies_data.clones = {} end
       if (not more_enemies_data.clones[planet.string_val]) then more_enemies_data.clones[planet.string_val] = {} end
       if (not more_enemies_data.clones[planet.string_val].unit) then more_enemies_data.clones[planet.string_val].unit = {} end
@@ -191,9 +178,6 @@ function locals.initialize(from_scratch)
       if (not more_enemies_data.staged_clones[planet.string_val].unit) then more_enemies_data.staged_clones[planet.string_val].unit = {} end
       if (not more_enemies_data.staged_clones[planet.string_val].unit_group) then more_enemies_data.staged_clones[planet.string_val].unit_group = {} end
       if (not more_enemies_data.clone) then more_enemies_data.clone = More_Enemies_Data.clone end
-      -- if (more_enemies_data.clone.count == nil) then more_enemies_data.clone.count = More_Enemies_Data.clone.count end
-      -- if (more_enemies_data.clone.unit == nil) then more_enemies_data.clone.unit = More_Enemies_Data.clone.unit end
-      -- if (more_enemies_data.clone.unit_group == nil) then more_enemies_data.clone.unit_group = More_Enemies_Data.clone.unit_group end
       if (not more_enemies_data.clone[planet.string_val]) then more_enemies_data.clone[planet.string_val] = {} end
       if (more_enemies_data.clone[planet.string_val].unit == nil) then more_enemies_data.clone[planet.string_val].unit = 0 end
       if (more_enemies_data.clone[planet.string_val].unit_group == nil) then more_enemies_data.clone[planet.string_val].unit_group = 0 end
