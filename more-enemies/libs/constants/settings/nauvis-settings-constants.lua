@@ -5,7 +5,7 @@ end
 
 local Constants = require("libs.constants.constants")
 
-nauvis_settings_constants = {}
+local nauvis_settings_constants = {}
 
 nauvis_settings_constants.settings = {}
 
@@ -27,6 +27,26 @@ nauvis_settings_constants.settings.CLONE_NAUVIS_UNIT_GROUPS = {
   order = "cad",
   default_value = 1,
   maximum_value = 11, -- This one goes up to eleven
+  minimum_value = 0,
+}
+
+nauvis_settings_constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES_NAUVIS = {
+  type = "int-setting",
+  name = "more-enemies-maximum-number-of-spawned-clones-nauvis",
+  setting_type = "runtime-global",
+  order = "dyd",
+  default_value = 400,
+  maximum_value = 111111,
+  minimum_value = 0,
+}
+
+nauvis_settings_constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES_NAUVIS = {
+  type = "int-setting",
+  name = "more-enemies-maximum-number-of-unit-group-clones-nauvis",
+  setting_type = "runtime-global",
+  order = "dye",
+  default_value = 400,
+  maximum_value = 111111,
   minimum_value = 0,
 }
 

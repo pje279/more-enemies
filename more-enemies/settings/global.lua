@@ -13,8 +13,8 @@ data:extend({
 data:extend({
   Global_Settings_Constants.settings.CLONES_PER_TICK,
   -- Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_CLONES,
-  Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES,
-  Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES,
+  -- Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES,
+  -- Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES,
   Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_RUNTIME,
   Global_Settings_Constants.settings.NTH_TICK.setting,
 })

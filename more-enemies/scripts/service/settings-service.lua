@@ -5,11 +5,11 @@ end
 
 local BREAM_Settings_Constants = require("libs.constants.settings.mods.BREAM.BREAM-settings-constants")
 local Constants = require("libs.constants.constants")
-local Gleba_Constants = require("libs.constants.gleba-constants")
+-- local Gleba_Constants = require("libs.constants.gleba-constants")
 local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Log = require("libs.log.log")
-local Nauvis_Constants = require("libs.constants.nauvis-constants")
+-- local Nauvis_Constants = require("libs.constants.nauvis-constants")
 local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
 
 local settings_service = {}
@@ -96,17 +96,6 @@ function settings_service.get_max_unit_group_size_startup()
   return limit_startup
 end
 
--- -- CLONES_PER_TICK
--- function settings_service.get_clones_per_tick()
---   local setting = 1
-
---   if (settings and settings.global and settings.global[Global_Settings_Constants.settings.CLONES_PER_TICK.name]) then
---     setting = settings.global[Global_Settings_Constants.settings.CLONES_PER_TICK.name].value
---   end
-
---   return setting
--- end
-
 -- NTH_TICK
 function settings_service.get_nth_tick()
   local setting = Global_Settings_Constants.settings.NTH_TICK.value
@@ -145,34 +134,58 @@ function settings_service.get_clones_per_tick()
   return setting
 end
 
--- MAXIMUM_NUMBER_OF_CLONES
-function settings_service.get_maximum_number_of_clones()
-  local setting = Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_CLONES.default_value
+-- -- MAXIMUM_NUMBER_OF_CLONES
+-- function settings_service.get_maximum_number_of_clones()
+--   local setting = Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_CLONES.default_value
 
-  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_CLONES.name]) then
-    setting = settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_CLONES.name].value
-  end
+--   if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_CLONES.name]) then
+--     setting = settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_CLONES.name].value
+--   end
 
-  return setting
-end
+--   return setting
+-- end
 
 -- MAXIMUM_NUMBER_OF_SPAWNED_CLONES
-function settings_service.get_maximum_number_of_spawned_clones()
-  local setting = Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES.default_value
+-- function settings_service.get_maximum_number_of_spawned_clones()
+function settings_service.get_maximum_number_of_spawned_clones(surface_name)
+  -- local setting = Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES.default_value
+  local setting = 0
 
-  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES.name]) then
-    setting = settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES.name].value
+  -- if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES.name]) then
+  --   setting = settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES.name].value
+  -- end
+
+  if (  surface_name == Constants.DEFAULTS.planets.nauvis.string_val
+    and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES_NAUVIS.name])
+  then
+    setting = settings.global[Nauvis_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES_NAUVIS.name].value
+  elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
+        and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES_GLEBA.name])
+  then
+    setting = settings.global[Gleba_Settings_Constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES_GLEBA.name].value
   end
 
   return setting
 end
 
 -- MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES
-function settings_service.get_maximum_number_of_unit_group_clones()
-  local setting = Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES.default_value
+-- function settings_service.get_maximum_number_of_unit_group_clones()
+function settings_service.get_maximum_number_of_unit_group_clones(surface_name)
+  -- local setting = Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES.default_value
+  local setting = 0
 
-  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES.name]) then
-    setting = settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES.name].value
+  -- if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES.name]) then
+  --   setting = settings.global[Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES.name].value
+  -- end
+
+  if (  surface_name == Constants.DEFAULTS.planets.nauvis.string_val
+    and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES_NAUVIS.name])
+  then
+    setting = settings.global[Nauvis_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES_NAUVIS.name].value
+  elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
+        and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES_GLEBA.name])
+  then
+    setting = settings.global[Gleba_Settings_Constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES_GLEBA.name].value
   end
 
   return setting

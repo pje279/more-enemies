@@ -27,55 +27,55 @@ local spawn_service = {}
 spawn_service.BREAM = {}
 spawn_service.BREAM.unit_group = nil
 
-function spawn_service.clone_attempts()
-  Log.debug("spawn_service.clone_attempts")
+-- function spawn_service.clone_attempts()
+--   Log.debug("spawn_service.clone_attempts")
 
-  local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
+--   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
-  -- Validate "inputs"
-  if (not more_enemies_data.valid or not more_enemies_data.clones) then more_enemies_data = Initialization.reinit() end
+--   -- Validate "inputs"
+--   if (not more_enemies_data.valid or not more_enemies_data.clones) then more_enemies_data = Initialization.reinit() end
 
-  -- if (#more_enemies_data.clones > Settings_Service.get_maximum_number_of_clones()) then
-  --   Log.none("Tried to clone more than the unit limt")
-  --   more_enemies_data.overflow_clone_attempts.warned.none = true
-  --   return
-  -- end
+--   -- if (#more_enemies_data.clones > Settings_Service.get_maximum_number_of_clones()) then
+--   --   Log.none("Tried to clone more than the unit limt")
+--   --   more_enemies_data.overflow_clone_attempts.warned.none = true
+--   --   return
+--   -- end
 
-  local max_num_clones = Settings_Service.get_maximum_number_of_clones()
-  local num_clones = #more_enemies_data.clones
+--   local max_num_clones = Settings_Service.get_maximum_number_of_clones()
+--   local num_clones = #more_enemies_data.clones
 
-  if (not more_enemies_data.overflow_clone_attempts.warned.error
-      and num_clones > max_num_clones)
-  then
-    Log.error("Tried to clone more than the unit limt")
-    more_enemies_data.overflow_clone_attempts.warned.error = true
-    return
-  end
+--   if (not more_enemies_data.overflow_clone_attempts.warned.error
+--       and num_clones > max_num_clones)
+--   then
+--     Log.error("Tried to clone more than the unit limt")
+--     more_enemies_data.overflow_clone_attempts.warned.error = true
+--     return
+--   end
 
-  if (not more_enemies_data.overflow_clone_attempts.warned.warn
-      and num_clones > max_num_clones)
-  then
-    Log.warn("Tried to clone more than the unit limt")
-    more_enemies_data.overflow_clone_attempts.warned.warn = true
-    return
-  end
+--   if (not more_enemies_data.overflow_clone_attempts.warned.warn
+--       and num_clones > max_num_clones)
+--   then
+--     Log.warn("Tried to clone more than the unit limt")
+--     more_enemies_data.overflow_clone_attempts.warned.warn = true
+--     return
+--   end
 
-  if (not more_enemies_data.overflow_clone_attempts.warned.debug
-      and num_clones > max_num_clones)
-  then
-    Log.debug("Tried to clone more than the unit limt")
-    more_enemies_data.overflow_clone_attempts.warned.debug = true
-    return
-  end
+--   if (not more_enemies_data.overflow_clone_attempts.warned.debug
+--       and num_clones > max_num_clones)
+--   then
+--     Log.debug("Tried to clone more than the unit limt")
+--     more_enemies_data.overflow_clone_attempts.warned.debug = true
+--     return
+--   end
 
-  if (not more_enemies_data.overflow_clone_attempts.warned.info
-      and num_clones > max_num_clones)
-  then
-    Log.info("Tried to clone more than the unit limt")
-    more_enemies_data.overflow_clone_attempts.warned.info = true
-    return
-  end
-end
+--   if (not more_enemies_data.overflow_clone_attempts.warned.info
+--       and num_clones > max_num_clones)
+--   then
+--     Log.info("Tried to clone more than the unit limt")
+--     more_enemies_data.overflow_clone_attempts.warned.info = true
+--     return
+--   end
+-- end
 
 function spawn_service.do_nth_tick(event, more_enemies_data)
   -- Log.debug("spawn_service.do_nth_tick")
@@ -197,8 +197,10 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
               type = group and "unit-group" or "unit"
             }
 
-            local max_num_unit_clones = Settings_Service.get_maximum_number_of_spawned_clones()
-            local max_num_unit_group_clones = Settings_Service.get_maximum_number_of_unit_group_clones()
+            -- local max_num_unit_clones = Settings_Service.get_maximum_number_of_spawned_clones()
+            -- local max_num_unit_group_clones = Settings_Service.get_maximum_number_of_unit_group_clones()
+            local max_num_unit_clones = Settings_Service.get_maximum_number_of_spawned_clones(surface_name)
+            local max_num_unit_group_clones = Settings_Service.get_maximum_number_of_unit_group_clones(surface_name)
 
             local at_capacity = 0
 
@@ -244,8 +246,8 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
 
             clones = {}
 
-            Log.warn("Attempting to clone entity on planet " .. surface_name)
-            Log.error(clone_settings)
+            Log.debug("Attempting to clone entity on planet " .. surface_name)
+            Log.debug(clone_settings)
             if (surface_name == Constants.DEFAULTS.planets.nauvis.string_val) then
               clones = Spawn_Utils.clone_entity(
                 { value = Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNITS.default_value },
@@ -614,9 +616,10 @@ function spawn_service.entity_spawned(event)
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
   -- if (not more_enemies_data:is_valid()) then more_enemies_data = Initialization.reinit() end
   if (not more_enemies_data.do_nth_tick) then return end
-  if (not entity or not entity.valid or not entity.surface or not entity.surface.valid or Settings_Utils.is_vanilla(entity.surface.name)) then return end
+  -- if (not entity or not entity.valid or not entity.surface or not entity.surface.valid or Settings_Utils.is_vanilla(entity.surface.name)) then return end
+  if (Settings_Utils.is_vanilla(entity.surface.name)) then return end
 
-  local max_num_clones = Settings_Service.get_maximum_number_of_spawned_clones()
+  local max_num_clones = Settings_Service.get_maximum_number_of_spawned_clones(surface.name)
 
   if (not more_enemies_data.clone[surface.name]) then
     more_enemies_data.clone[surface.name] = {}

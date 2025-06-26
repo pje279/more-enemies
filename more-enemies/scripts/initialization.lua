@@ -46,19 +46,21 @@ function initialization.purge(optionals)
     Log.debug("purge clones")
     -- Purge clones
     if (storage.more_enemies.clones and optionals.all) then
-      for k,v in pairs(storage.more_enemies.clones) do
-        if (v and v.obj) then
-          Log.debug("purging" .. serpent.block(v.obj))
-          v.obj.destroy()
+      for _, planet_list in pairs(storage.more_enemies.clones) do
+        for _, entity_list in pairs(planet_list) do
+          if (type(entity_list) == "table") then
+            for _, v in pairs(entity_list) do
+              if (v and v.obj) then
+                Log.debug("purging" .. serpent.block(v.obj))
+                v.obj.destroy()
+              end
+            end
+          end
         end
       end
       storage.more_enemies.clones = {}
-      -- storage.more_enemies.clone = { count = 0 }
       storage.more_enemies.clone = {}
 
-      -- storage.more_enemies.clone.unit = 0
-      -- storage.more_enemies.clone.unit_group = 0
-      -- storage.more_enemies.mod.clone = { count = 0 }
       for _, planet in pairs(Constants.DEFAULTS.planets) do
         storage.more_enemies.clone[planet.string_val] = {}
         storage.more_enemies.clone[planet.string_val].unit = 0
@@ -67,33 +69,70 @@ function initialization.purge(optionals)
       storage.more_enemies.mod.clone = { count = 0 }
     end
 
-    local do_purge = function (k, v)
+    -- local do_purge = function (k, v)
+    --   if (k and v and v.obj) then
+    --     Log.debug("purging" .. serpent.block(v.obj))
+    --     storage.more_enemies.clones[k] = nil
+    --     v.obj.destroy()
+    --   end
+    -- end
+    local do_purge = function (k, v, surface_name)
       if (k and v and v.obj) then
         Log.debug("purging" .. serpent.block(v.obj))
-        storage.more_enemies.clones[k] = nil
+        if (v.type == "unit-group") then
+          storage.more_enemies.clones[surface_name].unit_group[k] = nil
+        elseif (v.type == "unit") then
+          storage.more_enemies.clones[surface_name].unit[k] = nil
+        end
         v.obj.destroy()
       end
     end
 
     if (storage.more_enemies.clones) then
-      for k,v in pairs(storage.more_enemies.clones) do
-        if (v and v.obj) then
-          if (Entity_Validations.get_mod_name(v) and optionals.mod_added_clones) then
-            if (storage.more_enemies.mod.clone.count > 0) then
-              storage.more_enemies.mod.clone.count = storage.more_enemies.mod.clone.count - 1
-            end
-            do_purge(k,v)
-          elseif (optionals.clones) then
-            if (v.type == "unit-group") then
-              if (storage.more_enemies.clone.unit_group > 0) then
-                storage.more_enemies.clone.unit_group = storage.more_enemies.clone.unit_group - 1
+      -- for k,v in pairs(storage.more_enemies.clones) do
+      --   if (v and v.obj) then
+      --     if (Entity_Validations.get_mod_name(v) and optionals.mod_added_clones) then
+      --       if (storage.more_enemies.mod.clone.count > 0) then
+      --         storage.more_enemies.mod.clone.count = storage.more_enemies.mod.clone.count - 1
+      --       end
+      --       do_purge(k,v)
+      --     elseif (optionals.clones) then
+      --       if (v.type == "unit-group") then
+      --         if (storage.more_enemies.clone.unit_group > 0) then
+      --           storage.more_enemies.clone.unit_group = storage.more_enemies.clone.unit_group - 1
+      --         end
+      --         do_purge(k, v)
+      --       else
+      --         if (storage.more_enemies.clone.unit > 0) then
+      --           storage.more_enemies.clone.unit = storage.more_enemies.clone.unit - 1
+      --         end
+      --         do_purge(k, v)
+      --       end
+      --     end
+      --   end
+      -- end
+      for surface_name, planet_list in pairs(storage.more_enemies.clones) do
+        for _, entity_list in pairs(planet_list) do
+          for k, v in pairs(entity_list) do
+            if (v and v.obj) then
+              if (Entity_Validations.get_mod_name(v) and optionals.mod_added_clones) then
+                if (storage.more_enemies.mod.clone.count > 0) then
+                  storage.more_enemies.mod.clone.count = storage.more_enemies.mod.clone.count - 1
+                end
+                do_purge(k,v, surface_name)
+              elseif (optionals.clones) then
+                if (v.type == "unit-group") then
+                  if (storage.more_enemies.clone[surface_name].unit_group > 0) then
+                    storage.more_enemies.clone[surface_name].unit_group = storage.more_enemies.clone[surface_name].unit_group - 1
+                  end
+                  do_purge(k, v, surface_name)
+                else
+                  if (storage.more_enemies.clone[surface_name].unit > 0) then
+                    storage.more_enemies.clone[surface_name].unit = storage.more_enemies.clone[surface_name].unit - 1
+                  end
+                  do_purge(k, v, surface_name)
+                end
               end
-              do_purge(k, v)
-            else
-              if (storage.more_enemies.clone.unit > 0) then
-                storage.more_enemies.clone.unit = storage.more_enemies.clone.unit - 1
-              end
-              do_purge(k, v)
             end
           end
         end
@@ -103,10 +142,20 @@ function initialization.purge(optionals)
     Log.debug("purge staged_clones")
     -- Purge staged_clones
     if (storage.more_enemies.staged_clones and optionals.clones) then
-      for k,v in pairs(storage.more_enemies.staged_clones) do
-        if (v and v.obj) then
-          Log.debug("purging" .. serpent.block(v.obj))
-          v.obj.destroy()
+      -- for k,v in pairs(storage.more_enemies.staged_clones) do
+      --   if (v and v.obj) then
+      --     Log.debug("purging" .. serpent.block(v.obj))
+      --     v.obj.destroy()
+      --   end
+      -- end
+      for _, planet_list in pairs(storage.more_enemies.staged_clones) do
+        for _, entity_list in pairs(planet_list) do
+          for _, v in pairs(entity_list) do
+            if (v and v.obj) then
+              Log.debug("purging" .. serpent.block(v.obj))
+              v.obj.destroy()
+            end
+          end
         end
       end
       storage.more_enemies.clone = {}

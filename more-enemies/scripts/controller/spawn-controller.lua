@@ -90,11 +90,12 @@ function spawn_controller.do_tick(event)
   end
 
   if (not more_enemies_data.do_nth_tick) then
-    local max_num_unit_clones = Settings_Service.get_maximum_number_of_spawned_clones()
-    local max_num_unit_group_clones = Settings_Service.get_maximum_number_of_unit_group_clones()
     local at_capacity = 0
 
     for _, planet in pairs(Constants.DEFAULTS.planets) do
+      local max_num_unit_clones = Settings_Service.get_maximum_number_of_spawned_clones(planet.string_val)
+      local max_num_unit_group_clones = Settings_Service.get_maximum_number_of_unit_group_clones(planet.string_val)
+
       if (not more_enemies_data.clone[planet.string_val]) then
         more_enemies_data.clone[planet.string_val] = {}
         more_enemies_data.clone[planet.string_val].unit = 0

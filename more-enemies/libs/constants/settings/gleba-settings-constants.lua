@@ -5,7 +5,7 @@ end
 
 local Constants = require("libs.constants.constants")
 
-gleba_settings_constants = {}
+local gleba_settings_constants = {}
 
 gleba_settings_constants.settings = {}
 
@@ -28,6 +28,26 @@ gleba_settings_constants.settings.CLONE_GLEBA_UNIT_GROUPS = {
     default_value = 1,
     maximum_value = 11, -- This one goes up to eleven
     minimum_value = 0,
+}
+
+gleba_settings_constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES_GLEBA = {
+  type = "int-setting",
+  name = "more-enemies-maximum-number-of-spawned-clones-gleba",
+  setting_type = "runtime-global",
+  order = "dzd",
+  default_value = 400,
+  maximum_value = 111111,
+  minimum_value = 0,
+}
+
+gleba_settings_constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES_GLEBA = {
+  type = "int-setting",
+  name = "more-enemies-maximum-number-of-unit-group-clones-gleba",
+  setting_type = "runtime-global",
+  order = "dze",
+  default_value = 400,
+  maximum_value = 111111,
+  minimum_value = 0,
 }
 
 -- { Difficulty } --

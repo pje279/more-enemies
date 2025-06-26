@@ -238,10 +238,15 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     if (not surface or not surface.valid) then return end
 
     local clone_limit = 0
+    -- if (type == "unit-group") then
+    --   clone_limit = Settings_Service.get_maximum_number_of_unit_group_clones()
+    -- else
+    --   clone_limit = Settings_Service.get_maximum_number_of_spawned_clones()
+    -- end
     if (type == "unit-group") then
-      clone_limit = Settings_Service.get_maximum_number_of_unit_group_clones()
+      clone_limit = Settings_Service.get_maximum_number_of_unit_group_clones(surface.name)
     else
-      clone_limit = Settings_Service.get_maximum_number_of_spawned_clones()
+      clone_limit = Settings_Service.get_maximum_number_of_spawned_clones(surface.name)
     end
 
     if (not clone_limit or clone_limit < 1) then return end
@@ -253,9 +258,9 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
 
       if (more_enemies_data.clone) then
         if (type == "unit-group") then
-          if (not more_enemies_data.clone[surface.name].unit_group or more_enemies_data.clone[surface.name].unit_group > Settings_Service.get_maximum_number_of_unit_group_clones()) then return end
+          if (not more_enemies_data.clone[surface.name].unit_group or more_enemies_data.clone[surface.name].unit_group > Settings_Service.get_maximum_number_of_unit_group_clones(surface.name)) then return end
         else
-          if (not more_enemies_data.clone[surface.name].unit or more_enemies_data.clone[surface.name].unit > Settings_Service.get_maximum_number_of_spawned_clones()) then return end
+          if (not more_enemies_data.clone[surface.name].unit or more_enemies_data.clone[surface.name].unit > Settings_Service.get_maximum_number_of_spawned_clones(surface.name)) then return end
         end
       end
 
