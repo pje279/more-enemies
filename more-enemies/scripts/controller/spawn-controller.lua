@@ -96,19 +96,42 @@ function spawn_controller.do_tick(event)
     local max_num_unit_group_clones = Settings_Service.get_maximum_number_of_unit_group_clones()
     local at_capacity = 0
 
-    if (more_enemies_data.clone.unit_group > max_num_unit_group_clones) then
-      Log.warn("Tried to clone more than the unit-group limit: " .. serpent.block(max_num_unit_group_clones))
-      Log.warn("Currently " .. serpent.block(more_enemies_data.clone.unit) .. " unit clones")
-      Log.warn("Currently " .. serpent.block(more_enemies_data.clone.unit_group) .. " unit-group clones")
 
-      at_capacity = at_capacity + 1
-    end
-    if (more_enemies_data.clone.unit > max_num_unit_clones) then
-      Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_unit_clones))
-      Log.warn("Currently " .. serpent.block(more_enemies_data.clone.unit) .. " unit clones")
-      Log.warn("Currently " .. serpent.block(more_enemies_data.clone.unit_group) .. " unit-group clones")
+    -- if (more_enemies_data.clone.unit_group > max_num_unit_group_clones) then
+    --   Log.warn("Tried to clone more than the unit-group limit: " .. serpent.block(max_num_unit_group_clones))
+    --   Log.warn("Currently " .. serpent.block(more_enemies_data.clone.unit) .. " unit clones")
+    --   Log.warn("Currently " .. serpent.block(more_enemies_data.clone.unit_group) .. " unit-group clones")
 
-      at_capacity = at_capacity + 1
+    --   at_capacity = at_capacity + 1
+    -- end
+    -- if (more_enemies_data.clone.unit > max_num_unit_clones) then
+    --   Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_unit_clones))
+    --   Log.warn("Currently " .. serpent.block(more_enemies_data.clone.unit) .. " unit clones")
+    --   Log.warn("Currently " .. serpent.block(more_enemies_data.clone.unit_group) .. " unit-group clones")
+
+    --   at_capacity = at_capacity + 1
+    -- end
+    for _, planet in pairs(Constants.DEFAULTS.planets) do
+      if (not more_enemies_data.clone[planet.string_val]) then
+        more_enemies_data.clone[planet.string_val] = {}
+        more_enemies_data.clone[planet.string_val].unit = 0
+        more_enemies_data.clone[planet.string_val].unit_group = 0
+      end
+
+      if (more_enemies_data.clone[planet.string_val].unit_group > max_num_unit_group_clones) then
+        Log.warn("Tried to clone more than the unit-group limit: " .. serpent.block(max_num_unit_group_clones))
+        Log.warn("Currently " .. serpent.block(more_enemies_data.clone[planet.string_val].unit) .. " unit clones")
+        Log.warn("Currently " .. serpent.block(more_enemies_data.clone[planet.string_val].unit_group) .. " unit-group clones")
+
+        at_capacity = at_capacity + 1
+      end
+      if (more_enemies_data.clone[planet.string_val].unit > max_num_unit_clones) then
+        Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_unit_clones))
+        Log.warn("Currently " .. serpent.block(more_enemies_data.clone[planet.string_val].unit) .. " unit clones")
+        Log.warn("Currently " .. serpent.block(more_enemies_data.clone[planet.string_val].unit_group) .. " unit-group clones")
+
+        at_capacity = at_capacity + 1
+      end
     end
 
     -- if (at_capacity > 0) then
@@ -117,7 +140,9 @@ function spawn_controller.do_tick(event)
     --   end
     -- end
 
-    if (nth_tick_cleanup_complete_data.current and at_capacity < 2) then
+    -- if (nth_tick_cleanup_complete_data.current and at_capacity < 2) then
+    -- if (nth_tick_cleanup_complete_data.current and at_capacity < 3) then
+    if (nth_tick_cleanup_complete_data.current and at_capacity < 4) then
       more_enemies_data.do_nth_tick = true
     end
 

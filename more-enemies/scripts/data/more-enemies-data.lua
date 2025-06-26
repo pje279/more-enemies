@@ -9,7 +9,8 @@ local more_enemies_data = Data:new()
 
 more_enemies_data.clones = {}
 -- more_enemies_data.clone = { count = 0 }
-more_enemies_data.clone = { unit = 0, unit_group = 0 }
+-- more_enemies_data.clone = { unit = 0, unit_group = 0 }
+more_enemies_data.clone = {}
 
 more_enemies_data.difficulties = {}
 

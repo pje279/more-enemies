@@ -124,11 +124,12 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     if (not difficulty.selected_difficulty) then return end
   end
   Log.warn("past 3")
-  if (not entity.surface or not entity.surface.valid) then return end
-  if (Settings_Utils.is_vanilla(entity.surface.name)) then return end
+  local surface = entity.surface
+  if (not surface or not surface.valid) then return end
+  if (Settings_Utils.is_vanilla(surface.name)) then return end
   Log.warn("past validations")
 
-  local use_evolution_factor = Settings_Service.get_do_evolution_factor(entity.surface.name)
+  local use_evolution_factor = Settings_Service.get_do_evolution_factor(surface.name)
 
   local evolution_multiplier = 1
   local evolution_factor = 0
@@ -169,6 +170,8 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   local cloner = function (entity, clone_limit, type)
     Log.warn("Cloning")
     if (not entity.valid) then return end
+    local surface = entity.surface
+    if (not surface or not surface.valid) then return end
 
     if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
 
@@ -176,10 +179,15 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
 
     if (not more_enemies_data.do_nth_tick) then return clone end
 
+    -- if (    (type == "unit-group"
+    --     and more_enemies_data.clone.unit_group > clone_limit)
+    --   or    (type == "unit"
+    --     and more_enemies_data.clone.unit > clone_limit))
+    -- then
     if (    (type == "unit-group"
-        and more_enemies_data.clone.unit_group > clone_limit)
+        and more_enemies_data.clone[surface.name].unit_group > clone_limit)
       or    (type == "unit"
-        and more_enemies_data.clone.unit > clone_limit))
+        and more_enemies_data.clone[surface.name].unit > clone_limit))
     then
       if (not Entity_Validations.get_mod_name(optionals) or optionals.mod_name ~= "BREAM") then
         Log.warn("Tried to clone more than the " .. type .. " limit: " .. serpent.block(clone_limit))
@@ -214,13 +222,22 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
     Log.debug("Cloned")
     Log.info(clone)
 
+    -- if (Entity_Validations.get_mod_name(optionals)) then
+    --   more_enemies_data.mod.clone.count = more_enemies_data.mod.clone.count + 1
+    -- else
+    --   if (type == "unit-group") then
+    --     more_enemies_data.clone.unit_group = more_enemies_data.clone.unit_group + 1
+    --   else
+    --     more_enemies_data.clone.unit = more_enemies_data.clone.unit + 1
+    --   end
+    -- end
     if (Entity_Validations.get_mod_name(optionals)) then
       more_enemies_data.mod.clone.count = more_enemies_data.mod.clone.count + 1
     else
       if (type == "unit-group") then
-        more_enemies_data.clone.unit_group = more_enemies_data.clone.unit_group + 1
+        more_enemies_data.clone[surface.name].unit_group = more_enemies_data.clone[surface.name].unit_group + 1
       else
-        more_enemies_data.clone.unit = more_enemies_data.clone.unit + 1
+        more_enemies_data.clone[surface.name].unit = more_enemies_data.clone[surface.name].unit + 1
       end
     end
 
@@ -235,6 +252,9 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   local fun = function (loop_len, clones, obj, cloner, type)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
     if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
+
+    local surface = obj.surface
+    if (not surface or not surface.valid) then return end
 
     -- tick = tick or -1
 
@@ -254,12 +274,19 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
 
       if (more_enemies_data.clone) then
         Log.error("spawn_utils.fun definition: 1")
+        -- if (type == "unit-group") then
+        --   Log.error("spawn_utils.fun definition: 2")
+        --   if (not more_enemies_data.clone.unit_group or more_enemies_data.clone.unit_group > Settings_Service.get_maximum_number_of_unit_group_clones()) then return end
+        -- else
+        --   Log.error("spawn_utils.fun definition: 3")
+        --   if (not more_enemies_data.clone.unit or more_enemies_data.clone.unit > Settings_Service.get_maximum_number_of_spawned_clones()) then return end
+        -- end
         if (type == "unit-group") then
           Log.error("spawn_utils.fun definition: 2")
-          if (not more_enemies_data.clone.unit_group or more_enemies_data.clone.unit_group > Settings_Service.get_maximum_number_of_unit_group_clones()) then return end
+          if (not more_enemies_data.clone[surface.name].unit_group or more_enemies_data.clone[surface.name].unit_group > Settings_Service.get_maximum_number_of_unit_group_clones()) then return end
         else
           Log.error("spawn_utils.fun definition: 3")
-          if (not more_enemies_data.clone.unit or more_enemies_data.clone.unit > Settings_Service.get_maximum_number_of_spawned_clones()) then return end
+          if (not more_enemies_data.clone[surface.name].unit or more_enemies_data.clone[surface.name].unit > Settings_Service.get_maximum_number_of_spawned_clones()) then return end
         end
         Log.error("spawn_utils.fun definition: 4")
       end

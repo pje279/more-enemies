@@ -3,7 +3,7 @@ if _more_enemies_commands and _more_enemies_commands.more_enemies then
   return _more_enemies_commands
 end
 
--- local Constants = require("libs.constants.constants")
+local Constants = require("libs.constants.constants")
 local Initialization = require("scripts.initialization")
 local More_Enemies_Repository = require("scripts.repositories.more-enemies-repository")
 local Log = require("libs.log.log")
@@ -47,15 +47,25 @@ function more_enemies_commands.print_clone_counts(command)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
     if (more_enemies_data.valid) then
-      -- log("storage.more_enemies.clone.count: " .. tostring(storage.more_enemies.clone.count))
-      -- player.print("storage.more_enemies.clone.count: " .. tostring(storage.more_enemies.clone.count))
-      log("storage.more_enemies.clone.count.unit: " .. tostring(storage.more_enemies.clone.unit))
-      player.print("storage.more_enemies.clone.count.unit: " .. tostring(storage.more_enemies.clone.unit))
-      log("storage.more_enemies.clone.count.unit_group: " .. tostring(storage.more_enemies.clone.unit_group))
-      player.print("storage.more_enemies.clone.count.unit_group: " .. tostring(storage.more_enemies.clone.unit_group))
-      if (script and script.active_mods and script.active_mods["BREAM"]) then
-        log("storage.more_enemies.mod.clone.count: " .. tostring(storage.more_enemies.mod.clone.count))
-        player.print("storage.more_enemies.mod.clone.count: " .. tostring(storage.more_enemies.mod.clone.count))
+      -- -- log("storage.more_enemies.clone.count: " .. tostring(storage.more_enemies.clone.count))
+      -- -- player.print("storage.more_enemies.clone.count: " .. tostring(storage.more_enemies.clone.count))
+      -- log("storage.more_enemies.clone.count.unit: " .. tostring(storage.more_enemies.clone.unit))
+      -- player.print("storage.more_enemies.clone.count.unit: " .. tostring(storage.more_enemies.clone.unit))
+      -- log("storage.more_enemies.clone.count.unit_group: " .. tostring(storage.more_enemies.clone.unit_group))
+      -- player.print("storage.more_enemies.clone.count.unit_group: " .. tostring(storage.more_enemies.clone.unit_group))
+      -- if (script and script.active_mods and script.active_mods["BREAM"]) then
+      --   log("storage.more_enemies.mod.clone.count: " .. tostring(storage.more_enemies.mod.clone.count))
+      --   player.print("storage.more_enemies.mod.clone.count: " .. tostring(storage.more_enemies.mod.clone.count))
+      -- end
+      for _, planet in pairs(Constants.DEFAULTS.planets) do
+        log("storage.more_enemies.clone[" .. planet.string_val .. "].count.unit: " .. tostring(storage.more_enemies.clone[planet.string_val].unit))
+        player.print("storage.more_enemies.clone[" .. planet.string_val .. "].count.unit: " .. tostring(storage.more_enemies.clone[planet.string_val].unit))
+        log("storage.more_enemies.clone[" .. planet.string_val .. "].count.unit_group: " .. tostring(storage.more_enemies.clone[planet.string_val].unit_group))
+        player.print("storage.more_enemies.clone[" .. planet.string_val .. "].count.unit_group: " .. tostring(storage.more_enemies.clone[planet.string_val].unit_group))
+        if (script and script.active_mods and script.active_mods["BREAM"]) then
+          log("storage.more_enemies.mod.clone.count: " .. tostring(storage.more_enemies.mod.clone.count))
+          player.print("storage.more_enemies.mod.clone.count: " .. tostring(storage.more_enemies.mod.clone.count))
+        end
       end
     else
       Log.error("storage is either nil or invalid")
