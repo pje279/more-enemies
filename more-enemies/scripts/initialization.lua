@@ -36,7 +36,8 @@ function initialization.purge(optionals)
   optionals = optionals or {
     all = true,
     clones = true,
-    mod_added_clones = true
+    mod_added_clones = true,
+    exterminatus = true
   }
 
   if (storage.more_enemies and storage.more_enemies.valid) then
@@ -45,7 +46,32 @@ function initialization.purge(optionals)
 
     Log.debug("purge clones")
     -- Purge clones
-    if (storage.more_enemies.clones and optionals.all) then
+
+    if (type(optionals) == "table" and optionals.exterminatus) then
+      if (game.forces["enemy"]) then
+        game.forces["enemy"].kill_all_units()
+      end
+
+      storage.more_enemies.clones = {}
+      storage.more_enemies.clone = {}
+
+      storage.more_enemies.staged_clones = {}
+      storage.more_enemies.mod.staged_clones = {}
+
+      for _, planet in pairs(Constants.DEFAULTS.planets) do
+        storage.more_enemies.clone[planet.string_val] = {}
+        storage.more_enemies.clone[planet.string_val].unit = 0
+        storage.more_enemies.clone[planet.string_val].unit_group = 0
+
+        storage.more_enemies.staged_clones[planet.string_val] = {}
+        storage.more_enemies.staged_clones[planet.string_val].unit = {}
+        storage.more_enemies.staged_clones[planet.string_val].unit_group = {}
+      end
+
+      storage.more_enemies.mod.clone = { count = 0 }
+    end
+
+    if (storage.more_enemies.clones and type(optionals) == "table" and optionals.all) then
       for _, planet_list in pairs(storage.more_enemies.clones) do
         for _, entity_list in pairs(planet_list) do
           if (type(entity_list) == "table") then
@@ -69,13 +95,6 @@ function initialization.purge(optionals)
       storage.more_enemies.mod.clone = { count = 0 }
     end
 
-    -- local do_purge = function (k, v)
-    --   if (k and v and v.obj) then
-    --     Log.debug("purging" .. serpent.block(v.obj))
-    --     storage.more_enemies.clones[k] = nil
-    --     v.obj.destroy()
-    --   end
-    -- end
     local do_purge = function (k, v, surface_name)
       if (k and v and v.obj) then
         Log.debug("purging" .. serpent.block(v.obj))
@@ -89,28 +108,6 @@ function initialization.purge(optionals)
     end
 
     if (storage.more_enemies.clones) then
-      -- for k,v in pairs(storage.more_enemies.clones) do
-      --   if (v and v.obj) then
-      --     if (Entity_Validations.get_mod_name(v) and optionals.mod_added_clones) then
-      --       if (storage.more_enemies.mod.clone.count > 0) then
-      --         storage.more_enemies.mod.clone.count = storage.more_enemies.mod.clone.count - 1
-      --       end
-      --       do_purge(k,v)
-      --     elseif (optionals.clones) then
-      --       if (v.type == "unit-group") then
-      --         if (storage.more_enemies.clone.unit_group > 0) then
-      --           storage.more_enemies.clone.unit_group = storage.more_enemies.clone.unit_group - 1
-      --         end
-      --         do_purge(k, v)
-      --       else
-      --         if (storage.more_enemies.clone.unit > 0) then
-      --           storage.more_enemies.clone.unit = storage.more_enemies.clone.unit - 1
-      --         end
-      --         do_purge(k, v)
-      --       end
-      --     end
-      --   end
-      -- end
       for surface_name, planet_list in pairs(storage.more_enemies.clones) do
         for _, entity_list in pairs(planet_list) do
           for k, v in pairs(entity_list) do
@@ -150,10 +147,12 @@ function initialization.purge(optionals)
       -- end
       for _, planet_list in pairs(storage.more_enemies.staged_clones) do
         for _, entity_list in pairs(planet_list) do
-          for _, v in pairs(entity_list) do
-            if (v and v.obj) then
-              Log.debug("purging" .. serpent.block(v.obj))
-              v.obj.destroy()
+          if (type(entity_list) == "table") then
+            for _, v in pairs(entity_list) do
+              if (v and v.obj) then
+                Log.debug("purging" .. serpent.block(v.obj))
+                v.obj.destroy()
+              end
             end
           end
         end

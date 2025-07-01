@@ -728,6 +728,7 @@ locals.do_mod_nth_tick = function (mod_data)
   end
 
   unit_group = spawn_service.BREAM.unit_group
+  local j = 0
   for i, _mod_staged_clone in pairs(mod_data.staged_clones) do
     if (  Settings_Service.get_BREAM_difficulty() == Constants.difficulty.VANILLA.string_val
       and Settings_Service.get_BREAM_do_clone() == false
@@ -792,7 +793,7 @@ locals.do_mod_nth_tick = function (mod_data)
       Log.info(difficulty)
       Log.info(Constants.difficulty)
 
-      clones = {}
+      local clones = {}
 
       Log.debug("mod added: Attempting to clone entity on planet " .. surface_name)
       Log.info(clone_settings)

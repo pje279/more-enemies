@@ -9,11 +9,13 @@ local More_Enemies_Repository = require("scripts.repositories.more-enemies-repos
 local Log = require("libs.log.log")
 local Version_Data = require("scripts.data.version-data")
 
+local locals = {}
+
 local more_enemies_commands = {}
 
 function more_enemies_commands.init(command)
   Log.debug("more_enemies_commands.init")
-  validate_command(command, function (player)
+  locals.validate_command(command, function (player)
     Log.info("commands.init")
     player.print("Initializing anew")
     Initialization.init()
@@ -23,7 +25,7 @@ end
 
 function more_enemies_commands.reinit(command)
   Log.debug("more_enemies_commands.reinit")
-  validate_command(command, function (player)
+  locals.validate_command(command, function (player)
     Log.info("commands.reinit")
     player.print("Reinitializing")
     Initialization.reinit()
@@ -33,7 +35,7 @@ end
 
 function more_enemies_commands.print_storage(command)
   Log.debug("more_enemies_commands.print_storage")
-  validate_command(command, function (player)
+  locals.validate_command(command, function (player)
     Log.info("commands.print_storage", true)
     log(serpent.block(storage))
     player.print(serpent.block(storage))
@@ -42,7 +44,7 @@ end
 
 function more_enemies_commands.print_clone_counts(command)
   Log.debug("more_enemies_commands.print_clone_counts")
-  validate_command(command, function (player)
+  locals.validate_command(command, function (player)
     Log.info("commands.print_clone_counts", true)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
@@ -66,7 +68,7 @@ end
 
 function more_enemies_commands.version(command)
   Log.debug("more_enemies_commands.version")
-  validate_command(command, function (player)
+  locals.validate_command(command, function (player)
     Log.info("commands.version")
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
@@ -94,7 +96,7 @@ end
 
 function more_enemies_commands.set_do_nth_tick(command)
   Log.debug("more_enemies_commands.set_do_nth_tick")
-  validate_command(command, function (player)
+  locals.validate_command(command, function (player)
     Log.info("commands.set_do_nth_tick", true)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
@@ -117,7 +119,7 @@ end
 
 function more_enemies_commands.get_do_nth_tick(command)
   Log.debug("more_enemies_commands.get_do_nth_tick")
-  validate_command(command, function (player)
+  locals.validate_command(command, function (player)
     Log.info("commands.get_do_nth_tick", true)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
@@ -133,7 +135,7 @@ end
 
 function more_enemies_commands.purge_all(command)
   Log.debug("more_enemies_commands.purge_all")
-  validate_command(command, function (player)
+  locals.validate_command(command, function (player)
     Log.info("commands.purge", true)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
@@ -149,7 +151,7 @@ end
 
 function more_enemies_commands.purge_clones(command)
   Log.debug("more_enemies_commands.purge_clones")
-  validate_command(command, function (player)
+  locals.validate_command(command, function (player)
     Log.info("commands.purge", true)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
@@ -165,7 +167,7 @@ end
 
 function more_enemies_commands.purge_modded_clones(command)
   Log.debug("more_enemies_commands.purge_modded_clones")
-  validate_command(command, function (player)
+  locals.validate_command(command, function (player)
     Log.info("commands.purge", true)
     local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
@@ -179,7 +181,23 @@ function more_enemies_commands.purge_modded_clones(command)
   end)
 end
 
-function validate_command(command, fun)
+function more_enemies_commands.exterminatus(command)
+  Log.debug("more_enemies_commands.exterminatus")
+  locals.validate_command(command, function (player)
+    Log.info("commands.purge", true)
+    local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
+
+    if (more_enemies_data.valid) then
+      player.print("Exterminatus: removing all enemies, this may take a moment")
+      Initialization.purge({ exterminatus = true })
+    else
+      Log.error("storage is either nil or invalid")
+      player.print(serpent.block("storage is either nil or invalid; command failed"))
+    end
+  end)
+end
+
+locals.validate_command = function (command, fun)
   Log.debug("validate_command")
   Log.info(command)
   if (command) then
@@ -206,6 +224,7 @@ commands.add_command("more_enemies.set_do_nth_tick", "Sets whether to process cl
 commands.add_command("more_enemies.purge_all", "Clears all of the cloned enemies, and enemies staged to be cloned", more_enemies_commands.purge_all)
 commands.add_command("more_enemies.purge_clones", "Clears all of the vanilla cloned enemies, and vanilla enemies staged to be cloned", more_enemies_commands.purge_clones)
 commands.add_command("more_enemies.purge_modded_clones", "Clears all of the mod added cloned enemies, and mod added enemies staged to be cloned", more_enemies_commands.purge_modded_clones)
+commands.add_command("more_enemies.exterminatus", "Kills literally all enemy units on all surfaces", more_enemies_commands.exterminatus)
 
 more_enemies_commands.more_enemies = true
 
