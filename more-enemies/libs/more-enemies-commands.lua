@@ -224,7 +224,7 @@ commands.add_command("more_enemies.set_do_nth_tick", "Sets whether to process cl
 commands.add_command("more_enemies.purge_all", "Clears all of the cloned enemies, and enemies staged to be cloned", more_enemies_commands.purge_all)
 commands.add_command("more_enemies.purge_clones", "Clears all of the vanilla cloned enemies, and vanilla enemies staged to be cloned", more_enemies_commands.purge_clones)
 commands.add_command("more_enemies.purge_modded_clones", "Clears all of the mod added cloned enemies, and mod added enemies staged to be cloned", more_enemies_commands.purge_modded_clones)
-commands.add_command("more_enemies.exterminatus", "Kills literally all enemy units on all surfaces", more_enemies_commands.exterminatus)
+commands.add_command("more_enemies.exterminatus", "Kills all enemy units and flushes the path finder", more_enemies_commands.exterminatus)
 
 more_enemies_commands.more_enemies = true
 
