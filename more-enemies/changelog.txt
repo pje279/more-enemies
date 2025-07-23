@@ -1,17 +1,23 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.6.0
-Date: 2025-07-1
+Date: 2025-07-23
   Minor Features:
     - Seperated maximum number of clones to be per planet (Nauvis and Gleba)
       Also seperated per planet limit to have seperate unit and unit-group limits
       - Each one should have its own configurable runtime setting (4 total)
-      Reduced the clone limit from a single setting of 1500 to four settings of 400 each
+      Reduced the clone limit from a single setting of 1500, to four settings of 400 each
       - i.e. it's now 400 * 4 = 1600; 100 higher than the previous default limit
     - Added
       -> /more_enemies.exterminatus -> Calls game.forces.enemies.kill_all_units(), also clears all clones and staged_clones from the storage data and resets the counts to 0
       - This will literally kill all of the spawned enemy units (cloned or otherwise) on both Nauvis and Gleba (haven't tested with mods that add enemies to other planets yet)
       - Also flushes the pathfinder
-      -> Depending on how large the game/save is, this may/will likely lag for a moment (500+ hour save, lags for like 1-3 seconds on initial execution)
+      -> Depending on how large the game/save is, this may/will likely lag for a moment (500+ hour save, lags for ~5-10 seconds on initial execution)
+      -> Is also executed when the mod detects an update, or when using the /more_enemies.init command
+  Misc:
+    - Worked on optimizing overall performance and performance with B.R.E.A.M.
+      - Still working on B.R.E.A.M. compatability and performance
+    - Reduced default modded clone limit to 500
+      - Only applies to B.R.E.A.M. currently
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.5
 Date: 2025-04-28

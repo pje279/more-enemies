@@ -103,8 +103,8 @@ function unit_group_service.unit_group_created(data)
 end
 
 function unit_group_service.unit_group_finished_gathering(data)
-  Log.error("unit_group_service.unit_group_finished_gathering")
-  Log.warn(data)
+  Log.debug("unit_group_service.unit_group_finished_gathering")
+  Log.info(data)
 
   if (not data) then return end
   if (not data.event) then return end

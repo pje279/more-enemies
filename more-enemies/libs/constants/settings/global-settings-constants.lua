@@ -135,7 +135,7 @@ global_settings_constants.settings.MAXIMUM_NUMBER_OF_MODDED_CLONES = {
   name = "more-enemies-maximum-number-of-modded-clones",
   setting_type = "runtime-global",
   order = "eea",
-  default_value = 1000,
+  default_value = 500,
   maximum_value = 111111,
   minimum_value = 0,
 }

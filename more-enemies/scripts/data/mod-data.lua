@@ -3,7 +3,9 @@ local Log = require("libs.log.log")
 
 local mod_data = Data:new()
 
-mod_data.clone = { count = 0 }
+mod_data.clone = {}
+mod_data.clones = {}
+mod_data.staged_clone = {}
 mod_data.staged_clones = {}
 
 function mod_data:new(obj)
@@ -14,6 +16,8 @@ function mod_data:new(obj)
 
   local defaults = {
     clone = self.clone,
+    clones = self.clones,
+    staged_clone = self.staged_clone,
     staged_clones = self.staged_clones,
   }
 

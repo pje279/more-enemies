@@ -29,6 +29,7 @@ more_enemies_data.nth_tick_complete.valid = true
 
 more_enemies_data.overflow_clone_attempts = Overflow_Clone_Attempts_Data:new()
 
+more_enemies_data.staged_clone = {}
 more_enemies_data.staged_clones = {}
 
 more_enemies_data.version_data = Version_Data:new()
@@ -49,6 +50,7 @@ function more_enemies_data:new(obj)
     nth_tick_complete = self.nth_tick_complete,
     mod = self.mod,
     overflow_clone_attempts = self.overflow_clone_attempts,
+    staged_clone = self.staged_clone,
     staged_clones = self.staged_clones,
     version_data = self.version_data,
   }
