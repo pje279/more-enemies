@@ -2,8 +2,8 @@
 Version: 0.6.0
 Date: 2025-07-23
   Minor Features:
-    - Seperated maximum number of clones to be per planet (Nauvis and Gleba)
-      Also seperated per planet limit to have seperate unit and unit-group limits
+    - Separated maximum number of clones to be per planet (Nauvis and Gleba)
+      Also separated per planet limit to have separate unit and unit-group limits
       - Each one should have its own configurable runtime setting (4 total)
       Reduced the clone limit from a single setting of 1500, to four settings of 400 each
       - i.e. it's now 400 * 4 = 1600; 100 higher than the previous default limit
@@ -18,6 +18,9 @@ Date: 2025-07-23
       - Still working on B.R.E.A.M. compatability and performance
     - Reduced default modded clone limit to 500
       - Only applies to B.R.E.A.M. currently
+    - Updated dependency version for base to 2.0.60
+    - Updated optional dependency version for space-age to 2.0.60
+    - Updated optional dependency version for behemoth-enemies to 0.0.8
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.5
 Date: 2025-04-28
@@ -131,8 +134,8 @@ Version: 0.3.1
 Date: 2025-03-29
   Bug Fixes:
     - Fixed error on load when Space Age was not present
-    - Update dependency version for base to 2.0.42 (below has not been tested)
-    - Update optional dependency version for space-age to 2.0.42 (below has not been tested)
+    - Updated dependency version for base to 2.0.42 (below has not been tested)
+    - Updated optional dependency version for space-age to 2.0.42 (below has not been tested)
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.0
 Date: 2025-03-27

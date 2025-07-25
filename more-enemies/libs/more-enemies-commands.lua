@@ -59,8 +59,6 @@ function more_enemies_commands.print_clone_counts(command)
         log("storage.more_enemies.staged_clone[" .. planet.string_val .. "].count.unit_group: " .. tostring(storage.more_enemies.staged_clone[planet.string_val].unit_group))
         player.print("storage.more_enemies.staged_clone[" .. planet.string_val .. "].count.unit_group: " .. tostring(storage.more_enemies.staged_clone[planet.string_val].unit_group))
         if (script and script.active_mods and script.active_mods["BREAM"]) then
-          -- log("storage.more_enemies.mod.clone[" .. planet.string_val .. "].count: " .. tostring(storage.more_enemies.mod.clone.count))
-          -- player.print("storage.more_enemies.mod.clone[" .. planet.string_val .. "].count: " .. tostring(storage.more_enemies.mod.clone.count))
 
           if (more_enemies_data.mod
             and more_enemies_data.mod.clone
@@ -205,7 +203,7 @@ function more_enemies_commands.exterminatus(command)
       Initialization.purge({ exterminatus = true })
     else
       Log.error("storage is either nil or invalid")
-      player.print(serpent.block("storage is either nil or invalid; command failed"))
+      player.print("storage is either nil or invalid; command failed")
     end
   end)
 end

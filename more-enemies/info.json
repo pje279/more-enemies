@@ -4,16 +4,16 @@
 	"factorio_version": "2.0",
 	"title": "More Enemies",
 	"author": "TheEckelmonster",
-	"description": "Clones enemies and enemy unit groups, as well as exposes several enemy and spawner settings; all configurable from within the game.",
+	"description": "Simple idea of just having more enemies, and larger enemy attack groups.\n\nClones enemies and enemy unit groups, as well as exposes several enemy and spawner settings; all configurable from within the game.\n\nComes with five preset difficulties: Easy(0.1), Vanilla(1), Vanilla+(1.75), Hard(4), and Insanity(11). Each added setting can be configured independently of the selected difficulty to personal taste.",
 	"dependencies": [
-		"base >= 2.0.55",
-		"? space-age >= 2.0.55",
+		"base >= 2.0.60",
+		"? space-age >= 2.0.60",
 		"? ArmouredBiters >= 1.2.1",
 		"? Cold_biters >= 2.0.9",
 		"? entrenched-enemies >= 1.3.0",
 		"? Explosive_biters >= 2.3.1",
 		"? Toxic_biters >= 2.0.4",
-		"? behemoth-enemies >= 0.0.6",
+		"? behemoth-enemies >= 0.0.8",
 		"? BREAM >= 2.1.2"
 	]
 }

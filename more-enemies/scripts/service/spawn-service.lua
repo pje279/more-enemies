@@ -4,10 +4,8 @@ if _spawn_service and _spawn_service.more_enemies then
 end
 
 local BREAM_Constants = require("libs.constants.mods.BREAM-constants")
-local BREAM_Settings_Constants = require("libs.constants.settings.mods.BREAM.BREAM-settings-constants")
 local Clone_Data = require("scripts.data.clone-data")
 local Constants = require("libs.constants.constants")
-local Entity_Validations = require("scripts.validations.entity-validations")
 local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Initialization = require("scripts.initialization")
@@ -26,12 +24,6 @@ local spawn_service = {}
 
 spawn_service.planet = nil
 spawn_service.planet_index = nil
-
--- spawn_service.entity_list = nil
--- spawn_service.entity_list_index = nil
-
--- spawn_service.entity = nil
--- spawn_service.entity_index = nil
 
 spawn_service.entity_list = {}
 spawn_service.entity_list_index = {}
@@ -62,23 +54,6 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
 
   local clones = {}
   local clones_per_tick = Settings_Service.get_clones_per_tick()
-  -- local clone_overflow = 1
-
-  -- local j = 0
-
-  -- local next_planet = false
-
-  -- if (not spawn_service.entity_list) then next_planet = true end
-  -- if (not spawn_service.entity_list_index) then next_planet = true end
-
-  -- if (next_planet) then
-  --   spawn_service.planet_index, spawn_service.planet = next(Constants.DEFAULTS.planets, spawn_service.planet_index)
-  -- end
-  -- -- spawn_service.planet_index, spawn_service.planet = next(Constants.DEFAULTS.planets, spawn_service.planet_index)
-
-  -- local planet = spawn_service.planet
-
-  -- if (not planet or not spawn_service.planet_index) then return end
 
   for k, planet in pairs(Constants.DEFAULTS.planets) do
   --   Log.info(k)
@@ -106,397 +81,260 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
       if (not more_enemies_data.staged_clones[planet.string_val].unit) then more_enemies_data.staged_clones[planet.string_val].unit = {} end
       if (not more_enemies_data.staged_clones[planet.string_val].unit_group) then more_enemies_data.staged_clones[planet.string_val].unit_group = {} end
 
-      -- local j = 0
+      local next_list = false
 
-      -- if (script and script.active_mods and script.active_mods["BREAM"]) then
-      --   locals.do_mod_nth_tick(more_enemies_data, mod_data)
-      -- end
+      if (not spawn_service.entity_list[planet.string_val]) then next_list = true end
+      if (not spawn_service.entity_index[planet.string_val]) then next_list = true end
 
-      -- j = 0
+      if (next_list) then
+        spawn_service.entity_list_index[planet.string_val], spawn_service.entity_list[planet.string_val] = next(more_enemies_data.staged_clones[planet.string_val], spawn_service.entity_list_index[planet.string_val])
+      end
 
-      -- for _, entity_list in pairs(more_enemies_data.staged_clones[planet.string_val]) do
-      -- end
+      local entity_list = spawn_service.entity_list[planet.string_val]
 
-        -- if (Initialization.reset) then
-        --   Log.error("1: I happened!")
-        --   spawn_service.entity_list = nil
-        --   spawn_service.entity_list_index = nil
+      if (not entity_list or not spawn_service.entity_list_index[planet.string_val]) then goto continue_2 end
 
-        --   Initialization.reset = false
-        -- end
+      Log.debug("5.1")
+      Log.info(spawn_service.entity_list_index[planet.string_val])
+      Log.debug("5.2")
+      Log.info(spawn_service.entity_index[planet.string_val])
+      Log.debug("5.3")
+      Log.info(entity_list)
 
-        -- Log.error("1")
-        -- -- Log.error(spawn_service.entity_list_index)
-        -- Log.error(spawn_service.entity_list_index[planet.string_val])
-        -- Log.error("2")
-        -- -- Log.error(more_enemies_data.staged_clones[planet.string_val])
-        -- Log.error(planet.string_val)
-        -- Log.error("3")
+      for j=1, clones_per_tick do
 
-        -- if (spawn_service.entity_list and spawn_service.entity_list_index and spawn_service.entity_list[spawn_service.entity_list_index] == nil) then
-        --   spawn_service.entity_list_index = nil
-        -- end
-
-        local next_list = false
-
-        -- if (not spawn_service.entity_list) then next_list = true end
-        -- -- if (not spawn_service.entity_list_index) then next_list = true end
-        -- if (not spawn_service.entity_index) then next_list = true end
-        if (not spawn_service.entity_list[planet.string_val]) then next_list = true end
-        if (not spawn_service.entity_index[planet.string_val]) then next_list = true end
-
-        -- if (next_list) then
-        --   spawn_service.entity_list_index, spawn_service.entity_list = next(more_enemies_data.staged_clones[planet.string_val], spawn_service.entity_list_index)
-        -- end
-        if (next_list) then
-          spawn_service.entity_list_index[planet.string_val], spawn_service.entity_list[planet.string_val] = next(more_enemies_data.staged_clones[planet.string_val], spawn_service.entity_list_index[planet.string_val])
+        if (not entity_list[spawn_service.entity_index[planet.string_val]]) then
+          spawn_service.entity_index[planet.string_val] = nil
         end
-        -- spawn_service.entity_list_index, spawn_service.entity_list = next(more_enemies_data.staged_clones[planet.string_val], spawn_service.entity_list_index)
 
-        -- Log.error(entity_list)
+        spawn_service.entity_index[planet.string_val], spawn_service.entity[planet.string_val] = next(entity_list, spawn_service.entity_index[planet.string_val])
 
-        -- local entity_list = spawn_service.entity_list
-        local entity_list = spawn_service.entity_list[planet.string_val]
-
-        -- Log.error("4")
-        -- if (not entity_list or not spawn_service.entity_list_index) then return end
-        -- if (not entity_list or not spawn_service.entity_list_index[planet.string_val]) then return end
-        if (not entity_list or not spawn_service.entity_list_index[planet.string_val]) then goto continue_2 end
-
-        -- j = 0
-
-        Log.debug("5.1")
-        -- Log.error(spawn_service.entity_list_index)
-        Log.info(spawn_service.entity_list_index[planet.string_val])
-        Log.debug("5.2")
-        -- Log.error(spawn_service.entity_index)
+        Log.debug(j)
+        Log.debug("6.1")
+        Log.info(spawn_service.entity_index)
         Log.info(spawn_service.entity_index[planet.string_val])
-        Log.debug("5.3")
-        Log.info(entity_list)
+        Log.debug("6.2")
+        local _staged_clone = spawn_service.entity
+        local _staged_clone = spawn_service.entity[planet.string_val]
+        Log.info(_staged_clone)
 
-        -- if (spawn_service.entity and spawn_service.entity_index and spawn_service.entity[spawn_service.entity_index] == nil) then spawn_service.entity_index = nil end
+        if (not _staged_clone or not spawn_service.entity_index[planet.string_val]) then
+          Log.debug("6.3")
+          break
+        end
+        Log.debug("7")
 
-        -- spawn_service.entity_index, spawn_service.entity = next(entity_list, spawn_service.entity_index)
+        local skip = false
+        -- local continued = false
 
-        for j=1, clones_per_tick do
+        -- Log.info(i)
+        Log.info(_staged_clone)
+        local staged_clone = _staged_clone.obj
+        local group = _staged_clone.group
+        local unit_number = 1
+        local surface_name = Constants.DEFAULTS.planets.nauvis.string_val
 
-          -- spawn_service.entity_index, spawn_service.entity = next(entity_list, nil)
-          -- spawn_service.entity_index[planet.string_val], spawn_service.entity[planet.string_val] = next(entity_list, nil)
+        if (group and not group.valid) then
+          Log.debug("8.1")
+          Log.debug("_staged_clone.group was invalid; skipping")
+          Log.debug(_staged_clone)
+          skip = true
+        end
 
-          if (not entity_list[spawn_service.entity_index[planet.string_val]]) then
-            spawn_service.entity_index[planet.string_val] = nil
-          end
+        if (not staged_clone or not staged_clone.valid or staged_clone.surface.name ~= planet.string_val) then
+          Log.debug("8.2")
+          Log.debug("staged_clone is nil, invalid, or wrong planet for clone; skipping")
+          skip = true
 
-          spawn_service.entity_index[planet.string_val], spawn_service.entity[planet.string_val] = next(entity_list, spawn_service.entity_index[planet.string_val])
+          unit_number = spawn_service.entity_index[planet.string_val]
+        else
+          Log.debug("8.3")
+          unit_number = staged_clone.unit_number
+          surface_name = staged_clone.surface.name
+        end
+        Log.debug("8.4")
 
-          Log.debug(j)
-          Log.debug("6.1")
-          Log.info(spawn_service.entity_index)
-          Log.info(spawn_service.entity_index[planet.string_val])
-          Log.debug("6.2")
-          local _staged_clone = spawn_service.entity
-          local _staged_clone = spawn_service.entity[planet.string_val]
-          Log.info(_staged_clone)
+        if (not skip) then
+          Log.debug("8.5")
+          Log.debug(surface_name)
+          local clone_unit_setting = Settings_Service.get_clone_unit_setting(planet.string_val)
+          local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(planet.string_val)
+          Log.info("clone_unit_setting: " .. serpent.block(clone_unit_setting))
+          Log.info("clone_unit_group_setting: " .. serpent.block(clone_unit_group_setting))
 
-          -- if (not _staged_clone or not spawn_service.entity_index) then return end
-          -- if (not _staged_clone or not spawn_service.entity_index[planet.string_val]) then return end
-          if (not _staged_clone or not spawn_service.entity_index[planet.string_val]) then
-            Log.debug("6.3")
-            -- j = clones_per_tick
-            -- goto continue_2
-            break
-          end
-          Log.debug("7")
+          local clone_settings = {
+            unit = clone_unit_setting,
+            unit_group = clone_unit_group_setting,
+            type = group and "unit-group" or "unit"
+          }
 
-        -- if (type(entity_list) ~= "table") then return end
+          local max_num_unit_clones = Settings_Service.get_maximum_number_of_spawned_clones(planet.string_val)
+          local max_num_unit_group_clones = Settings_Service.get_maximum_number_of_unit_group_clones(planet.string_val)
 
-        -- for i, _staged_clone in pairs(entity_list) do
+          local at_capacity = 0
 
-          local skip = false
-          local continued = false
-
-          -- Log.info(i)
-          Log.info(_staged_clone)
-          local staged_clone = _staged_clone.obj
-          local group = _staged_clone.group
-          local unit_number = 1
-          local surface_name = Constants.DEFAULTS.planets.nauvis.string_val
-
-          if (group and not group.valid) then
-            Log.debug("8.1")
-            Log.debug("_staged_clone.group was invalid; skipping")
-            Log.debug(_staged_clone)
-            skip = true
-          end
-
-          -- -- j = j + 1
-
-          -- if (j > clones_per_tick) then
-          --   Log.debug("Tried to clone more than the clone_per_tick limt; breaking inner loop")
-          --   clone_overflow = clone_overflow + 1
-          --   -- if (clone_overflow > clones_per_tick * 2) then
-          --   --   return
-          --   -- elseif (clone_overflow > clones_per_tick * 1.5) then
-          --   --   break
-          --   -- else
-          --   --   goto continue
-          --   -- end
-          --   -- break
-          --   return
-          -- end
-
-          if (not staged_clone or not staged_clone.valid or staged_clone.surface.name ~= planet.string_val) then
-            Log.debug("8.2")
-            Log.debug("staged_clone is nil, invalid, or wrong planet for clone; skipping")
-            skip = true
-
-            unit_number = spawn_service.entity_index[planet.string_val]
-          else
-            Log.debug("8.3")
-            unit_number = staged_clone.unit_number
-            surface_name = staged_clone.surface.name
-          end
-          Log.debug("8.4")
-
-          if (not skip) then
-            Log.debug("8.5")
-            Log.debug(surface_name)
-            local clone_unit_setting = Settings_Service.get_clone_unit_setting(planet.string_val)
-            local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(planet.string_val)
-            Log.info("clone_unit_setting: " .. serpent.block(clone_unit_setting))
-            Log.info("clone_unit_group_setting: " .. serpent.block(clone_unit_group_setting))
-
-            local clone_settings = {
-              unit = clone_unit_setting,
-              unit_group = clone_unit_group_setting,
-              type = group and "unit-group" or "unit"
-            }
-
-            -- local max_num_unit_clones = Settings_Service.get_maximum_number_of_spawned_clones()
-            -- local max_num_unit_group_clones = Settings_Service.get_maximum_number_of_unit_group_clones()
-            local max_num_unit_clones = Settings_Service.get_maximum_number_of_spawned_clones(planet.string_val)
-            local max_num_unit_group_clones = Settings_Service.get_maximum_number_of_unit_group_clones(planet.string_val)
-
-            local at_capacity = 0
-
-            for _, _planet in pairs(Constants.DEFAULTS.planets) do
-              if (not more_enemies_data.clone[_planet.string_val]) then
-                more_enemies_data.clone[_planet.string_val] = {}
-                more_enemies_data.clone[_planet.string_val].unit = 0
-                more_enemies_data.clone[_planet.string_val].unit_group = 0
-              end
-
-              if (more_enemies_data.clone[_planet.string_val].unit_group > max_num_unit_group_clones) then
-                Log.warn("Tried to clone more than the unit-group limit: " .. serpent.block(max_num_unit_group_clones))
-                Log.warn("Currently " .. serpent.block(more_enemies_data.clone[_planet.string_val].unit) .. " unit clones")
-                Log.warn("Currently " .. serpent.block(more_enemies_data.clone[_planet.string_val].unit_group) .. " unit-group clones")
-
-                at_capacity = at_capacity + 1
-              end
-              if (more_enemies_data.clone[_planet.string_val].unit > max_num_unit_clones) then
-                Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_unit_clones))
-                Log.warn("Currently " .. serpent.block(more_enemies_data.clone[_planet.string_val].unit) .. " unit clones")
-                Log.warn("Currently " .. serpent.block(more_enemies_data.clone[_planet.string_val].unit_group) .. " unit-group clones")
-
-                at_capacity = at_capacity + 1
-              end
+          for _, _planet in pairs(Constants.DEFAULTS.planets) do
+            if (not more_enemies_data.clone[_planet.string_val]) then
+              more_enemies_data.clone[_planet.string_val] = {}
+              more_enemies_data.clone[_planet.string_val].unit = 0
+              more_enemies_data.clone[_planet.string_val].unit_group = 0
             end
 
-            if (at_capacity > 2) then
-              if (at_capacity > 3) then
-                more_enemies_data.do_nth_tick = false
-                return
-              end
+            if (more_enemies_data.clone[_planet.string_val].unit_group > max_num_unit_group_clones) then
+              Log.warn("Tried to clone more than the unit-group limit: " .. serpent.block(max_num_unit_group_clones))
+              Log.warn("Currently " .. serpent.block(more_enemies_data.clone[_planet.string_val].unit) .. " unit clones")
+              Log.warn("Currently " .. serpent.block(more_enemies_data.clone[_planet.string_val].unit_group) .. " unit-group clones")
 
-              if (clone_settings and clone_settings.type == "unit-group") then
-                if (more_enemies_data.clone[planet.string_val].unit_group > max_num_unit_group_clones) then
-                  Log.debug("unit_group: continuing")
-                  continued = true
-                  goto continue
-                end
-              else
-                if (more_enemies_data.clone[planet.string_val].unit > max_num_unit_clones) then
-                  Log.debug("unit: continuing")
-                  continued = true
-                  goto continue
-                end
-              end
+              at_capacity = at_capacity + 1
             end
+            if (more_enemies_data.clone[_planet.string_val].unit > max_num_unit_clones) then
+              Log.warn("Tried to clone more than the unit limit: " .. serpent.block(max_num_unit_clones))
+              Log.warn("Currently " .. serpent.block(more_enemies_data.clone[_planet.string_val].unit) .. " unit clones")
+              Log.warn("Currently " .. serpent.block(more_enemies_data.clone[_planet.string_val].unit_group) .. " unit-group clones")
 
-            clones = {}
+              at_capacity = at_capacity + 1
+            end
+          end
 
-            -- Log.debug("Attempting to clone entity on planet " .. surface_name)
-            -- Log.debug(clone_settings)
-            -- if (surface_name == Constants.DEFAULTS.planets.nauvis.string_val) then
-            --   clones = Spawn_Utils.clone_entity(
-            --     { value = Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNITS.default_value },
-            --     more_enemies_data.difficulties[surface_name].difficulty,
-            --     staged_clone,
-            --     {
-            --       clone_settings = clone_settings,
-            --       tick = tick
-            --     }
-            --   )
-            -- elseif (surface_name == Constants.DEFAULTS.planets.gleba.string_val) then
-            --   clones = Spawn_Utils.clone_entity(
-            --     { value = Gleba_Settings_Constants.settings.CLONE_GLEBA_UNITS.default_value },
-            --     more_enemies_data.difficulties[surface_name].difficulty,
-            --     staged_clone,
-            --     {
-            --       clone_settings = clone_settings,
-            --       tick = tick
-            --     }
-            --   )
-            -- else
-            --   Log.warn("Planet is neither nauvis nor gleba\nPlanet is unsupported; making no changes")
-            --   return
-            -- end
-            Log.debug("Attempting to clone entity on planet " .. planet.string_val)
-            Log.debug(clone_settings)
-            if (planet.string_val == Constants.DEFAULTS.planets.nauvis.string_val) then
-              clones = Spawn_Utils.clone_entity(
-                { value = Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNITS.default_value },
-                more_enemies_data.difficulties[planet.string_val].difficulty,
-                staged_clone,
-                {
-                  clone_settings = clone_settings,
-                  tick = tick
-                }
-              )
-            elseif (planet.string_val == Constants.DEFAULTS.planets.gleba.string_val) then
-              clones = Spawn_Utils.clone_entity(
-                { value = Gleba_Settings_Constants.settings.CLONE_GLEBA_UNITS.default_value },
-                more_enemies_data.difficulties[planet.string_val].difficulty,
-                staged_clone,
-                {
-                  clone_settings = clone_settings,
-                  tick = tick
-                }
-              )
-            else
-              Log.warn("Planet is neither nauvis nor gleba\nPlanet is unsupported; making no changes")
+          if (at_capacity > 2) then
+            if (at_capacity > 3) then
+              more_enemies_data.do_nth_tick = false
               return
             end
 
-            if (clones) then
-              j = j + #clones
-            end
-
-            Log.warn("clones:")
-            Log.warn(clones)
-
-            -- add the new clones to storage
-            if (clones and #clones > 0) then
-              -- if (not more_enemies_data.clones[surface_name]) then
-              --   more_enemies_data.clones[surface_name] = {}
-              --   more_enemies_data.clones[surface_name].unit = {}
-              --   more_enemies_data.clones[surface_name].unit_group = {}
-              -- end
-              if (not more_enemies_data.clones[planet.string_val]) then
-                more_enemies_data.clones[planet.string_val] = {}
-                more_enemies_data.clones[planet.string_val].unit = {}
-                more_enemies_data.clones[planet.string_val].unit_group = {}
+            if (clone_settings and clone_settings.type == "unit-group") then
+              if (more_enemies_data.clone[planet.string_val].unit_group > max_num_unit_group_clones) then
+                Log.debug("unit_group: continuing")
+                goto continue
               end
-
-              -- local k
-              for k=1, #clones do
-                if (clones[k] and clones[k] ~= nil and clones[k].clone.valid) then
-                  Log.info("adding clone: " .. serpent.block(clones[k]))
-                  local clone_data = Clone_Data:new({
-                    obj = clones[k].clone,
-                    type = clone_settings.type,
-                    mod_name = nil,
-                    valid = clones[k].clone.valid
-                  })
-                  -- if (clone_data.type == "unit-group") then
-                  --   more_enemies_data.clones[surface_name].unit_group[clones[k].clone.unit_number] = clone_data
-                  -- else
-                  --   more_enemies_data.clones[surface_name].unit[clones[k].clone.unit_number] = clone_data
-                  -- end
-                  if (clone_data.type == "unit-group") then
-                    more_enemies_data.clones[planet.string_val].unit_group[clones[k].clone.unit_number] = clone_data
-                  else
-                    more_enemies_data.clones[planet.string_val].unit[clones[k].clone.unit_number] = clone_data
-                  end
-                end
-
-                if (more_enemies_data.clone[planet.string_val].unit_group < 0) then more_enemies_data.clone[planet.string_val].unit_group = 0 end
-                if (more_enemies_data.clone[planet.string_val].unit < 0) then more_enemies_data.clone[planet.string_val].unit = 0 end
-
-                if (more_enemies_data.staged_clone[planet.string_val].unit_group < 0) then more_enemies_data.staged_clone[planet.string_val].unit_group = 0 end
-                if (more_enemies_data.staged_clone[planet.string_val].unit < 0) then more_enemies_data.staged_clone[planet.string_val].unit = 0 end
-
-                if (group and group.valid and clone_settings.type == "unit-group") then
-                  group.add_member(clones[k].clone)
-                  more_enemies_data.clone[planet.string_val].unit_group = more_enemies_data.clone[planet.string_val].unit_group + 1
-                else
-                  more_enemies_data.clone[planet.string_val].unit = more_enemies_data.clone[planet.string_val].unit + 1
-                end
-
-                clones[k] = nil
-              end
-
-              if (group and group.valid) then
-                if (  more_enemies_data.groups[group.surface.name]
-                  and more_enemies_data.groups[group.surface.name][group.unique_id]
-                  and more_enemies_data.groups[group.surface.name][group.unique_id].count ~= nil
-                  and more_enemies_data.groups[group.surface.name][group.unique_id].max_count ~= nil
-                  and more_enemies_data.groups[group.surface.name][group.unique_id].count >= more_enemies_data.groups[group.surface.name][group.unique_id].max_count)
-                then
-                  Log.debug("removing group: " .. serpent.block(group))
-                  more_enemies_data.groups[group.surface.name][group.unique_id] = nil
-                end
+            else
+              if (more_enemies_data.clone[planet.string_val].unit > max_num_unit_clones) then
+                Log.debug("unit: continuing")
+                goto continue
               end
             end
           end
 
-          -- remove the staged_clone after processing
-          -- if (group and group.valid) then
-          --   more_enemies_data.staged_clones[surface_name].unit_group[unit_number] = nil
-          -- else
-          --   more_enemies_data.staged_clones[surface_name].unit[unit_number] = nil
-          -- end
+          clones = {}
 
-          -- if (group and group.valid) then
-          if (group) then
-            Log.debug("9")
-            more_enemies_data.staged_clones[planet.string_val].unit_group[unit_number] = nil
-
-            if (more_enemies_data.staged_clone[planet.string_val].unit_group > 0) then
-              Log.debug("12")
-              more_enemies_data.staged_clone[planet.string_val].unit_group = more_enemies_data.staged_clone[planet.string_val].unit_group - 1
-            end
+          Log.debug("Attempting to clone entity on planet " .. planet.string_val)
+          Log.debug(clone_settings)
+          if (planet.string_val == Constants.DEFAULTS.planets.nauvis.string_val) then
+            clones = Spawn_Utils.clone_entity(
+              { value = Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNITS.default_value },
+              more_enemies_data.difficulties[planet.string_val].difficulty,
+              staged_clone,
+              {
+                clone_settings = clone_settings,
+                tick = tick
+              }
+            )
+          elseif (planet.string_val == Constants.DEFAULTS.planets.gleba.string_val) then
+            clones = Spawn_Utils.clone_entity(
+              { value = Gleba_Settings_Constants.settings.CLONE_GLEBA_UNITS.default_value },
+              more_enemies_data.difficulties[planet.string_val].difficulty,
+              staged_clone,
+              {
+                clone_settings = clone_settings,
+                tick = tick
+              }
+            )
           else
-            Log.debug("10")
-            more_enemies_data.staged_clones[planet.string_val].unit[unit_number] = nil
+            Log.warn("Planet is neither nauvis nor gleba\nPlanet is unsupported; making no changes")
+            return
+          end
 
-            Log.debug("11")
-            if (more_enemies_data.staged_clone[planet.string_val].unit > 0) then
-              Log.debug("12")
-              more_enemies_data.staged_clone[planet.string_val].unit = more_enemies_data.staged_clone[planet.string_val].unit - 1
+          if (clones) then
+            j = j + #clones
+          end
+
+          Log.warn("clones:")
+          Log.warn(clones)
+
+          -- add the new clones to storage
+          if (clones and #clones > 0) then
+            if (not more_enemies_data.clones[planet.string_val]) then
+              more_enemies_data.clones[planet.string_val] = {}
+              more_enemies_data.clones[planet.string_val].unit = {}
+              more_enemies_data.clones[planet.string_val].unit_group = {}
+            end
+
+            -- local k
+            for k=1, #clones do
+              if (clones[k] and clones[k] ~= nil and clones[k].clone.valid) then
+                Log.info("adding clone: " .. serpent.block(clones[k]))
+                local clone_data = Clone_Data:new({
+                  obj = clones[k].clone,
+                  type = clone_settings.type,
+                  mod_name = nil,
+                  valid = clones[k].clone.valid
+                })
+                if (clone_data.type == "unit-group") then
+                  more_enemies_data.clones[planet.string_val].unit_group[clones[k].clone.unit_number] = clone_data
+                else
+                  more_enemies_data.clones[planet.string_val].unit[clones[k].clone.unit_number] = clone_data
+                end
+              end
+
+              if (more_enemies_data.clone[planet.string_val].unit_group < 0) then more_enemies_data.clone[planet.string_val].unit_group = 0 end
+              if (more_enemies_data.clone[planet.string_val].unit < 0) then more_enemies_data.clone[planet.string_val].unit = 0 end
+
+              if (more_enemies_data.staged_clone[planet.string_val].unit_group < 0) then more_enemies_data.staged_clone[planet.string_val].unit_group = 0 end
+              if (more_enemies_data.staged_clone[planet.string_val].unit < 0) then more_enemies_data.staged_clone[planet.string_val].unit = 0 end
+
+              if (group and group.valid and clone_settings.type == "unit-group") then
+                group.add_member(clones[k].clone)
+                more_enemies_data.clone[planet.string_val].unit_group = more_enemies_data.clone[planet.string_val].unit_group + 1
+              else
+                more_enemies_data.clone[planet.string_val].unit = more_enemies_data.clone[planet.string_val].unit + 1
+              end
+
+              clones[k] = nil
+            end
+
+            if (group and group.valid) then
+              if (  more_enemies_data.groups[group.surface.name]
+                and more_enemies_data.groups[group.surface.name][group.unique_id]
+                and more_enemies_data.groups[group.surface.name][group.unique_id].count ~= nil
+                and more_enemies_data.groups[group.surface.name][group.unique_id].max_count ~= nil
+                and more_enemies_data.groups[group.surface.name][group.unique_id].count >= more_enemies_data.groups[group.surface.name][group.unique_id].max_count)
+              then
+                Log.debug("removing group: " .. serpent.block(group))
+                more_enemies_data.groups[group.surface.name][group.unique_id] = nil
+              end
             end
           end
-          ::continue::
-          Log.debug("13")
         end
-        ::continue_2::
-        Log.debug("14")
+
+        -- remove the staged_clone after processing
+        if (group) then
+          Log.debug("9")
+          more_enemies_data.staged_clones[planet.string_val].unit_group[unit_number] = nil
+
+          if (more_enemies_data.staged_clone[planet.string_val].unit_group > 0) then
+            Log.debug("12")
+            more_enemies_data.staged_clone[planet.string_val].unit_group = more_enemies_data.staged_clone[planet.string_val].unit_group - 1
+          end
+        else
+          Log.debug("10")
+          more_enemies_data.staged_clones[planet.string_val].unit[unit_number] = nil
+
+          Log.debug("11")
+          if (more_enemies_data.staged_clone[planet.string_val].unit > 0) then
+            Log.debug("12")
+            more_enemies_data.staged_clone[planet.string_val].unit = more_enemies_data.staged_clone[planet.string_val].unit - 1
+          end
+        end
+        ::continue::
+        Log.debug("13")
       end
-    -- end
-  -- end
+      ::continue_2::
+      Log.debug("14")
+    end
 
-  -- if (script and script.active_mods and script.active_mods["BREAM"]) then
-  --   if (not spawn_service.BREAM.last_ran) then spawn_service.BREAM.last_ran = game.tick end
-
-  --   if (spawn_service.BREAM.last_ran + Settings_Service.get_nth_tick() * 12 < game.tick) then
-  --     spawn_service.BREAM.last_ran = game.tick
-  --     locals.do_mod_nth_tick(more_enemies_data, mod_data, planet)
-  --   end
-  -- end
     if (script and script.active_mods and script.active_mods["BREAM"]) then
       if (not spawn_service.BREAM.last_ran) then spawn_service.BREAM.last_ran = game.tick end
 
-      -- if (spawn_service.BREAM.last_ran + Settings_Service.get_nth_tick() * 12 < game.tick) then
       if (spawn_service.BREAM.last_ran + Settings_Service.get_nth_tick() * 1.5 < game.tick) then
         spawn_service.BREAM.last_ran = game.tick
         locals.do_mod_nth_tick(more_enemies_data, mod_data, planet)
@@ -633,8 +471,6 @@ function spawn_service.do_nth_tick_cleanup(event, more_enemies_data)
 
       if (more_enemies_data.clone[planet.string_val].unit > 0) then
         more_enemies_data.clone[planet.string_val].unit = more_enemies_data.clone[planet.string_val].unit - 1
-      -- else
-      --   more_enemies_data.clone[planet.string_val].unit_group = 0
       end
 
       i = i + 1
@@ -674,8 +510,6 @@ function spawn_service.do_nth_tick_cleanup(event, more_enemies_data)
 
       if (more_enemies_data.clone[planet.string_val].unit_group > 0) then
         more_enemies_data.clone[planet.string_val].unit_group = more_enemies_data.clone[planet.string_val].unit_group - 1
-      -- else
-      --   more_enemies_data.clone[planet.string_val].unit_group = 0
       end
 
       i = i + 1
@@ -723,8 +557,6 @@ function spawn_service.do_nth_tick_cleanup(event, more_enemies_data)
 
         if (mod_data.clone[planet.string_val].count > 0) then
           mod_data.clone[planet.string_val].count = mod_data.clone[planet.string_val].count - 1
-        -- else
-        --   more_enemies_data.clone[planet.string_val].unit_group = 0
         end
 
         i = i + 1
@@ -777,31 +609,16 @@ function spawn_service.entity_died(event)
   if (more_enemies_data.clone[surface.name].unit_group < 0) then more_enemies_data.clone[surface.name].unit_group = 0 end
   if (more_enemies_data.clone[surface.name].unit < 0) then more_enemies_data.clone[surface.name].unit = 0 end
 
-  -- if (mod_data.clone.count < 0) then mod_data.clone.count = 0 end
   if (not mod_data.clone) then mod_data.clone = {} end
   if (not mod_data.clone[surface.name]) then mod_data.clone[surface.name] = {} end
   if (mod_data.clone[surface.name].count == nil) then mod_data.clone[surface.name].count = 0 end
 
-  -- if (not more_enemies_data.clones[surface.name]) then
-  --   more_enemies_data.clones[surface.name] = {}
-  --   more_enemies_data.clones[surface.name].unit = {}
-  --   more_enemies_data.clones[surface.name].unit_group = {}
-  -- end
   if (not more_enemies_data.clones) then more_enemies_data.clones = {} end
   if (not more_enemies_data.clones[surface.name]) then more_enemies_data.clones[surface.name] = {} end
   if (not more_enemies_data.clones[surface.name].unit) then more_enemies_data.clones[surface.name].unit = {} end
   if (not more_enemies_data.clones[surface.name].unit_group) then more_enemies_data.clones[surface.name].unit = {} end
 
   Log.info("Attempting to remove entity")
-  -- if (more_enemies_data.clones[surface.name].unit[entity.unit_number] ~= nil
-  --   or more_enemies_data.clones[surface.name].unit_group[entity.unit_number] ~= nil)
-  -- then
-
-  -- Log.error(mod_data.clones)
-  -- Log.error(mod_data.clones[surface.name])
-  -- Log.error(mod_data.clones[surface.name].unit)
-  -- Log.error(entity)
-  -- Log.error(entity.unit_number)
 
   if (more_enemies_data.clones[surface.name].unit[entity.unit_number] ~= nil
     or more_enemies_data.clones[surface.name].unit_group[entity.unit_number] ~= nil
@@ -810,13 +627,9 @@ function spawn_service.entity_died(event)
   then
     Log.debug("Removing entity: " .. serpent.block(entity.unit_number))
 
-    -- if (Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name].unit[entity.unit_number])
-    --   or Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name].unit_group[entity.unit_number]))
-    -- then
     if (mod_data.clones[surface.name].unit[entity.unit_number]
       or mod_data.clones[surface.name].unit_group[entity.unit_number])
     then
-      -- if (mod_data.clone.count > 0) then mod_data.clone.count = mod_data.clone.count - 1 end
       if (mod_data.clone[surface.name].count > 0) then mod_data.clone[surface.name].count = mod_data.clone[surface.name].count - 1 end
 
       if (mod_data.clones[surface.name].unit[entity.unit_number]) then
@@ -837,12 +650,6 @@ function spawn_service.entity_died(event)
         more_enemies_data.clones[surface.name].unit_group[entity.unit_number] = nil
       end
     end
-
-    -- if (more_enemies_data.clones[surface.name].unit[entity.unit_number]) then
-    --   more_enemies_data.clones[surface.name].unit[entity.unit_number] = nil
-    -- elseif (more_enemies_data.clones[surface.name].unit_group[entity.unit_number]) then
-    --   more_enemies_data.clones[surface.name].unit_group[entity.unit_number] = nil
-    -- end
 
     return
   end
@@ -855,13 +662,9 @@ function spawn_service.entity_died(event)
   then
     Log.debug("removing, second try")
 
-    -- if (Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name].unit[entity.unit_number])
-    --   or Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name].unit_group[entity.unit_number]))
-    -- then
     if (mod_data.clones[surface.name].unit[entity.unit_number]
       or mod_data.clones[surface.name].unit_group[entity.unit_number])
     then
-      -- if (mod_data.clone.count > 0) then mod_data.clone.count = mod_data.clone.count - 1 end
       if (mod_data.clone[surface.name].count > 0) then mod_data.clone[surface.name].count = mod_data.clone[surface.name].count - 1 end
 
       if (mod_data.clones[surface.name].unit[entity.unit_number]) then
@@ -883,25 +686,9 @@ function spawn_service.entity_died(event)
       end
     end
 
-    -- if (more_enemies_data.clones[surface.name].unit[entity.unit_number]) then
-    --   more_enemies_data.clones[surface.name].unit[entity.unit_number] = nil
-    -- elseif (more_enemies_data.clones[surface.name].unit_group[entity.unit_number]) then
-    --   more_enemies_data.clones[surface.name].unit_group[entity.unit_number] = nil
-    -- end
-
     return
   end
 
-  -- if (  entity
-  --   and mod_data.clone.count > 0
-  --   and (more_enemies_data.clones[surface.name].unit[entity.unit_number] ~= nil
-  --     or more_enemies_data.clones[surface.name].unit_group[entity.unit_number] ~= nil))
-  -- then
-  -- if (  entity
-  --   and mod_data.clone.count > 0
-  --   and (mod_data.clones[surface.name].unit[entity.unit_number] ~= nil
-  --     or mod_data.clones[surface.name].unit_group[entity.unit_number] ~= nil))
-  -- then
   if (  entity
     and mod_data.clone[surface.name].count > 0
     and (mod_data.clones[surface.name].unit[entity.unit_number] ~= nil
@@ -909,13 +696,9 @@ function spawn_service.entity_died(event)
   then
     Log.debug("mod removing, second try")
 
-    -- if (Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name].unit[entity.unit_number])
-    --   or Entity_Validations.get_mod_name(more_enemies_data.clones[surface.name].unit_group[entity.unit_number]))
-    -- then
     if (mod_data.clones[surface.name].unit[entity.unit_number]
       or mod_data.clones[surface.name].unit_group[entity.unit_number])
     then
-      -- if (mod_data.clone.count > 0) then mod_data.clone.count = mod_data.clone.count - 1 end
       if (mod_data.clone[surface.name].count > 0) then mod_data.clone[surface.name].count = mod_data.clone[surface.name].count - 1 end
 
       if (mod_data.clones[surface.name].unit[entity.unit_number]) then
@@ -936,12 +719,6 @@ function spawn_service.entity_died(event)
         more_enemies_data.clones[surface.name].unit_group[entity.unit_number] = nil
       end
     end
-
-    -- if (more_enemies_data.clones[surface.name].unit[entity.unit_number]) then
-    --   more_enemies_data.clones[surface.name].unit[entity.unit_number] = nil
-    -- elseif (more_enemies_data.clones[surface.name].unit_group[entity.unit_number]) then
-    --   more_enemies_data.clones[surface.name].unit_group[entity.unit_number] = nil
-    -- end
 
     return
   end
@@ -957,22 +734,14 @@ function spawn_service.entity_spawned(event)
 
   local spawner = event.spawner
   if (not spawner or not spawner.valid) then return end
-  -- Log.error("21")
   local entity = event.entity
   if (not entity or not entity.valid) then return end
-  -- Log.error("22")
   local surface = entity.surface
   if (not surface or not surface.valid or not surface.name) then return end
-  -- Log.error("23")
 
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
-  -- Log.error("24")
-  -- if (not more_enemies_data:is_valid()) then more_enemies_data = Initialization.reinit() end
   if (not more_enemies_data.do_nth_tick) then return end
-  -- Log.error("25")
   if (not entity or not entity.valid or not entity.surface or not entity.surface.valid or Settings_Utils.is_vanilla(entity.surface.name)) then return end
-  -- if (Settings_Utils.is_vanilla(entity.surface.name)) then return end
-  -- Log.error("26")
 
   local max_num_clones = Settings_Service.get_maximum_number_of_spawned_clones(surface.name)
 
@@ -1010,7 +779,6 @@ function spawn_service.entity_spawned(event)
       end
     end
 
-    -- if (more_enemies_data.staged_clone[entity.surface.name].unit > max_num_clones) then return end
     if (more_enemies_data.staged_clone[entity.surface.name].unit <= max_num_clones) then
       more_enemies_data.staged_clone[entity.surface.name].unit = table_size(more_enemies_data.staged_clones[entity.surface.name].unit)
     end
@@ -1049,7 +817,6 @@ function spawn_service.entity_built(event)
   local mod_data = Mod_Repository.get_mod_data()
 
   local max_num_modded_clones = Settings_Service.get_maximum_number_of_modded_clones()
-  -- if (mod_data.clone.count > max_num_modded_clones) then
 
   if (not mod_data.clone) then mod_data.clone = {} end
   if (not mod_data.clone[entity.surface.name]) then mod_data.clone[entity.surface.name] = {} end
@@ -1064,7 +831,6 @@ function spawn_service.entity_built(event)
     and mod_data.clone[entity.surface.name].count > max_num_modded_clones)
   then
     Log.warn("Tried to clone more than the mod unit limit: " .. serpent.block(max_num_modded_clones))
-    -- Log.warn("Currently " .. serpent.block(mod_data.clone.count) .. " clones")
     Log.warn("Currently " .. serpent.block(mod_data.clone[entity.surface.name].count) .. " clones")
     return
   end
@@ -1074,15 +840,9 @@ function spawn_service.entity_built(event)
     and mod_data.staged_clone[entity.surface.name].count > max_num_modded_clones)
   then
     Log.warn("Tried to clone more than the mod unit limit: " .. serpent.block(max_num_modded_clones))
-    -- Log.warn("Currently " .. serpent.block(mod_data.clone.count) .. " staged clones")
-    -- Log.warn("Currently " .. serpent.block(mod_data.clone[entity.surface.name].count) .. " staged clones")
     Log.warn("Currently " .. serpent.block(mod_data.staged_clone[entity.surface.name].count) .. " staged clones")
     return
   end
-
-  -- if (not entity or not entity.valid) then return end
-  -- if (not mod_name or mod_name ~= "BREAM") then return end
-  -- if (not entity.surface or not entity.surface.name) then return end
 
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
 
@@ -1090,20 +850,9 @@ function spawn_service.entity_built(event)
   if (more_enemies_data.valid) then
     Log.debug("entity_built - Adding to mod.staged_clones: " .. serpent.block(entity.unit_number))
 
-    -- if (not mod_data.staged_clones[entity.surface.planet]) then
-    --   mod_data.staged_clones[entity.surface.planet] = {}
-    -- end
-
     if (not mod_data.staged_clones) then mod_data.staged_clones = {} end
     if (not mod_data.staged_clones[entity.surface.name]) then mod_data.staged_clones[entity.surface.name] = {} end
 
-    -- mod_data.staged_clones[entity.unit_number] = Clone_Data:new({
-    --   obj = entity,
-    --   surface = entity.surface,
-    --   group = nil,
-    --   mod_name = mod_name,
-    --   valid = entity.valid and entity.surface.valid,
-    -- })
     mod_data.staged_clones[entity.surface.name][entity.unit_number] = Clone_Data:new({
       obj = entity,
       surface = entity.surface,
@@ -1112,11 +861,7 @@ function spawn_service.entity_built(event)
       valid = entity.valid and entity.surface.valid,
     })
 
-    -- mod_data.staged_clone[entity.surface.name].count = mod_data.staged_clone[entity.surface.name].count + 1
-    -- mod_data.staged_clone[entity.surface.name].count = table_size(mod_data.staged_clones)
-    -- Log.error("before: " .. mod_data.staged_clone[entity.surface.name].count)
     mod_data.staged_clone[entity.surface.name].count = table_size(mod_data.staged_clones[entity.surface.name])
-    -- Log.error("after: " .. mod_data.staged_clone[entity.surface.name].count)
   end
 end
 
@@ -1128,19 +873,9 @@ locals.do_mod_nth_tick = function (more_enemies_data, mod_data, planet)
 
   local difficulty_setting = Settings_Service.get_BREAM_difficulty()
 
-  -- if (  Settings_Service.get_BREAM_difficulty() == Constants.difficulty.VANILLA.string_val
-  --   and Settings_Service.get_BREAM_do_clone() == false
-  --   and Settings_Service.get_BREAM_clone_units() == BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.default_value)
-  -- then
-  -- if (  difficulty_setting == Constants.difficulty.VANILLA.string_val
-  --   and Settings_Service.get_BREAM_do_clone() == false
-  --   and Settings_Service.get_BREAM_clone_units() == BREAM_Settings_Constants.settings.BREAM_CLONE_UNITS.default_value)
-  -- then
   if (  difficulty_setting == Constants.difficulty.VANILLA.string_val
      or Settings_Service.get_BREAM_do_clone() == false)
   then
-    -- Log.debug("found Vanilla settings for BREAM; breaking")
-    -- break
     Log.debug("found Vanilla settings for BREAM; returning")
     return
   end
@@ -1159,13 +894,8 @@ locals.do_mod_nth_tick = function (more_enemies_data, mod_data, planet)
   Log.info(difficulty)
   Log.info(Constants.difficulty)
 
-  -- if (mod_data.staged_clones and not spawn_service.BREAM.clones_index) then
   if (mod_data.staged_clones[planet.string_val] and not spawn_service.BREAM.clones_index) then
-    -- for _, _staged_clone in pairs(mod_data.staged_clones) do
     for i, _staged_clone in pairs(mod_data.staged_clones[planet.string_val]) do
-      -- Log.warn("before")
-      -- Log.warn(_staged_clone)
-      -- Log.warn("after")
       local staged_clone = _staged_clone.obj
       local mod_name = _staged_clone.mod_name
 
@@ -1175,7 +905,7 @@ locals.do_mod_nth_tick = function (more_enemies_data, mod_data, planet)
         if (mod_name and mod_name == BREAM_Constants.name) then
           if (staged_clone and staged_clone.valid) then
             if (not spawn_service.BREAM.unit_group) then
-              Log.warn("creating unit group from: " .. serpent.block(staged_clone))
+              Log.debug("creating unit group from: " .. serpent.block(staged_clone))
               spawn_service.BREAM.unit_group = staged_clone.surface.create_unit_group({ position = staged_clone.position, force = "enemy" })
             end
           end
@@ -1190,276 +920,205 @@ locals.do_mod_nth_tick = function (more_enemies_data, mod_data, planet)
   local j = 0
   local clones_per_tick = Settings_Service.get_clones_per_tick()
 
-  -- local _mod_staged_clone
-
   if (not mod_data.staged_clones) then mod_data.staged_clones = {} end
   if (not mod_data.staged_clones[spawn_service.BREAM.clones_index]) then spawn_service.BREAM.clones_index = nil end
 
-  -- spawn_service.BREAM.clones_index, _mod_staged_clone = next(mod_data.staged_clones, spawn_service.BREAM.clones_index)
-
-  -- if (not _mod_staged_clone or not spawn_service.BREAM.clones_index) then return end
-
   local unit_number = 1
 
-  -- for _, planet in pairs(Constants.DEFAULTS.planets) do
-    -- for i, _mod_staged_clone in pairs(mod_data.staged_clones) do
-    -- for _, _mod_staged_clone in pairs(mod_data.staged_clones) do
+  if (not mod_data.staged_clones[planet.string_val]) then mod_data.staged_clones[planet.string_val] = {} end
 
-    if (not mod_data.staged_clones[planet.string_val]) then mod_data.staged_clones[planet.string_val] = {} end
+  for _unit_number, _mod_staged_clone in pairs(mod_data.staged_clones[planet.string_val]) do
+    skip = false
 
-    for _unit_number, _mod_staged_clone in pairs(mod_data.staged_clones[planet.string_val]) do
-      skip = false
+    -- Log.info(i)
+    Log.info(_mod_staged_clone)
+    unit_number = _unit_number
+    local mod_stage_clone = _mod_staged_clone.obj
+    local surface_name = Constants.DEFAULTS.planets.nauvis.string_val
+    local mod_name = nil
 
-      -- Log.info(i)
-      Log.info(_mod_staged_clone)
-      unit_number = _unit_number
-      local mod_stage_clone = _mod_staged_clone.obj
-      local surface_name = Constants.DEFAULTS.planets.nauvis.string_val
-      local mod_name = nil
+    j = j + 1
 
-      j = j + 1
+    if (j > clones_per_tick / 1.5) then
+      Log.warn("Tried to clone more than the clone_per_tick limit; breaking inner loop")
+      return
+    end
 
-      -- if (j > clones_per_tick) then
-      if (j > clones_per_tick / 1.5) then
-        Log.warn("Tried to clone more than the clone_per_tick limit; breaking inner loop")
-        -- clone_overflow = clone_overflow + 1
-        -- break
+    if (not mod_stage_clone or not mod_stage_clone.valid or mod_stage_clone.surface.name ~= planet.string_val) then
+      Log.warn("mod_stage_clone is nil, invalid, or wrong planet for clone; skipping")
+      skip = true
+    else
+      surface_name = mod_stage_clone.surface.name
+      mod_name = _mod_staged_clone.mod_name
+    end
+
+    if (not skip) then
+      if (mod_data.clone[surface_name].count > max_num_modded_clones) then
+        Log.warn("Tried to clone more than the mod unit limit: " .. serpent.block(max_num_modded_clones))
+        Log.warn("Currently " .. serpent.block(more_enemies_data.clone[surface_name].unit) .. " unit clones")
         return
       end
 
-      if (not mod_stage_clone or not mod_stage_clone.valid or mod_stage_clone.surface.name ~= planet.string_val) then
-        Log.warn("mod_stage_clone is nil, invalid, or wrong planet for clone; skipping")
-        skip = true
+      Log.info(surface_name)
+      local bream_clone_units_setting = Settings_Service.get_BREAM_clone_units(surface_name)
+      Log.info("clone_unit_setting: " .. serpent.block(clone_unit_setting))
+      Log.info("clone_unit_group_setting: " .. serpent.block(clone_unit_group_setting))
 
-        -- unit_number = spawn_service.BREAM.clones_index
+      local clone_settings = {
+        unit = bream_clone_units_setting,
+        unit_group = bream_clone_units_setting,
+        type = unit_group and "unit-group" or "unit",
+      }
+
+      local clones = {}
+
+      Log.debug("mod added: Attempting to clone entity on planet " .. surface_name)
+      Log.info(clone_settings)
+      if (surface_name == Constants.DEFAULTS.planets.nauvis.string_val) then
+        clones = Spawn_Utils.clone_entity(
+          {
+            value = Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNITS.default_value
+          },
+          difficulty,
+          mod_stage_clone,
+          {
+            clone_settings = clone_settings,
+            tick = tick,
+            mod_name = mod_name,
+            surface = surface_name,
+          }
+        )
+      elseif (surface_name == Constants.DEFAULTS.planets.gleba.string_val) then
+        clones = Spawn_Utils.clone_entity(
+          {
+            value = Gleba_Settings_Constants.settings.CLONE_GLEBA_UNITS.default_value
+          },
+          difficulty,
+          mod_stage_clone,
+          {
+            clone_settings = clone_settings,
+            tick = tick,
+            mod_name = mod_name,
+            surface = surface_name,
+          }
+        )
       else
-        -- unit_number = mod_stage_clone.unit_number
-        surface_name = mod_stage_clone.surface.name
-        mod_name = _mod_staged_clone.mod_name
+        Log.warn("Planet is neither nauvis nor gleba\nPlanet is unsupported; making no changes")
+        return
       end
 
-      if (not skip) then
-        -- if (mod_data.clone.count > max_num_modded_clones) then
-        if (mod_data.clone[surface_name].count > max_num_modded_clones) then
-          Log.warn("Tried to clone more than the mod unit limit: " .. serpent.block(max_num_modded_clones))
-          -- Log.warn("Currently " .. serpent.block(more_enemies_data.clone.count) .. " clones")
-          -- Log.warn("Currently " .. serpent.block(more_enemies_data.clone.unit) .. " unit clones")
-          Log.warn("Currently " .. serpent.block(more_enemies_data.clone[surface_name].unit) .. " unit clones")
-          -- break
-          return
+      if (clones) then
+        j = j + #clones
+      end
+
+      Log.info("clones = " .. serpent.block(clones))
+
+      -- add the new clones to storage
+      if (clones and #clones > 0) then
+        if (mod_name and mod_name == BREAM_Constants.name) then
+          if (unit_group and unit_group.valid) then
+
+            Log.info("Getting selected_difficulty")
+            local selected_difficulty = difficulty.selected_difficulty
+            if (not selected_difficulty) then return end
+
+            local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(unit_group.surface.name)
+
+            Log.info("adding unit_group: " .. serpent.block(unit_group))
+
+            Log.info(unit_group.surface.name)
+
+            Log.info("before: " .. serpent.block(more_enemies_data.groups))
+
+            if (not more_enemies_data.groups[unit_group.surface.name]) then
+              more_enemies_data.groups[unit_group.surface.name] = {}
+            end
+
+            Log.info("after: " .. serpent.block(more_enemies_data.groups))
+
+            local loop_len = 1
+            local use_evolution_factor = Settings_Service.get_BREAM_use_evolution_factor(unit_group.surface.name)
+            local evolution_factor = 1
+
+            Log.info("use_evolution_factor = "  .. serpent.block(use_evolution_factor))
+            if (use_evolution_factor) then
+              evolution_factor = unit_group.force.get_evolution_factor()
+            end
+
+            if (selected_difficulty.value > 1) then
+              loop_len = math.floor((selected_difficulty.value + clone_unit_group_setting) * evolution_factor)
+            else
+              loop_len = math.floor((selected_difficulty.value * clone_unit_group_setting) * evolution_factor)
+            end
+            Log.info("loop_len: " .. serpent.block(loop_len))
+
+            if (not more_enemies_data.groups[unit_group.surface.name]) then more_enemies_data.groups[unit_group.surface.name] = {} end
+
+            more_enemies_data.groups[unit_group.surface.name][unit_group.unique_id] = Unit_Group_Data:new({
+              valid = true,
+              group = unit_group,
+              count = 0,
+              max_count = loop_len,
+              mod_name = BREAM_Constants.name,
+            })
+          end
         end
 
-        Log.info(surface_name)
-        local bream_clone_units_setting = Settings_Service.get_BREAM_clone_units(surface_name)
-        Log.info("clone_unit_setting: " .. serpent.block(clone_unit_setting))
-        Log.info("clone_unit_group_setting: " .. serpent.block(clone_unit_group_setting))
-
-        local clone_settings = {
-          unit = bream_clone_units_setting,
-          unit_group = bream_clone_units_setting,
-          type = unit_group and "unit-group" or "unit",
-        }
-
-        local clones = {}
-
-        Log.debug("mod added: Attempting to clone entity on planet " .. surface_name)
-        Log.info(clone_settings)
-        if (surface_name == Constants.DEFAULTS.planets.nauvis.string_val) then
-          clones = Spawn_Utils.clone_entity(
-            {
-              value = Nauvis_Settings_Constants.settings.CLONE_NAUVIS_UNITS.default_value
-            },
-            difficulty,
-            mod_stage_clone,
-            {
-              clone_settings = clone_settings,
-              tick = tick,
-              mod_name = mod_name,
-              surface = surface_name,
-            }
-          )
-        elseif (surface_name == Constants.DEFAULTS.planets.gleba.string_val) then
-          clones = Spawn_Utils.clone_entity(
-            {
-              value = Gleba_Settings_Constants.settings.CLONE_GLEBA_UNITS.default_value
-            },
-            difficulty,
-            mod_stage_clone,
-            {
-              clone_settings = clone_settings,
-              tick = tick,
-              mod_name = mod_name,
-              surface = surface_name,
-            }
-          )
-        else
-          Log.warn("Planet is neither nauvis nor gleba\nPlanet is unsupported; making no changes")
-          return
+        if (not mod_data.clones) then
+          mod_data.clones = {}
+        end
+        if (not mod_data.clones[surface_name]) then
+          mod_data.clones[surface_name] = {}
+          mod_data.clones[surface_name].unit = {}
+          mod_data.clones[surface_name].unit_group = {}
         end
 
-        if (clones) then
-          j = j + #clones
-        end
-
-        Log.info("clones = " .. serpent.block(clones))
-
-        -- add the new clones to storage
-        if (clones and #clones > 0) then
-          if (mod_name and mod_name == BREAM_Constants.name) then
-            if (unit_group and unit_group.valid) then
-
-              Log.info("Getting selected_difficulty")
-              local selected_difficulty = difficulty.selected_difficulty
-              if (not selected_difficulty) then return end
-
-              local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(unit_group.surface.name)
-
-              Log.info("adding unit_group: " .. serpent.block(unit_group))
-
-              Log.info(unit_group.surface.name)
-
-              Log.info("before: " .. serpent.block(more_enemies_data.groups))
-
-              if (not more_enemies_data.groups[unit_group.surface.name]) then
-                more_enemies_data.groups[unit_group.surface.name] = {}
-              end
-
-              Log.info("after: " .. serpent.block(more_enemies_data.groups))
-
-              local loop_len = 1
-              local use_evolution_factor = Settings_Service.get_BREAM_use_evolution_factor(unit_group.surface.name)
-              local evolution_factor = 1
-
-              Log.info("use_evolution_factor = "  .. serpent.block(use_evolution_factor))
-              if (use_evolution_factor) then
-                evolution_factor = unit_group.force.get_evolution_factor()
-              end
-
-              if (selected_difficulty.value > 1) then
-                loop_len = math.floor((selected_difficulty.value + clone_unit_group_setting) * evolution_factor)
-              else
-                loop_len = math.floor((selected_difficulty.value * clone_unit_group_setting) * evolution_factor)
-              end
-              Log.info("loop_len: " .. serpent.block(loop_len))
-
-              if (not more_enemies_data.groups[unit_group.surface.name]) then more_enemies_data.groups[unit_group.surface.name] = {} end
-
-              more_enemies_data.groups[unit_group.surface.name][unit_group.unique_id] = Unit_Group_Data:new({
-                valid = true,
-                group = unit_group,
-                count = 0,
-                max_count = loop_len,
-                mod_name = BREAM_Constants.name,
-              })
+        for k=1, #clones do
+          if (clones[k] and clones[k] ~= nil and clones[k].clone.valid) then
+            Log.debug("adding clone: " .. serpent.block(clones[k]))
+            local clone_data = Clone_Data:new({
+              obj = clones[k].clone,
+              type = unit_group and "unit-group" or "unit",
+              mod_name = clones[k].mod_name,
+              surface = clones[k].clone.surface,
+              valid = clones[k].clone.valid
+            })
+            if (unit_group) then
+              mod_data.clones[surface_name].unit_group[clones[k].clone.unit_number] = clone_data
+            else
+              mod_data.clones[surface_name].unit[clones[k].clone.unit_number] = clone_data
             end
           end
 
-          if (not mod_data.clones) then
-            mod_data.clones = {}
-          end
-          if (not mod_data.clones[surface_name]) then
-            mod_data.clones[surface_name] = {}
-            mod_data.clones[surface_name].unit = {}
-            mod_data.clones[surface_name].unit_group = {}
+          if (unit_group and unit_group.valid and unit_group.surface.name == clones[k].clone.surface.name) then
+            Log.debug("adding to unit_group")
+            unit_group.add_member(clones[k].clone)
           end
 
-          -- local k
-          for k=1, #clones do
-            if (clones[k] and clones[k] ~= nil and clones[k].clone.valid) then
-              Log.debug("adding clone: " .. serpent.block(clones[k]))
-              local clone_data = Clone_Data:new({
-                obj = clones[k].clone,
-                type = unit_group and "unit-group" or "unit",
-                mod_name = clones[k].mod_name,
-                surface = clones[k].clone.surface,
-                valid = clones[k].clone.valid
-              })
-              if (unit_group) then
-                -- more_enemies_data.clones[surface_name].unit_group[clones[k].clone.unit_number] = clone_data
-                mod_data.clones[surface_name].unit_group[clones[k].clone.unit_number] = clone_data
-              else
-                -- more_enemies_data.clones[surface_name].unit[clones[k].clone.unit_number] = clone_data
-                mod_data.clones[surface_name].unit[clones[k].clone.unit_number] = clone_data
-              end
-            end
+          clones[k] = nil
 
-            if (unit_group and unit_group.valid and unit_group.surface.name == clones[k].clone.surface.name) then
-              Log.debug("adding to unit_group")
-              unit_group.add_member(clones[k].clone)
-            end
-
-            clones[k] = nil
-
-            -- if (mod_data.clone.count < 0) then mod_data.clone.count = 0 end
-
-            -- mod_data.clone.count = mod_data.clone.count + 1
-            mod_data.clone[surface_name].count = mod_data.clone[surface_name].count + 1
-          end
+          mod_data.clone[surface_name].count = mod_data.clone[surface_name].count + 1
         end
-
-        -- mod_data.clone.count = table_size(mod_data.clones[surface_name].unit_group) + table_size(mod_data.clones[surface_name].unit)
-
-        if (not mod_data.clone[surface_name]) then mod_data.clone[surface_name] = {} end
-        if (mod_data.clone[surface_name].count == nil) then mod_data.clone[surface_name].count = 0 end
-
-        Log.info("unit_group: " .. table_size(mod_data.clones[surface_name].unit_group))
-        Log.info("unit: " .. table_size(mod_data.clones[surface_name].unit))
-
-        -- Log.error(mod_data.clones[surface_name].unit_group)
-        -- Log.error(mod_data.clones[surface_name].unit)
-        mod_data.clone[surface_name].count = table_size(mod_data.clones[surface_name].unit_group) + table_size(mod_data.clones[surface_name].unit)
-
-        -- if (unit_group and unit_group.valid) then
-        --   local target_entity = unit_group.surface.find_nearest_enemy({
-        --     position = unit_group.position,
-        --     max_distance = 111111, -- TODO: Make this configurable
-        --     force = "enemy"
-        --   })
-
-        --   Log.warn(target_entity)
-
-        --   if (target_entity) then
-        --     unit_group.set_command({
-        --       type = defines.command.attack_area,
-        --       destination = target_entity.position,
-        --       radius = 1111, -- TODO: Make this configurable
-        --     })
-        --     Log.warn("releasing from spawner")
-        --     unit_group.release_from_spawner()
-        --     Log.error("start moving")
-        --     unit_group.start_moving()
-        --   else
-        --     Log.warn("no target; destroying")
-        --     unit_group.destroy()
-        --   end
-
-        --   if (not more_enemies_data.groups[unit_group.surface.name]) then more_enemies_data.groups[unit_group.surface.name] = {} end
-
-        --   -- remove the unit_group after processing
-        --   spawn_service.BREAM.unit_group = nil
-        --   more_enemies_data.groups[unit_group.surface.name][unit_group.unique_id] = nil
-        -- end
-
-        -- remove the staged_clone after processing
-        -- if (unit_number) then
-        --   -- mod_data.staged_clones[unit_number] = nil
-        --   mod_data.staged_clones[surface_name][unit_number] = nil
-        -- end
-        -- -- if (mod_data.staged_clone[surface_name].count and mod_data.staged_clone[surface_name].count > 0) then mod_data.staged_clone[surface_name].count = mod_data.staged_clone[surface_name].count - 1 end
-        -- if (mod_data.staged_clone[surface_name].count and mod_data.staged_clone[surface_name].count > 0) then table_size(mod_data.staged_clones[surface_name]) end
       end
 
-      if (unit_number) then
-        if (unit_number == 1) then
-          unit_number = next(mod_data.staged_clones[surface_name], nil)
-        end
+      if (not mod_data.clone[surface_name]) then mod_data.clone[surface_name] = {} end
+      if (mod_data.clone[surface_name].count == nil) then mod_data.clone[surface_name].count = 0 end
 
-        -- if (mod_data.staged_clones[surface_name][unit_number]) then mod_data.staged_clones[surface_name][unit_number] = nil end
-        if (unit_number and mod_data.staged_clones[surface_name][unit_number]) then mod_data.staged_clones[surface_name][unit_number] = nil end
-      end
-      if (mod_data.staged_clone[surface_name].count and mod_data.staged_clone[surface_name].count > 0) then mod_data.staged_clone[surface_name].count = table_size(mod_data.staged_clones[surface_name]) end
+      Log.info("unit_group: " .. table_size(mod_data.clones[surface_name].unit_group))
+      Log.info("unit: " .. table_size(mod_data.clones[surface_name].unit))
+
+      mod_data.clone[surface_name].count = table_size(mod_data.clones[surface_name].unit_group) + table_size(mod_data.clones[surface_name].unit)
     end
-  -- end
+
+    if (unit_number) then
+      if (unit_number == 1) then
+        unit_number = next(mod_data.staged_clones[surface_name], nil)
+      end
+
+      if (unit_number and mod_data.staged_clones[surface_name][unit_number]) then mod_data.staged_clones[surface_name][unit_number] = nil end
+    end
+    if (mod_data.staged_clone[surface_name].count and mod_data.staged_clone[surface_name].count > 0) then mod_data.staged_clone[surface_name].count = table_size(mod_data.staged_clones[surface_name]) end
+  end
 
   Log.debug("before unit_group")
 
@@ -1496,12 +1155,6 @@ locals.do_mod_nth_tick = function (more_enemies_data, mod_data, planet)
   end
 
   Log.debug("after unit_group")
-
-  -- if (unit_number) then
-  --   if (mod_data.staged_clones[surface_name][unit_number]) then mod_data.staged_clones[surface_name][unit_number] = nil end
-  -- end
-  -- if (mod_data.staged_clone[surface_name].count and mod_data.staged_clone[surface_name].count > 0) then mod_data.staged_clone[surface_name].count = table_size(mod_data.staged_clones[surface_name]) end
-
 end
 
 spawn_service.more_enemies = true
