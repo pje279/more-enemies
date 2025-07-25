@@ -18,8 +18,8 @@ local spawn_utils = {}
 local locals = {}
 
 function spawn_utils.duplicate_unit_group(group)
-  Log.error("spawn.duplicate_unit_group")
-  Log.warn(group)
+  Log.debug("spawn.duplicate_unit_group")
+  Log.info(group)
 
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
