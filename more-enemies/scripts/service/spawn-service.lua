@@ -125,7 +125,6 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
         Log.debug("7")
 
         local skip = false
-        -- local continued = false
 
         -- Log.info(i)
         Log.info(_staged_clone)

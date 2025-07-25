@@ -79,9 +79,7 @@ function more_enemies_repository.get_more_enemies_data(optionals)
     more_enemies_repository.save_more_enemies_data()
   end
 
-  -- if (storage.more_enemies.version_data:to_string() ~= return_val.version_data:to_string()) then
   if (storage.more_enemies.version_data.string_val ~= Version_Data:to_string()) then
-  -- if (storage.more_enemies.version_data.string_val ~= return_val.version_data.string_val) then
     storage.more_enemies.valid = false
   end
 

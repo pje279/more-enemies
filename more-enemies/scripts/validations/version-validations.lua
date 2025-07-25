@@ -3,7 +3,6 @@ if (_version_validations and _version_validations.more_enemies) then
   return _version_validations
 end
 
--- local Constants = require("libs.constants.constants")
 local Initialization = require("scripts.initialization")
 local Log = require("libs.log.log")
 local Version_Data = require("scripts.data.version-data")

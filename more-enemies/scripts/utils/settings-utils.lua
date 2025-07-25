@@ -4,7 +4,6 @@ if _settings_utils and _settings_utils.more_enemies then
 end
 
 local BREAM_Settings_Constants = require("libs.constants.settings.mods.BREAM.BREAM-settings-constants")
--- local Constants = require("libs.constants.constants")
 local Difficulty_Utils = require("scripts.utils.difficulty-utils")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Initialization = require("scripts.initialization")
