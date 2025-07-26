@@ -114,7 +114,6 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
         Log.info(spawn_service.entity_index)
         Log.info(spawn_service.entity_index[planet.string_val])
         Log.debug("6.2")
-        local _staged_clone = spawn_service.entity
         local _staged_clone = spawn_service.entity[planet.string_val]
         Log.info(_staged_clone)
 
