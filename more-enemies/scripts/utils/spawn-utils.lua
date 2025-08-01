@@ -340,13 +340,22 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
 end
 
 function locals.calc_evolution_multiplier(selected_difficulty, evolution_factor)
+  Log.debug("locals.calc_evolution_multiplier")
+  Log.info(selected_difficulty)
+  Log.info(evolution_factor)
+
   -- Validate inputs
   evolution_factor = evolution_factor or 0
   if (not selected_difficulty or not selected_difficulty.valid) then return evolution_factor end
 
   -- Calculate the evolution factor
+  -- [Old]
   -- https://www.wolframalpha.com/input?i=x%5E%28y%2F%28x%5E%28y%2Fx%29%29%29+*+%28y%5Ex%29
-  local value = ((selected_difficulty.value ^ (evolution_factor / (selected_difficulty.value ^ (evolution_factor / selected_difficulty.value)))) * (evolution_factor ^ selected_difficulty.value))
+
+  -- [Current]
+  -- https://www.wolframalpha.com/input?i=x%5E%28y%2F%28x%5E%28y%2Fx%29%29%29+*+y%2C+y%3D0+to+1
+  --  -> Replace 'x' in the equation with the selected difficulty to graph the corresponding curve
+  local value = ((selected_difficulty.value ^ (evolution_factor / (selected_difficulty.value ^ (evolution_factor / selected_difficulty.value)))) * evolution_factor)
   Log.debug("evolution multiplier: " .. value)
   return value
 end
