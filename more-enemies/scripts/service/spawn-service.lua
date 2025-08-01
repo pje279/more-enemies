@@ -618,6 +618,8 @@ function spawn_service.entity_died(event)
 
   Log.info("Attempting to remove entity")
 
+  if (not entity or not entity.valid) then return end
+
   if (more_enemies_data.clones[surface.name].unit[entity.unit_number] ~= nil
     or more_enemies_data.clones[surface.name].unit_group[entity.unit_number] ~= nil
     or mod_data.clones[surface.name].unit[entity.unit_number] ~= nil

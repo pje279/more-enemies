@@ -1,4 +1,20 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.6.1
+Date: 2025-08-01
+  Bug Fixes:
+    - Fixed evolution factor multiplier doing almost nothing, then spiking the amount of times entities are cloned after passing a certain point
+      i.e. Changed the evolution multiplier formula, where 'y' is the current evolution factor, and 'x' is the selected difficulty (Easy (0.1), Vanilla (1), Vanilla+ (1.75), Hard (4), Insanity (11)):
+      -> Old
+      -> https://www.wolframalpha.com/input?i=x%5E%28y%2F%28x%5E%28y%2Fx%29%29%29+*+%28y%5Ex%29%2C+y%3D0+to+1
+
+      -> Current
+      -> https://www.wolframalpha.com/input?i=x%5E%28y%2F%28x%5E%28y%2Fx%29%29%29+*+y%2C+y%3D0+to+1
+    Balance:
+      - Overall difficulty is higher now as a result of the above formula change
+      - Difficulty should be smoother though, rather than doing seemingly little to then going from 0 to 100 very rapidly
+      - Can be adjusted using the planet specific "unit spawn multiplier" settings
+        -> i.e. If too many spawns, set below 1 to reduce the amount of spawns
+---------------------------------------------------------------------------------------------------
 Version: 0.6.0
 Date: 2025-07-25
   Minor Features:
