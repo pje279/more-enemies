@@ -503,11 +503,37 @@ Test_Purge = {
                 }),
             }
 
+            more_enemies_data.clones[planet.string_val].unit = {
+                Clone_Data:new({
+                    obj = { name = "test-entity", valid = true },
+                    surface = { name = planet.string_val, valid = true },
+                    group = nil,
+                    mod_name = nil,
+                    valid = true
+                }),
+            }
+
+            more_enemies_data.clones[planet.string_val].unit_group = {
+                Clone_Data:new({
+                    obj = { name = "test-entity", valid = true },
+                    surface = { name = planet.string_val, valid = true },
+                    group = { valid = true },
+                    mod_name = nil,
+                    valid = true
+                }),
+            }
+
             more_enemies_data.staged_clone[planet.string_val].unit = 1
             more_enemies_data.staged_clone[planet.string_val].unit_group = 1
 
+            more_enemies_data.clone[planet.string_val].unit = 1
+            more_enemies_data.clone[planet.string_val].unit_group = 1
+
             lu.assert_not_nil(next(more_enemies_data.staged_clones[planet.string_val].unit), nil)
             lu.assert_not_nil(next(more_enemies_data.staged_clones[planet.string_val].unit_group), nil)
+
+            lu.assert_not_nil(next(more_enemies_data.clones[planet.string_val].unit), nil)
+            lu.assert_not_nil(next(more_enemies_data.clones[planet.string_val].unit_group), nil)
         end
 
 
@@ -516,11 +542,22 @@ Test_Purge = {
 
         -- Then
         for _, planet in pairs(Constants.DEFAULTS.planets) do
+            lu.assert_equals(more_enemies_data.clone[planet.string_val].unit, 0)
+            lu.assert_equals(more_enemies_data.clone[planet.string_val].unit_group, 0)
+
+            lu.assert_nil(next(more_enemies_data.clones[planet.string_val].unit), nil)
+            lu.assert_nil(next(more_enemies_data.clones[planet.string_val].unit_group), nil)
+
             lu.assert_equals(more_enemies_data.staged_clone[planet.string_val].unit, 0)
             lu.assert_equals(more_enemies_data.staged_clone[planet.string_val].unit_group, 0)
 
             lu.assert_nil(next(more_enemies_data.staged_clones[planet.string_val].unit), nil)
             lu.assert_nil(next(more_enemies_data.staged_clones[planet.string_val].unit_group), nil)
+
+            lu.assert_equals(more_enemies_data.mod.staged_clone[planet.string_val].count, 0)
+
+            lu.assert_nil(next(more_enemies_data.mod.staged_clones[planet.string_val].unit), nil)
+            lu.assert_nil(next(more_enemies_data.mod.staged_clones[planet.string_val].unit_group), nil)
         end
     end,
 }
