@@ -17,7 +17,6 @@ more_enemies_data.do_nth_tick = false
 more_enemies_data.groups = {}
 
 more_enemies_data.mod = Mod_Data:new()
-more_enemies_data.valid = true
 
 more_enemies_data.nth_tick_cleanup_complete = Nth_Tick_Data:new()
 more_enemies_data.nth_tick_cleanup_complete.valid = true
@@ -29,6 +28,8 @@ more_enemies_data.overflow_clone_attempts = Overflow_Clone_Attempts_Data:new()
 
 more_enemies_data.staged_clone = {}
 more_enemies_data.staged_clones = {}
+
+more_enemies_data.valid = true
 
 more_enemies_data.version_data = Version_Data:new()
 

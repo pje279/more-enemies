@@ -178,9 +178,14 @@ function init_difficulty(planet, difficulty_setting)
 end
 
 function create_difficulty(planet, selected_difficulty, vanilla)
-  modifier = modifier or 1
+  Log.debug("create_difficulty")
+  Log.info(planet)
+  Log.info(selected_difficulty)
+  Log.info(vanilla)
+
+  local modifier = modifier or 1
   if (modifier < 0) then modifier = 0 end
-  cooldown_modifier = cooldown_modifier or 1
+  local cooldown_modifier = cooldown_modifier or 1
   if (cooldown_modifier <= 0) then cooldown_modifier = 0.000001 end
 
   local difficulty = {

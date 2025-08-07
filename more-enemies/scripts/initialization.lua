@@ -9,9 +9,10 @@ local Difficulty_Data = require("scripts.data.difficulty-data")
 local Difficulty_Utils = require("scripts.utils.difficulty-utils")
 local Log = require("libs.log.log")
 local Log_Constants = require("libs.log.log-constants")
+local Mod_Data = require("scripts.data.mod-data")
 local More_Enemies_Data = require("scripts.data.more-enemies-data")
 local Nth_Tick_Data = require("scripts.data.nth-tick-data")
-local Overflow_Clone_Attempts_Data = require("scripts.data.overflow-clone-attempts-data")
+-- local Overflow_Clone_Attempts_Data = require("scripts.data.overflow-clone-attempts-data")
 local Version_Service = require("scripts.service.version-service")
 
 local initialization = {}
@@ -285,39 +286,51 @@ function locals.initialize(from_scratch)
     more_enemies_data = storage.more_enemies
   end
 
-  if (not more_enemies_data.mod) then more_enemies_data.mod = More_Enemies_Data.mod end
-  if (not more_enemies_data.mod.staged_clones) then more_enemies_data.mod.staged_clones = More_Enemies_Data.mod.staged_clones end
-  if (not more_enemies_data.mod.clone) then more_enemies_data.mod.clone = More_Enemies_Data.mod.clone end
+  if (not more_enemies_data.mod) then more_enemies_data.mod = Mod_Data:new({ valid = true}) end
+  if (not more_enemies_data.mod.staged_clone) then more_enemies_data.mod.staged_clone = {} end
+  if (not more_enemies_data.mod.staged_clones) then more_enemies_data.mod.staged_clones = {} end
+  if (not more_enemies_data.mod.clone) then more_enemies_data.mod.clone = {} end
+  if (not more_enemies_data.mod.clones) then more_enemies_data.mod.clones = {} end
 
   for _, planet in pairs(Constants.DEFAULTS.planets) do
-    if (not more_enemies_data.mod.staged_clone) then more_enemies_data.mod.staged_clone = {} end
     if (not more_enemies_data.mod.staged_clone[planet.string_val]) then more_enemies_data.mod.staged_clone[planet.string_val] = {} end
     if (more_enemies_data.mod.staged_clone[planet.string_val].count == nil) then more_enemies_data.mod.staged_clone[planet.string_val].count = 0 end
 
     if (not more_enemies_data.mod.staged_clones[planet.string_val]) then more_enemies_data.mod.staged_clones[planet.string_val] = {} end
+    if (not more_enemies_data.mod.staged_clones[planet.string_val].unit) then more_enemies_data.mod.staged_clones[planet.string_val].unit = {} end
+    if (not more_enemies_data.mod.staged_clones[planet.string_val].unit_group) then more_enemies_data.mod.staged_clones[planet.string_val].unit_group = {} end
 
-    if (not more_enemies_data.mod.clones) then more_enemies_data.mod.clones = {} end
+    if (not more_enemies_data.mod.clone[planet.string_val]) then more_enemies_data.mod.clone[planet.string_val] = {} end
+    if (more_enemies_data.mod.clone[planet.string_val].count == nil) then more_enemies_data.mod.clone[planet.string_val].count = 0 end
+
     if (not more_enemies_data.mod.clones[planet.string_val]) then more_enemies_data.mod.clones[planet.string_val] = {} end
     if (not more_enemies_data.mod.clones[planet.string_val].unit) then more_enemies_data.mod.clones[planet.string_val].unit = {} end
     if (not more_enemies_data.mod.clones[planet.string_val].unit_group) then more_enemies_data.mod.clones[planet.string_val].unit_group = {} end
 
-    if (not more_enemies_data.clones) then more_enemies_data.clones = {} end
-    if (not more_enemies_data.clones[planet.string_val]) then more_enemies_data.clones[planet.string_val] = {} end
-    if (not more_enemies_data.clones[planet.string_val].unit) then more_enemies_data.clones[planet.string_val].unit = {} end
-    if (not more_enemies_data.clones[planet.string_val].unit_group) then more_enemies_data.clones[planet.string_val].unit_group = {} end
+    if (not more_enemies_data.staged_clone) then more_enemies_data.staged_clone = {} end
+    if (not more_enemies_data.staged_clone[planet.string_val]) then more_enemies_data.staged_clone[planet.string_val] = {} end
+    if (more_enemies_data.staged_clone[planet.string_val].unit == nil) then more_enemies_data.staged_clone[planet.string_val].unit = 0 end
+    if (more_enemies_data.staged_clone[planet.string_val].unit_group == nil) then more_enemies_data.staged_clone[planet.string_val].unit_group = 0 end
+
     if (not more_enemies_data.staged_clones) then more_enemies_data.staged_clones = More_Enemies_Data.staged_clones end
     if (not more_enemies_data.staged_clones[planet.string_val]) then more_enemies_data.staged_clones[planet.string_val] = {} end
     if (not more_enemies_data.staged_clones[planet.string_val].unit) then more_enemies_data.staged_clones[planet.string_val].unit = {} end
     if (not more_enemies_data.staged_clones[planet.string_val].unit_group) then more_enemies_data.staged_clones[planet.string_val].unit_group = {} end
+
     if (not more_enemies_data.clone) then more_enemies_data.clone = More_Enemies_Data.clone end
     if (not more_enemies_data.clone[planet.string_val]) then more_enemies_data.clone[planet.string_val] = {} end
     if (more_enemies_data.clone[planet.string_val].unit == nil) then more_enemies_data.clone[planet.string_val].unit = 0 end
     if (more_enemies_data.clone[planet.string_val].unit_group == nil) then more_enemies_data.clone[planet.string_val].unit_group = 0 end
 
+    if (not more_enemies_data.clones) then more_enemies_data.clones = {} end
+    if (not more_enemies_data.clones[planet.string_val]) then more_enemies_data.clones[planet.string_val] = {} end
+    if (not more_enemies_data.clones[planet.string_val].unit) then more_enemies_data.clones[planet.string_val].unit = {} end
+    if (not more_enemies_data.clones[planet.string_val].unit_group) then more_enemies_data.clones[planet.string_val].unit_group = {} end
   end
 
-  if (more_enemies_data) then
+  more_enemies_data.mod.valid = true
 
+  if (more_enemies_data) then
     local version_data = more_enemies_data.version_data
     if (not version_data.valid) then
       return locals.initialize(true)
@@ -329,7 +342,7 @@ function locals.initialize(from_scratch)
       end
     end
 
-    more_enemies_data.overflow_clone_attempts = Overflow_Clone_Attempts_Data:new({ valid = true })
+    -- more_enemies_data.overflow_clone_attempts = Overflow_Clone_Attempts_Data:new({ valid = true })
     more_enemies_data.nth_tick_complete = Nth_Tick_Data:new({ valid = true })
     more_enemies_data.nth_tick_cleanup_complete = Nth_Tick_Data:new({ valid = true })
   end
@@ -350,9 +363,10 @@ function locals.initialize(from_scratch)
   elseif (not settings.global) then
     Log.error("setting.global is nil")
     error("setting.global is nil")
-  elseif (not settings.global[Log_Constants.DEBUG_LEVEL.name]) then
-    Log.error("settings.global[Log_Constants.DEBUG_LEVEL.name] is nil")
-    error("settings.global[Log_Constants.DEBUG_LEVEL.name] is nil")
+  -- elseif (not settings.global[Log_Constants.DEBUG_LEVEL.name]) then
+  elseif (not settings.global[Log_Constants.settings.DEBUG_LEVEL.name]) then
+    Log.error("settings.global[Log_Constants.settings.DEBUG_LEVEL.name] is nil")
+    error("settings.global[Log_Constants.settings.DEBUG_LEVEL.name] is nil")
   end
 
   if (game) then
