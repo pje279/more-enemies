@@ -14,7 +14,7 @@ gleba_settings_constants.settings.CLONE_GLEBA_UNITS = {
     type = "double-setting",
     name = "more-enemies-clone-gleba-units",
     setting_type = "runtime-global",
-    order = "dab",
+    order = "dba",
     default_value = 1,
     maximum_value = 11, -- This one goes up to eleven
     minimum_value = 0,
@@ -24,7 +24,7 @@ gleba_settings_constants.settings.CLONE_GLEBA_UNIT_GROUPS = {
     type = "double-setting",
     name = "more-enemies-clone-gleba-unit-groups",
     setting_type = "runtime-global",
-    order = "dac",
+    order = "dbb",
     default_value = 1,
     maximum_value = 11, -- This one goes up to eleven
     minimum_value = 0,
@@ -64,7 +64,15 @@ gleba_settings_constants.settings.GLEBA_DO_EVOLUTION_FACTOR = {
     type = "bool-setting",
     name = "more-enemies-gleba-do-evolution-factor",
     setting_type = "runtime-global",
-    order = "cab",
+    order = "cba",
+    default_value = true,
+}
+
+gleba_settings_constants.settings.GLEBA_DO_ATTACK_GROUP = {
+    type = "bool-setting",
+    name = "more-enemies-gleba-do-attack-group",
+    setting_type = "runtime-global",
+    order = "cbb",
     default_value = true,
 }
 

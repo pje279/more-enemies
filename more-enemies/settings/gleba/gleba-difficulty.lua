@@ -4,4 +4,5 @@ data:extend({
   -- { Difficulty } --
   Gleba_Settings_Constants.settings.GLEBA_DIFFICULTY,
   Gleba_Settings_Constants.settings.GLEBA_DO_EVOLUTION_FACTOR,
+  Gleba_Settings_Constants.settings.GLEBA_DO_ATTACK_GROUP,
 })

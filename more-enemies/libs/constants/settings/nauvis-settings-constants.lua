@@ -14,7 +14,7 @@ nauvis_settings_constants.settings.CLONE_NAUVIS_UNITS = {
   type = "double-setting",
   name = "more-enemies-clone-nauvis-units",
   setting_type = "runtime-global",
-  order = "cac",
+  order = "daa",
   default_value = 1,
   maximum_value = 11, -- This one goes up to eleven
   minimum_value = 0,
@@ -24,7 +24,7 @@ nauvis_settings_constants.settings.CLONE_NAUVIS_UNIT_GROUPS = {
   type = "double-setting",
   name = "more-enemies-clone-gleba-nauvis-groups",
   setting_type = "runtime-global",
-  order = "cad",
+  order = "dab",
   default_value = 1,
   maximum_value = 11, -- This one goes up to eleven
   minimum_value = 0,
@@ -65,6 +65,14 @@ nauvis_settings_constants.settings.NAUVIS_DO_EVOLUTION_FACTOR = {
   name = "more-enemies-nauvis-do-evolution-factor",
   setting_type = "runtime-global",
   order = "caa",
+  default_value = true,
+}
+
+nauvis_settings_constants.settings.NAUVIS_DO_ATTACK_GROUP = {
+  type = "bool-setting",
+  name = "more-enemies-nauvis-do-attack-group",
+  setting_type = "runtime-global",
+  order = "cab",
   default_value = true,
 }
 

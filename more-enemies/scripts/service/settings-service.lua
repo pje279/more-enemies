@@ -244,6 +244,23 @@ function settings_service.get_short_request_max_steps()
   return setting
 end
 
+-- NAUVIS_DO_ATTACK_GROUP
+-- GLEBA_DO_ATTACK_GROUP
+function settings_service.get_do_attack_group(surface_name)
+  local setting = false
+
+  if (  surface_name == Constants.DEFAULTS.planets.nauvis.string_val
+    and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_ATTACK_GROUP.name])
+  then
+    setting = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_ATTACK_GROUP.name].value
+  elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
+        and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_ATTACK_GROUP.name]) then
+    setting = settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_ATTACK_GROUP.name].value
+  end
+
+  return setting
+end
+
 --[[
       BREAM
   ]]
