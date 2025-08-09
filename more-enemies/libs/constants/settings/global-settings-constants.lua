@@ -140,6 +140,24 @@ global_settings_constants.settings.MAXIMUM_NUMBER_OF_MODDED_CLONES = {
   minimum_value = 0,
 }
 
+global_settings_constants.settings.MAXIMUM_ATTACK_GROUP_DELAY = {
+  type = "int-setting",
+  name = "more-enemies-maximum-attack-group-delay",
+  setting_type = "runtime-global",
+  order = "efa",
+  default_value = 1800,
+  minimum_value = 0,
+}
+
+global_settings_constants.settings.MINIMUM_ATTACK_GROUP_DELAY = {
+  type = "int-setting",
+  name = "more-enemies-minimum-attack-group-delay",
+  setting_type = "runtime-global",
+  order = "efb",
+  default_value = 900,
+  minimum_value = 0,
+}
+
 global_settings_constants.more_enemies = true
 
 local _global_settings_constants = global_settings_constants

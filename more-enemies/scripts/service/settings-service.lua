@@ -244,6 +244,28 @@ function settings_service.get_short_request_max_steps()
   return setting
 end
 
+-- MINIMUM_ATTACK_GROUP_DELAY
+function settings_service.get_minimum_attack_group_delay()
+  local setting = Global_Settings_Constants.settings.MINIMUM_ATTACK_GROUP_DELAY.default_value
+
+  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MINIMUM_ATTACK_GROUP_DELAY.name]) then
+    setting = settings.global[Global_Settings_Constants.settings.MINIMUM_ATTACK_GROUP_DELAY.name].value
+  end
+
+  return setting
+end
+
+-- MAXIMUM_ATTACK_GROUP_DELAY
+function settings_service.get_maximum_attack_group_delay()
+  local setting = Global_Settings_Constants.settings.MAXIMUM_ATTACK_GROUP_DELAY.default_value
+
+  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAXIMUM_ATTACK_GROUP_DELAY.name]) then
+    setting = settings.global[Global_Settings_Constants.settings.MAXIMUM_ATTACK_GROUP_DELAY.name].value
+  end
+
+  return setting
+end
+
 -- NAUVIS_DO_ATTACK_GROUP
 -- GLEBA_DO_ATTACK_GROUP
 function settings_service.get_do_attack_group(surface_name)

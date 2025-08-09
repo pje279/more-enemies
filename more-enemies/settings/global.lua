@@ -16,6 +16,11 @@ data:extend({
   Global_Settings_Constants.settings.NTH_TICK.setting,
 })
 
+data:extend({
+  Global_Settings_Constants.settings.MINIMUM_ATTACK_GROUP_DELAY,
+  Global_Settings_Constants.settings.MAXIMUM_ATTACK_GROUP_DELAY,
+})
+
 if (mods and (mods["BREAM"])) then
   data:extend({
     Global_Settings_Constants.settings.MAXIMUM_NUMBER_OF_MODDED_CLONES,
