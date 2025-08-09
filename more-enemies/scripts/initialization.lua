@@ -3,6 +3,7 @@ if _initialization and _initialization.more_enemies then
   return _initialization
 end
 
+local Attack_Group_Repository = require("scripts.repositories.attack-group-repository")
 local Constants = require("libs.constants.constants")
 local Entity_Validations = require("scripts.validations.entity-validations")
 local Difficulty_Data = require("scripts.data.difficulty-data")
@@ -12,12 +13,11 @@ local Log_Constants = require("libs.log.log-constants")
 local Mod_Data = require("scripts.data.mod-data")
 local More_Enemies_Data = require("scripts.data.more-enemies-data")
 local Nth_Tick_Data = require("scripts.data.nth-tick-data")
--- local Overflow_Clone_Attempts_Data = require("scripts.data.overflow-clone-attempts-data")
 local Version_Service = require("scripts.service.version-service")
 
 local initialization = {}
 
-initialization.reset = nil
+initialization.last_version_result = nil
 
 local locals = {}
 
@@ -254,17 +254,42 @@ function initialization.purge(optionals)
   end
 end
 
-function locals.initialize(from_scratch)
+function locals.initialize(from_scratch, maintain_existing_peace)
   if (not storage.more_enemies) then storage.more_enemies = More_Enemies_Data:new() end
   local more_enemies_data = storage.more_enemies
 
   storage.more_enemies.do_nth_tick = false
 
   from_scratch = from_scratch or false
+  maintain_existing_peace = maintain_existing_peace or false
 
   local do_purge = function ()
     if (storage and storage.more_enemies and (storage.more_enemies.clones or storage.more_enemies.staged_clones)) then
       initialization.purge()
+    end
+  end
+
+  if (not from_scratch) then
+    -- Version check
+    local version_data = more_enemies_data.version_data
+    if (version_data and not version_data.valid) then
+      local version = initialization.last_version_result
+      if (not version) then goto initialize end
+      if (not version.major or not version.minor or not version.bug_fix) then goto initialize end
+      if (not version.major.valid) then goto initialize end
+      if (not version.minor.valid or not version.bug_fix.valid) then
+        return locals.initialize(true, true)
+      end
+
+      ::initialize::
+      return locals.initialize(true)
+    else
+      local version = Version_Service.validate_version()
+      initialization.last_version_result = version
+      if (not version or not version.valid) then
+        version_data.valid = false
+        return more_enemies_data
+      end
     end
   end
 
@@ -273,9 +298,17 @@ function locals.initialize(from_scratch)
     if (game) then game.print("more-enemies: Initializing anew") end
     do_purge()
 
+    local _storage = storage
+    _storage.storage_old = nil
+
     storage = {}
     more_enemies_data = More_Enemies_Data:new()
     storage.more_enemies = more_enemies_data
+
+    storage.storage_old = _storage
+
+    -- do migrations
+    locals.migrate(maintain_existing_peace)
 
     local version_data = more_enemies_data.version_data
     version_data.valid = true
@@ -416,6 +449,33 @@ function locals.initialize(from_scratch)
   Log.info(storage)
 
   return more_enemies_data
+end
+
+function locals.migrate(maintain_existing_peace)
+    Log.debug("migrate")
+    Log.info(maintain_existing_peace)
+
+    if (maintain_existing_peace) then
+        local storage_old = storage.storage_old
+        if (not type(storage_old) == "table") then return end
+
+
+        for _, planet in pairs(Constants.DEFAULTS.planets) do
+            if (game and game.surfaces and game.surfaces[planet.string_val] and game.surfaces[planet.string_val].valid) then
+                -- local attack_group_data = Attack_Group_Repository.get_attack_group_data(planet.string_val)
+
+                if (storage_old.more_enemies.attack_group and storage_old.more_enemies.attack_group[planet.string_val]) then
+                    local attack_group_data_old = storage_old.more_enemies.attack_group[planet.string_val]
+
+                    if (type(attack_group_data_old) == "table" and attack_group_data_old.surface and attack_group_data_old.surface.valid) then
+                        Attack_Group_Repository.update_attack_group_data(attack_group_data_old)
+                    end
+
+                    storage_old.more_enemies.attack_group[planet.string_val] = nil
+                end
+            end
+        end
+    end
 end
 
 initialization.more_enemies = true

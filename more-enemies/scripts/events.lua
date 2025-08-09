@@ -1,7 +1,5 @@
--- local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Log = require("libs.log.log")
 local Planet_Controller = require("scripts.controller.planet-controller")
--- local Initialization = require("scripts.initialization")
 local Settings_Controller = require("scripts.controller.settings-controller")
 local Spawn_Controller = require("scripts.controller.spawn-controller")
 local Unit_Group_Controller = require("scripts.controller.unit-group-controller")

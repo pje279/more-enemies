@@ -21,7 +21,6 @@ function planet_service.on_surface_created(event)
   local surface = game.get_surface(event.surface_index)
   if (not surface or not surface.valid) then return end
 
---   local planets = Constants.get_planets(true)
   local planets = Constants.DEFAULTS.planets
   local valid_planet = false
   for _, v in pairs(planets) do

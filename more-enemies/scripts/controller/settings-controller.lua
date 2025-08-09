@@ -18,6 +18,9 @@ local locals = {}
 local settings_controller = {}
 
 function settings_controller.mod_setting_changed(event)
+    Log.debug("settings_controller.mod_setting_changed")
+    Log.info(event)
+
     if (event and event.setting) then
         if ( event.setting == Gleba_Settings_Constants.settings.CLONE_GLEBA_UNITS.name
             or event.setting == Gleba_Settings_Constants.settings.CLONE_GLEBA_UNIT_GROUPS.name)
