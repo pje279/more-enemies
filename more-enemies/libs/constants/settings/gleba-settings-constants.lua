@@ -1,6 +1,6 @@
 -- If already defined, return
 if _gleba_settings_constants and _gleba_settings_constants.more_enemies then
-  return _gleba_settings_constants
+    return _gleba_settings_constants
 end
 
 local Constants = require("libs.constants.constants")
@@ -31,23 +31,23 @@ gleba_settings_constants.settings.CLONE_GLEBA_UNIT_GROUPS = {
 }
 
 gleba_settings_constants.settings.MAXIMUM_NUMBER_OF_SPAWNED_CLONES_GLEBA = {
-  type = "int-setting",
-  name = "more-enemies-maximum-number-of-spawned-clones-gleba",
-  setting_type = "runtime-global",
-  order = "dzd",
-  default_value = 400,
-  maximum_value = 111111,
-  minimum_value = 0,
+    type = "int-setting",
+    name = "more-enemies-maximum-number-of-spawned-clones-gleba",
+    setting_type = "runtime-global",
+    order = "dzd",
+    default_value = 400,
+    maximum_value = 111111,
+    minimum_value = 0,
 }
 
 gleba_settings_constants.settings.MAXIMUM_NUMBER_OF_UNIT_GROUP_CLONES_GLEBA = {
-  type = "int-setting",
-  name = "more-enemies-maximum-number-of-unit-group-clones-gleba",
-  setting_type = "runtime-global",
-  order = "dze",
-  default_value = 400,
-  maximum_value = 111111,
-  minimum_value = 0,
+    type = "int-setting",
+    name = "more-enemies-maximum-number-of-unit-group-clones-gleba",
+    setting_type = "runtime-global",
+    order = "dze",
+    default_value = 400,
+    maximum_value = 111111,
+    minimum_value = 0,
 }
 
 -- { Difficulty } --
@@ -74,6 +74,15 @@ gleba_settings_constants.settings.GLEBA_DO_ATTACK_GROUP = {
     setting_type = "runtime-global",
     order = "cbb",
     default_value = true,
+}
+
+gleba_settings_constants.settings.GLEBA_ATTACK_GROUP_PEACE_TIME = {
+    type = "double-setting",
+    name = "more-enemies-gleba-attack-group-peace-time",
+    setting_type = "runtime-global",
+    order = "ccb",
+    default_value = 45,
+    minimum_value = 0,
 }
 
 -- { Small } --

@@ -5,4 +5,5 @@ data:extend({
   Nauvis_Settings_Constants.settings.NAUVIS_DIFFICULTY,
   Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR,
   Nauvis_Settings_Constants.settings.NAUVIS_DO_ATTACK_GROUP,
+  Nauvis_Settings_Constants.settings.NAUVIS_ATTACK_GROUP_PEACE_TIME,
 })
