@@ -1,11 +1,14 @@
+local Attack_Group_Data = require("scripts.data.attack-group-data")
 local Data = require("scripts.data.data")
 local Log = require("libs.log.log")
 local Mod_Data = require("scripts.data.mod-data")
 local Nth_Tick_Data = require("scripts.data.nth-tick-data")
 local Version_Data = require("scripts.data.version-data")
-local Overflow_Clone_Attempts_Data = require("scripts.data.overflow-clone-attempts-data")
+-- local Overflow_Clone_Attempts_Data = require("scripts.data.overflow-clone-attempts-data")
 
 local more_enemies_data = Data:new()
+
+more_enemies_data.attack_group = {}
 
 more_enemies_data.clones = {}
 more_enemies_data.clone = {}
@@ -24,7 +27,7 @@ more_enemies_data.nth_tick_cleanup_complete.valid = true
 more_enemies_data.nth_tick_complete = Nth_Tick_Data:new()
 more_enemies_data.nth_tick_complete.valid = true
 
-more_enemies_data.overflow_clone_attempts = Overflow_Clone_Attempts_Data:new()
+-- more_enemies_data.overflow_clone_attempts = Overflow_Clone_Attempts_Data:new()
 
 more_enemies_data.staged_clone = {}
 more_enemies_data.staged_clones = {}

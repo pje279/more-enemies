@@ -3,6 +3,8 @@ if _attack_group_service and _attack_group_service.more_enemies then
   return _attack_group_service
 end
 
+-- local Attack_Group_Data = require("scripts.data.attack-group-data")
+local Attack_Group_Repository = require("scripts.repositories.attack-group-repository")
 local Constants = require("libs.constants.constants")
 -- local Difficulty_Utils = require("scripts.utils.difficulty-utils")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
@@ -17,26 +19,75 @@ local attack_group_service = {}
 attack_group_service.attack_group = {}
 
 function attack_group_service.do_attack_group(planet)
+    Log.debug("attack_group_service.do_attack_group")
+    Log.info(planet)
+
+    -- Log.error("1")
+    if (not game or not game.surfaces) then return end
+    -- Log.error("2")
+    if (type(planet) ~= "table" or type(planet.string_val) ~= "string") then return end
+    local surface = game.surfaces[planet.string_val]
+    -- Log.error("3")
+    -- Log.error(surface)
+    if (not surface or not surface.valid) then return end
+    -- Log.error("4")
+
+    -- if (not attack_group_service.attack_group[planet.string_val]) then
+    --     local peace_time_tick = Settings_Service.get_attack_group_peace_time(planet.string_val) * Constants.time.TICKS_PER_MINUTE
+    --     if (type(peace_time_tick) ~= "number") then peace_time_tick = 0 end
+
+    --     -- attack_group_service.attack_group[planet.string_val] = {
+    --     --     unit_group = nil,
+    --     --     tick = 0 + peace_time_tick,
+    --     --     radius = 1,
+    --     --     chunks = {},
+    --     --     max_distance = {
+    --     --         pos_x = 0,
+    --     --         pos_y = 0,
+    --     --         neg_x = 0,
+    --     --         neg_y = 0,
+    --     --     }
+    --     -- }
+    --     attack_group_service.attack_group[planet.string_val] = Attack_Group_Data:new({ peace_time_tick = peace_time_tick })
+    -- end
+
+    -- if (attack_group_service.attack_group and attack_group_service.attack_group[planet.string_val] and attack_group_service.attack_group[planet.string_val].tick and game and game.tick >= attack_group_service.attack_group[planet.string_val].tick) then
 
     if (not attack_group_service.attack_group[planet.string_val]) then
-        local peace_time_tick = Settings_Service.get_attack_group_peace_time(planet.string_val) * Constants.time.TICKS_PER_MINUTE
-        if (type(peace_time_tick) ~= "number") then peace_time_tick = 0 end
+        local attack_group_data = Attack_Group_Repository.get_attack_group_data(planet.string_val)
+        if (not attack_group_data.peace_time_tick or attack_group_data.peace_time_tick == nil) then
+            local peace_time_tick = Settings_Service.get_attack_group_peace_time(planet.string_val) * Constants.time.TICKS_PER_MINUTE
+            if (type(attack_group_data.surface) == "table" and attack_group_data.surface.index == 1) then
+                attack_group_data.peace_time_tick = peace_time_tick
+                attack_group_data.tick = peace_time_tick
+            else
+                attack_group_data.peace_time_tick = peace_time_tick
+                attack_group_data.tick = attack_group_data.created + peace_time_tick
+            end
+        end
 
-        attack_group_service.attack_group[planet.string_val] = {
-            unit_group = nil,
-            tick = 0 + peace_time_tick,
-            radius = 1,
-            chunks = {},
-            max_distance = {
-                pos_x = 0,
-                pos_y = 0,
-                neg_x = 0,
-                neg_y = 0,
-            }
-        }
+        attack_group_service.attack_group[planet.string_val] = attack_group_data
     end
 
+
+    -- local attack_group_data = Attack_Group_Repository.get_attack_group_data(planet.string_val)
+    -- if (not attack_group_data.peace_time_tick or attack_group_data.peace_time_tick == nil) then
+    --     local peace_time_tick = Settings_Service.get_attack_group_peace_time(planet.string_val) * Constants.time.TICKS_PER_MINUTE
+    --     -- attack_group_data.peace_time_tick = peace_time_tick
+    --     if (type(attack_group_data.surface) == "table" and attack_group_data.surface.index == 1) then
+    --         attack_group_data.peace_time_tick = peace_time_tick
+    --         attack_group_data.tick = peace_time_tick
+    --     else
+    --         attack_group_data.peace_time_tick = peace_time_tick
+    --         attack_group_data.tick = attack_group_data.created + peace_time_tick
+    --     end
+    -- end
+
+    -- Log.error(attack_group_data)
+
+    -- if (attack_group_data and attack_group_data.tick and game and game.tick >= attack_group_data.tick) then
     if (attack_group_service.attack_group and attack_group_service.attack_group[planet.string_val] and attack_group_service.attack_group[planet.string_val].tick and game and game.tick >= attack_group_service.attack_group[planet.string_val].tick) then
+
       local surface = game.surfaces[planet.string_val]
         if (surface and surface.valid) then
 
@@ -48,8 +99,10 @@ function attack_group_service.do_attack_group(planet)
                 Log.error(planet.string_val)
                 Log.error(chunk)
                 Log.error(attack_group.radius)
+                -- Log.error(attack_group_data.radius)
 
                 local enemy = locals.get_enemy(surface, chunk, attack_group.radius)
+                -- local enemy = locals.get_enemy(surface, chunk, attack_group_data.radius)
                 if (enemy and enemy[1] and enemy[1].valid) then
                     Log.error(enemy)
                     local unit_group = surface.create_unit_group({ position = enemy[1].position})
@@ -65,6 +118,7 @@ function attack_group_service.do_attack_group(planet)
                         if (target_entity and target_entity.valid) then
 
                             attack_group.chunks[chunk.x][chunk.y].tick = game.tick + 3600
+                            -- attack_group_data.chunks[chunk.x][chunk.y].tick = game.tick + 3600
 
                             local x = enemy[1].position.x / 32
                             x = x - x % 1
@@ -82,11 +136,22 @@ function attack_group_service.do_attack_group(planet)
                             if (not attack_group.chunks[x][y]) then attack_group.chunks[x][y] = { tick = 0, count = 1 } end
                             attack_group.chunks[x][y].tick = game.tick + 18000
 
+                            -- if (x > 0 and x > attack_group_data.max_distance.pos_x) then attack_group_data.max_distance.pos_x = x end
+                            -- if (y > 0 and y > attack_group_data.max_distance.pos_y) then attack_group_data.max_distance.pos_y = y end
+
+                            -- if (x < 0 and x < attack_group_data.max_distance.neg_x) then attack_group_data.max_distance.neg_x = x end
+                            -- if (y < 0 and y < attack_group_data.max_distance.neg_y) then attack_group_data.max_distance.neg_y = y end
+
+                            -- if (not attack_group_data.chunks[x]) then attack_group_data.chunks[x] = {} end
+                            -- if (not attack_group_data.chunks[x][y]) then attack_group_data.chunks[x][y] = { tick = 0, count = 1 } end
+                            -- attack_group_data.chunks[x][y].tick = game.tick + 18000
+
                             Log.error("target_entity")
                             Log.error(target_entity)
 
                             -- Log.error(attack_group.chunks)
                             log(serpent.block(attack_group.chunks))
+                            -- log(serpent.block(attack_group_data.chunks))
 
                             if (target_entity and target_entity.valid) then
                                 unit_group.set_command({
@@ -106,6 +171,9 @@ function attack_group_service.do_attack_group(planet)
                             if (attack_group.radius > 2) then
                                 attack_group.radius = attack_group.radius / 2
                             end
+                            -- if (attack_group_data.radius > 2) then
+                            --     attack_group_data.radius = attack_group_data.radius / 2
+                            -- end
                         end
                     end
                 end
@@ -139,6 +207,10 @@ function attack_group_service.do_attack_group(planet)
                     attack_group.radius = 1.1 * attack_group.radius + 1
                 end
                 attack_group.tick = game.tick + delay
+                -- if (attack_group_data.radius < delay * difficulty_val) then
+                --     attack_group_data.radius = 1.1 * attack_group_data.radius + 1
+                -- end
+                -- attack_group_data.tick = game.tick + delay
             end
         end
     end
@@ -148,6 +220,11 @@ function locals.get_new_chunk(planet, chunk, depth)
     if (not planet or planet == nil) then return end
     if (not chunk or chunk == nil) then return end
     if (not depth or depth == nil) then depth = 1 end
+
+    if (depth > 12) then
+        Log.error("could not find a new chunk")
+        return
+    end
 
     local attack_group = attack_group_service.attack_group[planet.string_val]
     if (not attack_group) then return end
