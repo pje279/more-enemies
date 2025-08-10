@@ -67,7 +67,8 @@ function attack_group_service.do_attack_group(planet)
                         if (not spawner or spawner == nil) then goto finally end
                     end
 
-                    local evolution_factor = enemy[1].force.get_evolution_factor()
+                    -- local evolution_factor = enemy[1].force.get_evolution_factor()
+                    local evolution_factor = enemy[1].force.get_evolution_factor(enemy[1].surface)
 
                     -- local rand = math.random(0, 100)
                     -- rand = rand / 100
@@ -105,12 +106,16 @@ function attack_group_service.do_attack_group(planet)
                         -- enemy[1].ai_settings.join_attacks = true
 
                         -- unit_group.add_member(enemy[1])
+
+                        local limit = selected_difficulty.value + math.random(#enemy)
+
                         for k, v in pairs(enemy) do
                             v.release_from_spawner()
                             v.ai_settings.allow_try_return_to_spawner = false
                             v.ai_settings.join_attacks = true
                             unit_group.add_member(v)
-                            if (k >= selected_difficulty.value) then break end
+                            -- if (k >= selected_difficulty.value) then break end
+                            if (k >= limit) then break end
                         end
 
                         local target_entity = locals.get_target_entity(unit_group)
@@ -347,16 +352,23 @@ function locals.get_enemy(surface, chunk, radius, depth)
 
     local selected_difficulty = Constants.difficulty[Constants.difficulty.difficulties[Settings_Service.get_difficulty(surface.name)]]
 
+    -- local limit = math.random(selected_difficulty.value * selected_difficulty.value)
+    -- local limit = selected_difficulty.value + math.random(selected_difficulty.value * selected_difficulty.value)
+    local limit = selected_difficulty.value + (selected_difficulty.value * selected_difficulty.value)
+
     local enemy = surface.find_entities_filtered({
         position = { x = chunk.x * 32, y = chunk.y * 32 },
-        radius = 4 * radius,
+        -- radius = 4 * radius,
+        radius = 4 * radius * selected_difficulty.radius_modifier,
         name = Spawn_Constants.name,
         force = "enemy",
-        limit = 1 * selected_difficulty.value,
+        -- limit = 1 * selected_difficulty.value,
+        limit = limit,
     })
 
     if (not enemy or not enemy[1]) then
-        return locals.get_enemy(surface, chunk, 1.1 * radius + 1, depth + 1)
+        -- return locals.get_enemy(surface, chunk, 1.1 * radius + 1, depth + 1)
+        return locals.get_enemy(surface, chunk, 1.1 * radius + selected_difficulty.radius_modifier, depth + 1)
     end
 
     return enemy
@@ -370,9 +382,11 @@ function locals.get_target_entity(unit_group, radius, depth)
     if (depth > 12) then return end
 
     local names = {
+        "artillery-projectile",
         "fire-flame",
         "fire-flame-on-tree",
-        "artillery-projectile",
+        "fire-sticker",
+        "laser-beam"
     }
 
     if (script and script.active_mods and script.active_mods["NAS_Fork"]) then
@@ -387,6 +401,8 @@ function locals.get_target_entity(unit_group, radius, depth)
             "entity-ghost",
             "fire",
             "projectile",
+            "beam",
+            "sticker",
         },
         limit = 1,
         force = { "enemy", "neutral" },

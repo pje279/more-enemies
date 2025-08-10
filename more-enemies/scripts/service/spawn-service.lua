@@ -202,14 +202,23 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
 
           if (at_capacity > 2) then
             if (at_capacity > 3) then
-              more_enemies_data.do_nth_tick = false
-              return
+                Log.warn("at capacity")
+                more_enemies_data.do_nth_tick = false
+                -- return
+                if (not group or not group.valid or not group.is_script_driven) then
+                    Log.warn("at capacity - returning")
+                    return
+                end
             end
 
             if (clone_settings and clone_settings.type == "unit-group") then
               if (more_enemies_data.clone[planet.string_val].unit_group > max_num_unit_group_clones) then
                 Log.debug("unit_group: continuing")
-                goto continue
+
+                -- goto continue
+                if (not group or not group.valid or not group.is_script_driven) then
+                    goto continue
+                end
               end
             else
               if (more_enemies_data.clone[planet.string_val].unit > max_num_unit_clones) then
@@ -1048,7 +1057,8 @@ locals.do_mod_nth_tick = function (more_enemies_data, mod_data, planet)
 
             Log.info("use_evolution_factor = "  .. serpent.block(use_evolution_factor))
             if (use_evolution_factor) then
-              evolution_factor = unit_group.force.get_evolution_factor()
+            --   evolution_factor = unit_group.force.get_evolution_factor()
+              evolution_factor = unit_group.force.get_evolution_factor(unit_group.surface)
             end
 
             if (selected_difficulty.value > 1) then
