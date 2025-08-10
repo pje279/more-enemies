@@ -80,9 +80,27 @@ gleba_settings_constants.settings.GLEBA_ATTACK_GROUP_PEACE_TIME = {
     type = "double-setting",
     name = "more-enemies-gleba-attack-group-peace-time",
     setting_type = "runtime-global",
-    order = "ccb",
+    order = "cbd",
     default_value = 45,
     minimum_value = 0,
+}
+
+gleba_settings_constants.settings.GLEBA_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER = {
+    type = "double-setting",
+    name = "more-enemies-gleba-spawn-attack-group-probability-modifier",
+    setting_type = "runtime-global",
+    order = "cbe",
+    default_value = 1,
+    minimum_value = 0,
+    maximum_value = 1111,
+}
+
+gleba_settings_constants.settings.GLEBA_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER = {
+    type = "bool-setting",
+    name = "more-enemies-gleba-attack-group-require-nearby-spawner",
+    setting_type = "runtime-global",
+    order = "cbc",
+    default_value = true,
 }
 
 -- { Small } --

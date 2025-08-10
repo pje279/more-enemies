@@ -80,9 +80,27 @@ nauvis_settings_constants.settings.NAUVIS_ATTACK_GROUP_PEACE_TIME = {
     type = "double-setting",
     name = "more-enemies-nauvis-attack-group-peace-time",
     setting_type = "runtime-global",
-    order = "cca",
+    order = "cad",
     default_value = 45,
     minimum_value = 0,
+}
+
+nauvis_settings_constants.settings.NAUVIS_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER = {
+    type = "double-setting",
+    name = "more-enemies-nauvis-spawn-attack-group-probability-modifier",
+    setting_type = "runtime-global",
+    order = "cae",
+    default_value = 1,
+    minimum_value = 0,
+    maximum_value = 1111,
+}
+
+nauvis_settings_constants.settings.NAUVIS_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER = {
+    type = "bool-setting",
+    name = "more-enemies-nauvis-attack-group-require-nearby-spawner",
+    setting_type = "runtime-global",
+    order = "cac",
+    default_value = true,
 }
 
 -- { Biters } --

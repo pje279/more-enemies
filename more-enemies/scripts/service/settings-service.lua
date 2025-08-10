@@ -300,6 +300,40 @@ function settings_service.get_attack_group_peace_time(surface_name)
   return setting
 end
 
+-- NAUVIS_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER
+-- GLEBA_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER
+function settings_service.get_spawn_attack_group_probability_modifier(surface_name)
+  local setting = 1
+
+  if (  surface_name == Constants.DEFAULTS.planets.nauvis.string_val
+    and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.NAUVIS_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER.name])
+  then
+    setting = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER.name].value
+  elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
+        and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.GLEBA_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER.name]) then
+    setting = settings.global[Gleba_Settings_Constants.settings.GLEBA_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER.name].value
+  end
+
+  return setting
+end
+
+-- NAUVIS_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER
+-- GLEBA_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER
+function settings_service.get_attack_group_require_nearby_spawner(surface_name)
+  local setting = true
+
+  if (  surface_name == Constants.DEFAULTS.planets.nauvis.string_val
+    and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.NAUVIS_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER.name])
+  then
+    setting = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER.name].value
+  elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
+        and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.GLEBA_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER.name]) then
+    setting = settings.global[Gleba_Settings_Constants.settings.GLEBA_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER.name].value
+  end
+
+  return setting
+end
+
 --[[
       BREAM
   ]]

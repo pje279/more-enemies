@@ -6,4 +6,6 @@ data:extend({
   Nauvis_Settings_Constants.settings.NAUVIS_DO_EVOLUTION_FACTOR,
   Nauvis_Settings_Constants.settings.NAUVIS_DO_ATTACK_GROUP,
   Nauvis_Settings_Constants.settings.NAUVIS_ATTACK_GROUP_PEACE_TIME,
+  Nauvis_Settings_Constants.settings.NAUVIS_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER,
+  Nauvis_Settings_Constants.settings.NAUVIS_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER,
 })
