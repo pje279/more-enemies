@@ -80,8 +80,11 @@ function settings_service.get_max_unit_group_size_startup()
 
   local limit_startup = Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.default_value
 
-  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name]) then
-    limit_startup = settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name].value
+--   if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name]) then
+--     limit_startup = settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name].value
+--   end
+  if (settings and settings.startup and settings.startup[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name]) then
+    limit_startup = settings.startup[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name].value
   end
 
   return limit_startup
@@ -261,6 +264,17 @@ function settings_service.get_maximum_attack_group_delay()
 
   if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAXIMUM_ATTACK_GROUP_DELAY.name]) then
     setting = settings.global[Global_Settings_Constants.settings.MAXIMUM_ATTACK_GROUP_DELAY.name].value
+  end
+
+  return setting
+end
+
+-- ATTACK_GROUP_BLACKLIST_NAMES
+function settings_service.get_attack_group_blacklist_names()
+  local setting = Global_Settings_Constants.settings.ATTACK_GROUP_BLACKLIST_NAMES.default_value
+
+  if (settings and settings.startup and settings.startup[Global_Settings_Constants.settings.ATTACK_GROUP_BLACKLIST_NAMES.name]) then
+    setting = settings.startup[Global_Settings_Constants.settings.ATTACK_GROUP_BLACKLIST_NAMES.name].value
   end
 
   return setting

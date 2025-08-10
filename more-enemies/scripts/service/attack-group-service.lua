@@ -3,11 +3,13 @@ if _attack_group_service and _attack_group_service.more_enemies then
   return _attack_group_service
 end
 
+local Attack_Group_Constants = require("libs.constants.attack-group-constants")
 local Attack_Group_Repository = require("scripts.repositories.attack-group-repository")
 local Constants = require("libs.constants.constants")
 local Global_Settings_Constants = require("libs.constants.settings.global-settings-constants")
 local Log = require("libs.log.log")
 local Settings_Service = require("scripts.service.settings-service")
+local Settings_Utils = require("scripts.utils.settings-utils")
 local Spawn_Constants = require("libs.constants.spawn-constants")
 local Unit_Group_Utils = require("scripts.utils.unit-group-utils")
 
@@ -56,19 +58,20 @@ function attack_group_service.do_attack_group(planet)
                 Log.error(chunk)
                 Log.error(attack_group.radius)
 
-                local enemy = locals.get_enemy(surface, chunk, attack_group.radius)
-                if (enemy and enemy[1] and enemy[1].valid) then
-                    Log.error(enemy)
+                local enemies = locals.get_enemy(surface, chunk, attack_group.radius)
+                if (enemies and enemies[1] and enemies[1].valid) then
+                    Log.error(enemies)
 
                     if (Settings_Service.get_attack_group_require_nearby_spawner(planet.string_val)) then
-                        local spawner = Unit_Group_Utils.get_spawner(enemy[1], 32 * attack_group.radius, 1)
+                        -- local spawner = Unit_Group_Utils.get_spawner(enemies[1], 32 * attack_group.radius, 1)
+                        local spawner = Unit_Group_Utils.get_spawner(enemies[1], 4 * attack_group.radius, 1)
 
                         -- if (not spawner or spawner == nil) then return end
                         if (not spawner or spawner == nil) then goto finally end
                     end
 
                     -- local evolution_factor = enemy[1].force.get_evolution_factor()
-                    local evolution_factor = enemy[1].force.get_evolution_factor(enemy[1].surface)
+                    local evolution_factor = enemies[1].force.get_evolution_factor(enemies[1].surface)
 
                     -- local rand = math.random(0, 100)
                     -- rand = rand / 100
@@ -98,7 +101,7 @@ function attack_group_service.do_attack_group(planet)
                     end
                     Log.error("3")
 
-                    local unit_group = surface.create_unit_group({ position = enemy[1].position})
+                    local unit_group = surface.create_unit_group({ position = enemies[1].position})
                     if (unit_group and unit_group.valid) then
                         Log.error("4")
                         -- enemy[1].release_from_spawner()
@@ -107,9 +110,9 @@ function attack_group_service.do_attack_group(planet)
 
                         -- unit_group.add_member(enemy[1])
 
-                        local limit = selected_difficulty.value + math.random(#enemy)
+                        local limit = selected_difficulty.value + math.random(#enemies)
 
-                        for k, v in pairs(enemy) do
+                        for k, v in pairs(enemies) do
                             v.release_from_spawner()
                             v.ai_settings.allow_try_return_to_spawner = false
                             v.ai_settings.join_attacks = true
@@ -118,16 +121,17 @@ function attack_group_service.do_attack_group(planet)
                             if (k >= limit) then break end
                         end
 
-                        local target_entity = locals.get_target_entity(unit_group)
+                        -- local target_entity = locals.get_target_entity(unit_group)
+                        local target_entity = locals.get_target_entity(unit_group, attack_group.radius)
 
                         if (target_entity and target_entity.valid) then
 
                             attack_group.chunks[chunk.x][chunk.y].tick = game.tick + 3600
 
-                            local x = enemy[1].position.x / 32
+                            local x = enemies[1].position.x / 32
                             x = x - x % 1
 
-                            local y = enemy[1].position.y / 32
+                            local y = enemies[1].position.y / 32
                             y = y - y % 1
 
                             if (x > 0 and x > attack_group.max_distance.pos_x) then attack_group.max_distance.pos_x = x end
@@ -144,7 +148,7 @@ function attack_group_service.do_attack_group(planet)
                             Log.error(target_entity)
 
                             -- Log.error(attack_group.chunks)
-                            log(serpent.block(attack_group.chunks))
+                            -- log(serpent.block(attack_group.chunks))
 
                             if (target_entity and target_entity.valid) then
                                 unit_group.set_command({
@@ -352,65 +356,59 @@ function locals.get_enemy(surface, chunk, radius, depth)
 
     local selected_difficulty = Constants.difficulty[Constants.difficulty.difficulties[Settings_Service.get_difficulty(surface.name)]]
 
-    -- local limit = math.random(selected_difficulty.value * selected_difficulty.value)
-    -- local limit = selected_difficulty.value + math.random(selected_difficulty.value * selected_difficulty.value)
     local limit = selected_difficulty.value + (selected_difficulty.value * selected_difficulty.value)
 
-    local enemy = surface.find_entities_filtered({
+    local enemies = surface.find_entities_filtered({
         position = { x = chunk.x * 32, y = chunk.y * 32 },
-        -- radius = 4 * radius,
         radius = 4 * radius * selected_difficulty.radius_modifier,
         name = Spawn_Constants.name,
         force = "enemy",
-        -- limit = 1 * selected_difficulty.value,
         limit = limit,
     })
 
-    if (not enemy or not enemy[1]) then
-        -- return locals.get_enemy(surface, chunk, 1.1 * radius + 1, depth + 1)
+    if (not enemies or not enemies[1]) then
         return locals.get_enemy(surface, chunk, 1.1 * radius + selected_difficulty.radius_modifier, depth + 1)
     end
 
-    return enemy
+    return enemies
 end
 
 function locals.get_target_entity(unit_group, radius, depth)
     if (not unit_group or not unit_group.valid) then return end
+    if (not unit_group.surface or not unit_group.surface.valid) then return end
     if (not radius or radius == nil) then radius = 1 end
     if (not depth or depth == nil) then depth = 1 end
 
-    if (depth > 12) then return end
+    Log.error(depth)
 
-    local names = {
-        "artillery-projectile",
-        "fire-flame",
-        "fire-flame-on-tree",
-        "fire-sticker",
-        "laser-beam"
-    }
+    if (depth > 24) then return end
 
-    if (script and script.active_mods and script.active_mods["NAS_Fork"]) then
-        table.insert(names, "artillery-projectile-nuclear")
+    local names = {}
+    local blacklist_names = Settings_Utils.get_attack_group_blacklist_names()
+
+    if (blacklist_names) then
+        for _, v in pairs(blacklist_names) do
+            table.insert(names, v)
+        end
     end
+
+    local selected_difficulty = Constants.difficulty[Constants.difficulty.difficulties[Settings_Service.get_difficulty(unit_group.surface.name)]]
 
     local targets = unit_group.surface.find_entities_filtered({
         position = unit_group.position,
-        radius = 32 * radius,
+        -- radius = 32 * radius,
+        radius = 24 * radius * selected_difficulty.radius_modifier + depth,
         name = names,
-        type = {
-            "entity-ghost",
-            "fire",
-            "projectile",
-            "beam",
-            "sticker",
-        },
+        type = Attack_Group_Constants.type_blacklist,
         limit = 1,
         force = { "enemy", "neutral" },
         invert = true,
     })
 
-    if (not targets or not targets[1]) then return locals.get_target_entity(unit_group, 1.1 * radius + 1, depth + 1) end
+    -- if (not targets or not targets[1]) then return locals.get_target_entity(unit_group, 1.1 * radius + 1, depth + 1) end
+    if (not targets or not targets[1]) then return locals.get_target_entity(unit_group, 1.1 * radius + selected_difficulty.radius_modifier, depth + 1) end
 
+    Log.error("found 'em")
     return targets[1]
 end
 

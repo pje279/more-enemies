@@ -77,7 +77,6 @@ function unit_group_service.unit_group_created(data)
 
   Log.debug("use_evolution_factor = "  .. serpent.block(use_evolution_factor))
   if (use_evolution_factor) then
-    -- evolution_factor = group.force.get_evolution_factor()
     evolution_factor = group.force.get_evolution_factor(group.surface)
   end
 
@@ -154,7 +153,6 @@ function unit_group_service.unit_group_finished_gathering(data)
   local evolution_factor = 1
   Log.info("use_evolution_factor = "  .. serpent.block(use_evolution_factor))
   if (use_evolution_factor) then
-    -- evolution_factor = group.force.get_evolution_factor()
     evolution_factor = group.force.get_evolution_factor(group.surface)
   end
 

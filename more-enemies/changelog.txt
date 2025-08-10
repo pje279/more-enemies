@@ -1,4 +1,22 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.0
+Date: 2025-08-10
+  Minor Features:
+    - Added configurable, proactive attack groups
+      -> Toggleable by planet (Nauvis and Gleba, presently)
+      -> Toggleable requirement for the attack groups to spawn near spawners
+      -> Configurable starting peace time before attack groups can spawn
+      -> Configurable setting to control/affect the probability of attack groups actually spawning per planet
+      -> Configurable settings for the frequency of attack group processing
+    - Updated initialization logic to maintain when a surface is first visited (Nauvis & Gleba) on mod update
+      -> Is so that the 'peace time' doesn't reset everytime the mod updates going forward
+      -> 'peace time' can still be reset using the /more_enemies.init command
+      -> Lays the groundwork for migrating any needed data during version updates going forward
+  Bug Fixes:
+    - Corrected use of force.get_evolution_factor() to include the corresponding surface as a parameter
+      -> Was otherwise defaulting to Nauvis if not provided
+      -> i.e. Nauvis' evolution factor was being used all the time for calculations, ignorig Gleba's actual evolution factor
+---------------------------------------------------------------------------------------------------
 Version: 0.6.1
 Date: 2025-08-01
   Bug Fixes:

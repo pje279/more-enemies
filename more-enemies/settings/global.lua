@@ -19,6 +19,7 @@ data:extend({
 data:extend({
   Global_Settings_Constants.settings.MINIMUM_ATTACK_GROUP_DELAY,
   Global_Settings_Constants.settings.MAXIMUM_ATTACK_GROUP_DELAY,
+  Global_Settings_Constants.settings.ATTACK_GROUP_BLACKLIST_NAMES,
 })
 
 if (mods and (mods["BREAM"])) then

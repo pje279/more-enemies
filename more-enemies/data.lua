@@ -1,3 +1,5 @@
+require("prototypes.attack-groups")
+
 require("prototypes.spawners.nauvis")
 
 if (mods and mods["space-age"]) then

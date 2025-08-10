@@ -48,7 +48,6 @@ function spawn_utils.duplicate_unit_group(group)
   local evolution_factor = 1
   Log.info("use_evolution_factor = "  .. serpent.block(use_evolution_factor))
   if (use_evolution_factor) then
-    -- evolution_factor = group.force.get_evolution_factor()
     evolution_factor = group.force.get_evolution_factor(group.surface)
   end
 
@@ -134,7 +133,6 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   local evolution_multiplier = 1
   local evolution_factor = 0
   if (use_evolution_factor) then
-    -- evolution_factor = entity.force.get_evolution_factor()
     evolution_factor = entity.force.get_evolution_factor(entity.surface)
   end
   evolution_multiplier = locals.calc_evolution_multiplier(difficulty.selected_difficulty, evolution_factor)

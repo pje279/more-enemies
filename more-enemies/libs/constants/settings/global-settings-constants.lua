@@ -158,6 +158,16 @@ global_settings_constants.settings.MINIMUM_ATTACK_GROUP_DELAY = {
     minimum_value = 0,
 }
 
+global_settings_constants.settings.ATTACK_GROUP_BLACKLIST_NAMES = {
+    type = "string-setting",
+    name = "more-enemies-attack-group-blacklist-names",
+    setting_type = "startup",
+    order = "efd",
+    default_value = "",
+    allow_blank = true,
+    auto_trim = true,
+}
+
 global_settings_constants.more_enemies = true
 
 local _global_settings_constants = global_settings_constants

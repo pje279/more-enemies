@@ -4,6 +4,7 @@ if _spawn_controller and _spawn_controller.more_enemies then
 end
 
 local Armoured_Biters_Constants = require("libs.constants.mods.armoured-biters-constants")
+local Attack_Group_Service = require("scripts.service.attack-group-service")
 local Constants = require("libs.constants.constants")
 local Behemoth_Enemies_Constants = require("libs.constants.mods.behemoth-enemies-constants")
 local Gleba_Constants = require("libs.constants.gleba-constants")
@@ -121,7 +122,14 @@ function spawn_controller.do_tick(event)
     if (nth_tick_cleanup_complete_data.current and at_capacity < 4) then
       more_enemies_data.do_nth_tick = true
     end
+  end
 
+  for k, planet in pairs(Constants.DEFAULTS.planets) do
+    Log.debug(planet)
+
+    if (Settings_Service.get_do_attack_group(planet.string_val)) then
+      Attack_Group_Service.do_attack_group(planet)
+    end
   end
 end
 
