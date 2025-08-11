@@ -4,8 +4,10 @@ if (_difficulty_utils and _difficulty_utils.more_enemies) then
 end
 
 local Armoured_Biters_Constants = require("libs.constants.mods.armoured-biters-constants")
+local Cold_Biters_Constants = require("libs.constants.mods.cold-biters-constants")
 local Constants = require("libs.constants.constants")
 local Easy_Difficulty_Data = require("scripts.data.difficulties.easy-difficulty-data")
+local Explosive_Biters_Constants = require("libs.constants.mods.explosive-biters-constants")
 local Gleba_Constants = require("libs.constants.gleba-constants")
 local Hard_Difficulty_Data = require("scripts.data.difficulties.hard-difficulty-data")
 local Insanity_Difficulty_Data = require("scripts.data.difficulties.insanity-difficulty-data")
@@ -13,7 +15,9 @@ local Log = require("libs.log.log")
 local More_Enemies_Data = require("scripts.data.more-enemies-data")
 local More_Enemies_Repository = require("scripts.repositories.more-enemies-repository")
 local Nauvis_Constants = require("libs.constants.nauvis-constants")
+local Proto_Biters_Constants = require("libs.constants.mods.proto-biters-constants")
 local Settings_Service = require("scripts.service.settings-service")
+local Toxic_Biters_Constants = require("libs.constants.mods.toxic-biters-constants")
 local Vanilla_Plus_Difficulty_Data = require("scripts.data.difficulties.vanilla-plus-difficulty-data")
 local Vanilla_Difficulty_Data = require("scripts.data.difficulties.vanilla-difficulty-data")
 
@@ -236,10 +240,81 @@ function locals.create_difficulty(planet, selected_difficulty, vanilla)
           max_friends_around_to_spawn = vanilla and Armoured_Biters_Constants.nauvis.biter_armoured.MAX_FRIENDS_AROUND_TO_SPAWN or (Armoured_Biters_Constants.nauvis.biter_armoured.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
           max_defensive_friends_around_to_spawn = vanilla and Armoured_Biters_Constants.nauvis.biter_armoured.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Armoured_Biters_Constants.nauvis.biter_armoured.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
           spawning_cooldown = {
-            max = 360 / cooldown_modifier,
-            min = 150 / cooldown_modifier
+            max = Armoured_Biters_Constants.nauvis.biter_armoured.MAX_SPAWNING_COOLDOWN / cooldown_modifier,
+            min = Armoured_Biters_Constants.nauvis.biter_armoured.MIN_SPAWNING_COOLDOWN / cooldown_modifier
           },
         }
+      end
+
+      if ( (script and script.active_mods and script.active_mods["Cold_biters"])
+        or (mods and mods["Cold_biters"]))
+      then
+          difficulty.biter_cold = {
+              max_count_of_owned_units = vanilla and Cold_Biters_Constants.nauvis.biter_cold.MAX_COUNT_OF_OWNED_UNITS or (Cold_Biters_Constants.nauvis.biter_cold.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+              max_count_of_owned_defensive_units = vanilla and Cold_Biters_Constants.nauvis.biter_cold.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Cold_Biters_Constants.nauvis.biter_cold.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+              max_friends_around_to_spawn = vanilla and Cold_Biters_Constants.nauvis.biter_cold.MAX_FRIENDS_AROUND_TO_SPAWN or (Cold_Biters_Constants.nauvis.biter_cold.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+              max_defensive_friends_around_to_spawn = vanilla and Cold_Biters_Constants.nauvis.biter_cold.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Cold_Biters_Constants.nauvis.biter_cold.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+              spawning_cooldown = {
+                  max = Cold_Biters_Constants.nauvis.biter_cold.MAX_SPAWNING_COOLDOWN / cooldown_modifier,
+                  min = Cold_Biters_Constants.nauvis.biter_cold.MIN_SPAWNING_COOLDOWN / cooldown_modifier
+              },
+          }
+      end
+
+      if ( (script and script.active_mods and script.active_mods["Explosive_biters"])
+        or (mods and mods["Explosive_biters"]))
+      then
+          difficulty.biter_explosive = {
+              max_count_of_owned_units = vanilla and Explosive_Biters_Constants.nauvis.biter_explosive.MAX_COUNT_OF_OWNED_UNITS or (Explosive_Biters_Constants.nauvis.biter_explosive.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+              max_count_of_owned_defensive_units = vanilla and Explosive_Biters_Constants.nauvis.biter_explosive.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Explosive_Biters_Constants.nauvis.biter_explosive.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+              max_friends_around_to_spawn = vanilla and Explosive_Biters_Constants.nauvis.biter_explosive.MAX_FRIENDS_AROUND_TO_SPAWN or (Explosive_Biters_Constants.nauvis.biter_explosive.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+              max_defensive_friends_around_to_spawn = vanilla and Explosive_Biters_Constants.nauvis.biter_explosive.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Explosive_Biters_Constants.nauvis.biter_explosive.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+              spawning_cooldown = {
+                  max = Explosive_Biters_Constants.nauvis.biter_explosive.MAX_SPAWNING_COOLDOWN / cooldown_modifier,
+                  min = Explosive_Biters_Constants.nauvis.biter_explosive.MIN_SPAWNING_COOLDOWN / cooldown_modifier
+              },
+          }
+      end
+
+      if ( (script and script.active_mods and script.active_mods["Toxic_biters"])
+        or (mods and mods["Toxic_biters"]))
+      then
+          difficulty.biter_toxic = {
+              max_count_of_owned_units = vanilla and Toxic_Biters_Constants.nauvis.biter_toxic.MAX_COUNT_OF_OWNED_UNITS or (Toxic_Biters_Constants.nauvis.biter_toxic.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+              max_count_of_owned_defensive_units = vanilla and Toxic_Biters_Constants.nauvis.biter_toxic.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Toxic_Biters_Constants.nauvis.biter_toxic.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+              max_friends_around_to_spawn = vanilla and Toxic_Biters_Constants.nauvis.biter_toxic.MAX_FRIENDS_AROUND_TO_SPAWN or (Toxic_Biters_Constants.nauvis.biter_toxic.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+              max_defensive_friends_around_to_spawn = vanilla and Toxic_Biters_Constants.nauvis.biter_toxic.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Toxic_Biters_Constants.nauvis.biter_toxic.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+              spawning_cooldown = {
+                  max = Toxic_Biters_Constants.nauvis.biter_toxic.MAX_SPAWNING_COOLDOWN / cooldown_modifier,
+                  min = Toxic_Biters_Constants.nauvis.biter_toxic.MIN_SPAWNING_COOLDOWN / cooldown_modifier
+              },
+          }
+      end
+
+      if ( (script and script.active_mods and script.active_mods["old_biters_remastered"])
+        or (mods and mods["old_biters_remastered"]))
+      then
+          difficulty.biter_old = {
+              max_count_of_owned_units = vanilla and Proto_Biters_Constants.nauvis.biter_old.MAX_COUNT_OF_OWNED_UNITS or (Proto_Biters_Constants.nauvis.biter_old.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+              max_count_of_owned_defensive_units = vanilla and Proto_Biters_Constants.nauvis.biter_old.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Proto_Biters_Constants.nauvis.biter_old.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+              max_friends_around_to_spawn = vanilla and Proto_Biters_Constants.nauvis.biter_old.MAX_FRIENDS_AROUND_TO_SPAWN or (Proto_Biters_Constants.nauvis.biter_old.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+              max_defensive_friends_around_to_spawn = vanilla and Proto_Biters_Constants.nauvis.biter_old.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Proto_Biters_Constants.nauvis.biter_old.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+              spawning_cooldown = {
+                  max = Proto_Biters_Constants.nauvis.biter_old.MAX_SPAWNING_COOLDOWN / cooldown_modifier,
+                  min = Proto_Biters_Constants.nauvis.biter_old.MIN_SPAWNING_COOLDOWN / cooldown_modifier
+              },
+          }
+
+          difficulty.spitter_old = {
+              max_count_of_owned_units = vanilla and Proto_Biters_Constants.nauvis.spitter_old.MAX_COUNT_OF_OWNED_UNITS or (Proto_Biters_Constants.nauvis.spitter_old.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+              max_count_of_owned_defensive_units = vanilla and Proto_Biters_Constants.nauvis.spitter_old.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Proto_Biters_Constants.nauvis.spitter_old.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+              max_friends_around_to_spawn = vanilla and Proto_Biters_Constants.nauvis.spitter_old.MAX_FRIENDS_AROUND_TO_SPAWN or (Proto_Biters_Constants.nauvis.spitter_old.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+              max_defensive_friends_around_to_spawn = vanilla and Proto_Biters_Constants.nauvis.spitter_old.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Proto_Biters_Constants.nauvis.spitter_old.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+              spawning_cooldown = {
+                  max = Proto_Biters_Constants.nauvis.spitter_old.MAX_SPAWNING_COOLDOWN / cooldown_modifier,
+                  min = Proto_Biters_Constants.nauvis.spitter_old.MIN_SPAWNING_COOLDOWN / cooldown_modifier
+              },
+          }
       end
 
     elseif (planet == Constants.DEFAULTS.planets.gleba.string_val) then

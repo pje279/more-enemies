@@ -3,7 +3,6 @@ local Difficulty_Utils = require("scripts.utils.difficulty-utils")
 local Nauvis_Constants = require("libs.constants.nauvis-constants")
 local Settings_Validations = require("scripts.validations.settings-validations")
 
-local nauvis_difficulty = settings.startup["more-enemies-nauvis-difficulty"]
 local difficulty = Difficulty_Utils.get_difficulty("nauvis", true)
 
 local unit_spawner = "unit-spawner"
@@ -117,4 +116,20 @@ end
 
 if (mods and mods["ArmouredBiters"]) then
   require("prototypes.spawners.mods.armoured-biters")
+end
+
+if (mods and mods["Cold_biters"]) then
+  require("prototypes.spawners.mods.cold-biters")
+end
+
+if (mods and mods["Explosive_biters"]) then
+  require("prototypes.spawners.mods.explosive-biters")
+end
+
+if (mods and mods["Toxic_biters"]) then
+  require("prototypes.spawners.mods.toxic-biters")
+end
+
+if (mods and mods["old_biters_remastered"]) then
+  require("prototypes.spawners.mods.proto-biters")
 end
