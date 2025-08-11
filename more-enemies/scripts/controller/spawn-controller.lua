@@ -22,26 +22,28 @@ local spawn_controller = {}
 spawn_controller.filter = {}
 
 for k,v in pairs(Nauvis_Constants.nauvis.categories) do
-  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-biter"})
-  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-spitter"})
+  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-biter" })
+  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-spitter" })
 end
 
-if (script and script.active_mods and script.active_mods["ArmouredBiters"]) then
+if ((mods and mods["ArmouredBiters"]) or (script and script.active_mods and script.active_mods["ArmouredBiters"])) then
   for k,v in pairs(Armoured_Biters_Constants.nauvis.categories) do
-    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-armoured-biter"})
+    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-armoured-biter" })
   end
 end
 
-for k,v in pairs(Gleba_Constants.gleba.categories) do
-  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-wriggler-pentapod" })
-  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-strafer-pentapod"})
-  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-stomper-pentapod"})
+if ((mods and mods["space-age"]) or (script and script.active_mods and script.active_mods["space-age"])) then
+    for k,v in pairs(Gleba_Constants.gleba.categories) do
+        table.insert(spawn_controller.filter, { filter = "name", name = v .. "-wriggler-pentapod" })
+        table.insert(spawn_controller.filter, { filter = "name", name = v .. "-strafer-pentapod" })
+        table.insert(spawn_controller.filter, { filter = "name", name = v .. "-stomper-pentapod" })
+    end
 end
 
 if ((mods and mods["space-age"] and mods["behemoth-enemies"]) or (script and script.active_mods and script.active_mods["space-age"] and script.active_mods["behemoth-enemies"])) then
   table.insert(spawn_controller.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-wriggler-pentapod" })
-  table.insert(spawn_controller.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-strafer-pentapod"})
-  table.insert(spawn_controller.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-stomper-pentapod"})
+  table.insert(spawn_controller.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-strafer-pentapod" })
+  table.insert(spawn_controller.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-stomper-pentapod" })
 end
 
 function spawn_controller.do_tick(event)

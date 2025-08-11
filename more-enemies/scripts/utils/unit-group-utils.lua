@@ -30,7 +30,7 @@ function unit_group_utils.get_spawner(group, radius, limit, depth)
         limit = limit
     })
 
-    if (not spawners or #spawners < 1) then return locals.get_spawner(group, 1.1 * radius + 1, limit, depth + 1) end
+    if (not spawners or #spawners < 1) then return unit_group_utils.get_spawner(group, 1.1 * radius + 1, limit, depth + 1) end
 
     return spawners[1]
 end

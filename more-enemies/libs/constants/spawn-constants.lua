@@ -12,66 +12,23 @@ local spawn_constants = {}
 
 spawn_constants.name = {}
 
--- for k,v in pairs(Nauvis_Constants.nauvis.categories) do
---   table.insert(spawn_constants.filter, { filter = "name", name = v .. "-biter"})
---   table.insert(spawn_constants.filter, { filter = "name", name = v .. "-spitter"})
--- end
-
--- if (script and script.active_mods and script.active_mods["ArmouredBiters"]) then
---   for k,v in pairs(Armoured_Biters_Constants.nauvis.categories) do
---     table.insert(spawn_constants.filter, { filter = "name", name = v .. "-armoured-biter"})
---   end
--- end
-
--- for k,v in pairs(Gleba_Constants.gleba.categories) do
---   table.insert(spawn_constants.filter, { filter = "name", name = v .. "-wriggler-pentapod" })
---   table.insert(spawn_constants.filter, { filter = "name", name = v .. "-strafer-pentapod"})
---   table.insert(spawn_constants.filter, { filter = "name", name = v .. "-stomper-pentapod"})
--- end
-
--- if ((mods and mods["space-age"] and mods["behemoth-enemies"]) or (script and script.active_mods and script.active_mods["space-age"] and script.active_mods["behemoth-enemies"])) then
---   table.insert(spawn_constants.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-wriggler-pentapod" })
---   table.insert(spawn_constants.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-strafer-pentapod"})
---   table.insert(spawn_constants.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-stomper-pentapod"})
--- end
-
--- for k,v in pairs(Nauvis_Constants.nauvis.categories) do
---   table.insert(spawn_constants.name, { v .. "-biter"})
---   table.insert(spawn_constants.name, { v .. "-spitter"})
--- end
-
--- if (script and script.active_mods and script.active_mods["ArmouredBiters"]) then
---   for k,v in pairs(Armoured_Biters_Constants.nauvis.categories) do
---     table.insert(spawn_constants.name, { v .. "-armoured-biter"})
---   end
--- end
-
--- for k,v in pairs(Gleba_Constants.gleba.categories) do
---   table.insert(spawn_constants.name, { v .. "-wriggler-pentapod" })
---   table.insert(spawn_constants.name, { v .. "-strafer-pentapod"})
---   table.insert(spawn_constants.name, { v .. "-stomper-pentapod"})
--- end
-
--- if ((mods and mods["space-age"] and mods["behemoth-enemies"]) or (script and script.active_mods and script.active_mods["space-age"] and script.active_mods["behemoth-enemies"])) then
---   table.insert(spawn_constants.name, { Behemoth_Enemies_Constants.prefix .. "-wriggler-pentapod" })
---   table.insert(spawn_constants.name, { Behemoth_Enemies_Constants.prefix .. "-strafer-pentapod"})
---   table.insert(spawn_constants.name, { Behemoth_Enemies_Constants.prefix .. "-stomper-pentapod"})
--- end
 for k,v in pairs(Nauvis_Constants.nauvis.categories) do
   table.insert(spawn_constants.name, v .. "-biter")
   table.insert(spawn_constants.name, v .. "-spitter")
 end
 
-if (script and script.active_mods and script.active_mods["ArmouredBiters"]) then
+if ((mods and mods["ArmouredBiters"]) or (script and script.active_mods and script.active_mods["ArmouredBiters"])) then
   for k,v in pairs(Armoured_Biters_Constants.nauvis.categories) do
     table.insert(spawn_constants.name, v .. "-armoured-biter")
   end
 end
 
-for k,v in pairs(Gleba_Constants.gleba.categories) do
-  table.insert(spawn_constants.name, v .. "-wriggler-pentapod")
-  table.insert(spawn_constants.name, v .. "-strafer-pentapod")
-  table.insert(spawn_constants.name, v .. "-stomper-pentapod")
+if ((mods and mods["space-age"]) or (script and script.active_mods and script.active_mods["space-age"])) then
+    for k,v in pairs(Gleba_Constants.gleba.categories) do
+        table.insert(spawn_constants.name, v .. "-wriggler-pentapod")
+        table.insert(spawn_constants.name, v .. "-strafer-pentapod")
+        table.insert(spawn_constants.name, v .. "-stomper-pentapod")
+    end
 end
 
 if ((mods and mods["space-age"] and mods["behemoth-enemies"]) or (script and script.active_mods and script.active_mods["space-age"] and script.active_mods["behemoth-enemies"])) then
