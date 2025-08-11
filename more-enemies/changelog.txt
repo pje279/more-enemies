@@ -1,4 +1,19 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.2
+Date: 2025-08-11
+  Bug Fixes:
+    - Fixed mod added enemies not joining in attack groups
+    - Fixed mod added spawners not being affected by the selected difficulty
+      -> Added several settings for cold-biter spawners
+      -> Added several settings for explosive-biter spawners
+      -> Added several settings for toxic-biter spawners
+      -> Added spawners settings are affected by difficulty if they left are at their default values
+  Misc:
+    - Added compatability for the Proto-biters mod by snouz
+      -> Added biters and spitters will join in attack groups
+      -> Added several settings for proto-biter and proto-spitter spawners
+      -> Added spawners settings are affected by difficulty if they left are at their default values
+---------------------------------------------------------------------------------------------------
 Version: 0.7.1
 Date: 2025-08-11
   Bug Fixes:
