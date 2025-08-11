@@ -381,6 +381,8 @@ function locals.get_target_entity(unit_group, radius, depth)
         end
     end
 
+    if (next(names, nil) == nil) then names = nil end
+
     local selected_difficulty = Constants.difficulty[Constants.difficulty.difficulties[Settings_Service.get_difficulty(unit_group.surface.name)]]
 
     local targets = unit_group.surface.find_entities_filtered({
