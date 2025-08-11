@@ -190,6 +190,7 @@ function attack_group_service.do_attack_group(planet)
 
                 if (attack_group.radius < delay * difficulty_val) then
                     attack_group.radius = 1.1 * attack_group.radius + 1
+                    if (attack_group.radius > Constants.CHUNK_SIZE * 8) then attack_group.radius = Constants.CHUNK_SIZE * 8 end
                 end
                 attack_group.tick = game.tick + delay
             end
@@ -368,7 +369,8 @@ function locals.get_target_entity(unit_group, radius, depth)
     if (not radius or radius == nil) then radius = 1 end
     if (not depth or depth == nil) then depth = 1 end
 
-    if (depth > 24) then return end
+    if (depth > 12) then return end
+    if (radius > Constants.CHUNK_SIZE * 16 and depth > 1) then return end
 
     local names = {}
     local blacklist_names = Settings_Utils.get_attack_group_blacklist_names()
@@ -383,8 +385,7 @@ function locals.get_target_entity(unit_group, radius, depth)
 
     local targets = unit_group.surface.find_entities_filtered({
         position = unit_group.position,
-        -- radius = 32 * radius,
-        radius = 24 * radius * selected_difficulty.radius_modifier + depth,
+        radius = 16 * radius * selected_difficulty.radius_modifier + depth,
         name = names,
         type = Attack_Group_Constants.type_blacklist,
         limit = 1,
