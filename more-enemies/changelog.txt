@@ -7,6 +7,7 @@ Date: 2025-08-10
       -> Toggleable requirement for the attack groups to spawn near spawners
       -> Configurable starting peace time before attack groups can spawn
       -> Configurable setting to control/affect the probability of attack groups actually spawning
+      - -> Should be configured such that attack groups cannot spawn on Vanilla difficulty or below
       -> Configurable settings for the frequency of attack groups/processing
       -> Configurable attack group target blacklist (entities to ignore when looking for a target for the attack group)
     - Updated initialization logic to maintain when a surface is first visited (Nauvis & Gleba) on mod update
@@ -17,6 +18,17 @@ Date: 2025-08-10
     - Corrected use of force.get_evolution_factor() to include the corresponding surface as a parameter
       -> Was otherwise defaulting to Nauvis if not provided
       -> i.e. Nauvis' evolution factor was being used all the time for calculations, ignorig Gleba's actual evolution factor
+  Balance:
+    - Overall difficulty, once again, is higher with the addition of the proactive attack groups (hence them being toggleable/configurable)
+    - Attack group spawning is faster/more frequent the higher the difficulty
+    - Attack group size is larger the higher the difficulty
+    - Probability threshold of an attack group spawning is based on the selected difficulty times the probability modifier setting, times the current evolution factor
+      -> local max_probability = 1 - (1 / selected_difficulty.value)
+      -> if (max_probability < 0) then max_probability = 0 end
+      -> max_probability = max_probability * probability_modifier
+      -> local threshold = max_probability * evolution_factor
+      - "max_probability" is the maximum probability of an attack group spawning at 100% (1) evolution factor
+      - Idea is that attack groups become increasingly more frequent as the evolution factor increases
 ---------------------------------------------------------------------------------------------------
 Version: 0.6.1
 Date: 2025-08-01
