@@ -5,7 +5,7 @@ Date: 2025-08-10
     - Added configurable, proactive attack groups
       -> Toggleable by planet (Nauvis and Gleba, presently)
       -> Toggleable requirement for the attack groups to spawn near spawners
-      -> Configurable starting peace time before attack groups can spawn
+      -> Configurable starting peace time before attack groups can spawn (45 minutes by default)
       -> Configurable setting to control/affect the probability of attack groups actually spawning
       - -> Should be configured such that attack groups cannot spawn on Vanilla difficulty or below
       -> Configurable settings for the frequency of attack groups/processing
