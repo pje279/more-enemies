@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.1
+Date: 2025-08-11
+  Bug Fixes:
+    - Fixed non-recoverable error when attack group blacklist setting is empty (default)
+---------------------------------------------------------------------------------------------------
 Version: 0.7.0
 Date: 2025-08-10
   Minor Features:
