@@ -46,13 +46,17 @@ if ((mods and mods["Explosive_biters"]) or (script and script.active_mods and sc
 end
 
 if ((mods and mods["Toxic_biters"]) or (script and script.active_mods and script.active_mods["Toxic_biters"])) then
-    for _,v in pairs(Explosive_Biters_Constants.nauvis.categories) do
+    for _,v in pairs(Toxic_Biters_Constants.nauvis.categories) do
         table.insert(spawn_constants.name, v .. "-toxic-biter")
         table.insert(spawn_constants.name, v .. "-toxic-spitter")
     end
 end
 
 if ((mods and mods["old_biters_remastered"]) or (script and script.active_mods and script.active_mods["old_biters_remastered"])) then
+    for _,v in pairs(Proto_Biters_Constants.nauvis.categories) do
+        table.insert(spawn_constants.name, "old-" .. v .. "-biter")
+        table.insert(spawn_constants.name, "old-" .. v .. "-spitter")
+    end
 end
 
 if ((mods and mods["space-age"]) or (script and script.active_mods and script.active_mods["space-age"])) then

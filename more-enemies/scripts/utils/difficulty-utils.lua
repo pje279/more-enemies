@@ -291,6 +291,32 @@ function locals.create_difficulty(planet, selected_difficulty, vanilla)
           }
       end
 
+      if ( (script and script.active_mods and script.active_mods["old_biters_remastered"])
+        or (mods and mods["old_biters_remastered"]))
+      then
+          difficulty.biter_old = {
+              max_count_of_owned_units = vanilla and Proto_Biters_Constants.nauvis.biter_old.MAX_COUNT_OF_OWNED_UNITS or (Proto_Biters_Constants.nauvis.biter_old.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+              max_count_of_owned_defensive_units = vanilla and Proto_Biters_Constants.nauvis.biter_old.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Proto_Biters_Constants.nauvis.biter_old.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+              max_friends_around_to_spawn = vanilla and Proto_Biters_Constants.nauvis.biter_old.MAX_FRIENDS_AROUND_TO_SPAWN or (Proto_Biters_Constants.nauvis.biter_old.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+              max_defensive_friends_around_to_spawn = vanilla and Proto_Biters_Constants.nauvis.biter_old.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Proto_Biters_Constants.nauvis.biter_old.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+              spawning_cooldown = {
+                  max = Proto_Biters_Constants.nauvis.biter_old.MAX_SPAWNING_COOLDOWN / cooldown_modifier,
+                  min = Proto_Biters_Constants.nauvis.biter_old.MIN_SPAWNING_COOLDOWN / cooldown_modifier
+              },
+          }
+
+          difficulty.spitter_old = {
+              max_count_of_owned_units = vanilla and Proto_Biters_Constants.nauvis.spitter_old.MAX_COUNT_OF_OWNED_UNITS or (Proto_Biters_Constants.nauvis.spitter_old.MAX_COUNT_OF_OWNED_UNITS * modifier) + 1,
+              max_count_of_owned_defensive_units = vanilla and Proto_Biters_Constants.nauvis.spitter_old.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS or (Proto_Biters_Constants.nauvis.spitter_old.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS * modifier) + 1,
+              max_friends_around_to_spawn = vanilla and Proto_Biters_Constants.nauvis.spitter_old.MAX_FRIENDS_AROUND_TO_SPAWN or (Proto_Biters_Constants.nauvis.spitter_old.MAX_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+              max_defensive_friends_around_to_spawn = vanilla and Proto_Biters_Constants.nauvis.spitter_old.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN or (Proto_Biters_Constants.nauvis.spitter_old.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN * modifier) + 1,
+              spawning_cooldown = {
+                  max = Proto_Biters_Constants.nauvis.spitter_old.MAX_SPAWNING_COOLDOWN / cooldown_modifier,
+                  min = Proto_Biters_Constants.nauvis.spitter_old.MIN_SPAWNING_COOLDOWN / cooldown_modifier
+              },
+          }
+      end
+
     elseif (planet == Constants.DEFAULTS.planets.gleba.string_val) then
       difficulty = {
         valid = true,

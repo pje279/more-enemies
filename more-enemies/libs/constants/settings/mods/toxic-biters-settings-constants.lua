@@ -14,7 +14,7 @@ toxic_biter_settings_constants.settings.TOXIC_BITER_MAX_COUNT_OF_OWNED_UNITS = {
     type = "int-setting",
     name = "more-enemies-spawner-toxic-biter-max-count-of-owned-units-biter",
     setting_type = "startup",
-    order = "bea",
+    order = "bfa",
     default_value = Toxic_Biters_Constants.nauvis.biter_toxic.MAX_COUNT_OF_OWNED_UNITS,
     minimum_value = 0,
 }
@@ -23,7 +23,7 @@ toxic_biter_settings_constants.settings.TOXIC_BITER_MAX_COUNT_OF_OWNED_DEFENSIVE
     type = "int-setting",
     name = "more-enemies-spawner-toxic-biter-max-count-of-owned-defensive-units-biter",
     setting_type = "startup",
-    order = "beb",
+    order = "bfb",
     default_value = Toxic_Biters_Constants.nauvis.biter_toxic.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS,
     minimum_value = 0,
 }
@@ -32,7 +32,7 @@ toxic_biter_settings_constants.settings.TOXIC_BITER_MAX_FRIENDS_AROUND_TO_SPAWN 
     type = "int-setting",
     name = "more-enemies-spawner-toxic-biter-max-friends-around-to-spawn-biter",
     setting_type = "startup",
-    order = "bec",
+    order = "bfc",
     default_value = Toxic_Biters_Constants.nauvis.biter_toxic.MAX_FRIENDS_AROUND_TO_SPAWN,
     minimum_value = 0,
 }
@@ -40,7 +40,7 @@ toxic_biter_settings_constants.settings.TOXIC_BITER_MAX_DEFENSIVE_FRIENDS_AROUND
     type = "int-setting",
     name = "more-enemies-spawner-toxic-biter-max-defensive-friends-around-to-spawn-biter",
     setting_type = "startup",
-    order = "bed",
+    order = "bfd",
     default_value = Toxic_Biters_Constants.nauvis.biter_toxic.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN,
     minimum_value = 0,
 }
@@ -49,7 +49,7 @@ toxic_biter_settings_constants.settings.TOXIC_BITER_MAX_SPAWNING_COOLDOWN = {
     type = "int-setting",
     name = "more-enemies-toxic-biter-max-spawning-cooldown-biter",
     setting_type = "startup",
-    order = "bee",
+    order = "bfe",
     default_value = Toxic_Biters_Constants.nauvis.biter_toxic.MAX_SPAWNING_COOLDOWN,
     minimum_value = 0,
 }
@@ -58,7 +58,7 @@ toxic_biter_settings_constants.settings.TOXIC_BITER_MIN_SPAWNING_COOLDOWN = {
     type = "int-setting",
     name = "more-enemies-toxic-biter-min-spawning-cooldown-biter",
     setting_type = "startup",
-    order = "bef",
+    order = "bff",
     default_value = Toxic_Biters_Constants.nauvis.biter_toxic.MIN_SPAWNING_COOLDOWN,
     minimum_value = 0,
 }
