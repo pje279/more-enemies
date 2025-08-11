@@ -10,7 +10,7 @@ cold_biters_constants.nauvis.biter_cold = {}
 cold_biters_constants.nauvis.biter_cold.MAX_COUNT_OF_OWNED_UNITS = 10
 cold_biters_constants.nauvis.biter_cold.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS = 10
 cold_biters_constants.nauvis.biter_cold.MAX_FRIENDS_AROUND_TO_SPAWN = 7
-cold_biters_constants.nauvis.biter_cold.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN = 10
+cold_biters_constants.nauvis.biter_cold.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN = 7
 
 cold_biters_constants.nauvis.biter_cold.MAX_SPAWNING_COOLDOWN = 360
 cold_biters_constants.nauvis.biter_cold.MIN_SPAWNING_COOLDOWN = 150

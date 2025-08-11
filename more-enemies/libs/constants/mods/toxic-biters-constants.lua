@@ -10,7 +10,7 @@ toxic_biters_constants.nauvis.biter_toxic = {}
 toxic_biters_constants.nauvis.biter_toxic.MAX_COUNT_OF_OWNED_UNITS = 10
 toxic_biters_constants.nauvis.biter_toxic.MAX_COUNT_OF_OWNED_DEFENSIVE_UNITS = 10
 toxic_biters_constants.nauvis.biter_toxic.MAX_FRIENDS_AROUND_TO_SPAWN = 7
-toxic_biters_constants.nauvis.biter_toxic.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN = 10
+toxic_biters_constants.nauvis.biter_toxic.MAX_DEFENSIVE_FRIENDS_AROUND_TO_SPAWN = 7
 
 toxic_biters_constants.nauvis.biter_toxic.MAX_SPAWNING_COOLDOWN = 360
 toxic_biters_constants.nauvis.biter_toxic.MIN_SPAWNING_COOLDOWN = 150
