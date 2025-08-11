@@ -1,4 +1,4 @@
-Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
+local Nauvis_Settings_Constants = require("libs.constants.settings.nauvis-settings-constants")
 
 data:extend({
   -- { Cloning } --

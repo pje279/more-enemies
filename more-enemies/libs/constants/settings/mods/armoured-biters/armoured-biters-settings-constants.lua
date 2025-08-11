@@ -5,7 +5,7 @@ end
 
 local Armoured_Biters_Constants = require("libs.constants.mods.armoured-biters-constants")
 
-armoured_biters_settings_constants = {}
+local armoured_biters_settings_constants = {}
 
 armoured_biters_settings_constants.settings = {}
 

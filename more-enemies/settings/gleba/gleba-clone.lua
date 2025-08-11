@@ -1,4 +1,4 @@
-Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
+local Gleba_Settings_Constants = require("libs.constants.settings.gleba-settings-constants")
 
 data:extend({
   -- { Cloning } --
