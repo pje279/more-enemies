@@ -75,9 +75,9 @@ function unit_group_service.unit_group_created(data)
   local use_evolution_factor = Settings_Service.get_do_evolution_factor(group.surface.name)
   local evolution_factor = 1
 
-  Log.debug("use_evolution_factor  = "  .. serpent.block(use_evolution_factor))
+  Log.debug("use_evolution_factor = "  .. serpent.block(use_evolution_factor))
   if (use_evolution_factor) then
-    evolution_factor = group.force.get_evolution_factor()
+    evolution_factor = group.force.get_evolution_factor(group.surface)
   end
 
   if (selected_difficulty.value > 1) then
@@ -99,6 +99,7 @@ function unit_group_service.unit_group_created(data)
 
   more_enemies_data.groups[group.surface.name][group.unique_id] = unit_group_data
 
+--   Log.error(unit_group_data)
   Log.debug(more_enemies_data.groups[group.surface.name][group.unique_id])
 end
 
@@ -152,7 +153,7 @@ function unit_group_service.unit_group_finished_gathering(data)
   local evolution_factor = 1
   Log.info("use_evolution_factor = "  .. serpent.block(use_evolution_factor))
   if (use_evolution_factor) then
-    evolution_factor = group.force.get_evolution_factor()
+    evolution_factor = group.force.get_evolution_factor(group.surface)
   end
 
   local clone_unit_group_setting = Settings_Service.get_clone_unit_group_setting(group.surface.name)
@@ -174,6 +175,7 @@ function unit_group_service.unit_group_finished_gathering(data)
   end
 
   if (not unit_group_data or not unit_group_data.valid) then
+    -- Log.error(unit_group_data)
     Log.debug("returning", true)
     return
   end

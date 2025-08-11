@@ -48,7 +48,7 @@ function spawn_utils.duplicate_unit_group(group)
   local evolution_factor = 1
   Log.info("use_evolution_factor = "  .. serpent.block(use_evolution_factor))
   if (use_evolution_factor) then
-    evolution_factor = group.force.get_evolution_factor()
+    evolution_factor = group.force.get_evolution_factor(group.surface)
   end
 
   local modifier = evolution_factor ^ ((Constants.difficulty.INSANITY.value - selected_difficulty.value)/(evolution_factor * (Constants.difficulty.INSANITY.value - selected_difficulty.value + 1)))
@@ -80,12 +80,17 @@ function spawn_utils.duplicate_unit_group(group)
 end
 
 function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
+  Log.debug("spawn_utils.clone_entity")
+  Log.info(default_value)
+  Log.info(difficulty)
+  Log.info(entity)
+  Log.info(optionals)
+
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
 
   if (not more_enemies_data.do_nth_tick) then return end
 
-  Log.info(optionals)
   optionals = optionals or {
     clone_settings = {
       unit = 1,
@@ -133,7 +138,7 @@ function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
   local evolution_multiplier = 1
   local evolution_factor = 0
   if (use_evolution_factor) then
-    evolution_factor = entity.force.get_evolution_factor()
+    evolution_factor = entity.force.get_evolution_factor(entity.surface)
   end
   evolution_multiplier = locals.calc_evolution_multiplier(difficulty.selected_difficulty, evolution_factor)
   Log.debug(evolution_multiplier)

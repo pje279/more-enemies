@@ -4,6 +4,7 @@ if _spawn_controller and _spawn_controller.more_enemies then
 end
 
 local Armoured_Biters_Constants = require("libs.constants.mods.armoured-biters-constants")
+local Attack_Group_Service = require("scripts.service.attack-group-service")
 local Constants = require("libs.constants.constants")
 local Behemoth_Enemies_Constants = require("libs.constants.mods.behemoth-enemies-constants")
 local Gleba_Constants = require("libs.constants.gleba-constants")
@@ -21,26 +22,28 @@ local spawn_controller = {}
 spawn_controller.filter = {}
 
 for k,v in pairs(Nauvis_Constants.nauvis.categories) do
-  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-biter"})
-  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-spitter"})
+  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-biter" })
+  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-spitter" })
 end
 
-if (script and script.active_mods and script.active_mods["ArmouredBiters"]) then
+if ((mods and mods["ArmouredBiters"]) or (script and script.active_mods and script.active_mods["ArmouredBiters"])) then
   for k,v in pairs(Armoured_Biters_Constants.nauvis.categories) do
-    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-armoured-biter"})
+    table.insert(spawn_controller.filter, { filter = "name", name = v .. "-armoured-biter" })
   end
 end
 
-for k,v in pairs(Gleba_Constants.gleba.categories) do
-  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-wriggler-pentapod" })
-  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-strafer-pentapod"})
-  table.insert(spawn_controller.filter, { filter = "name", name = v .. "-stomper-pentapod"})
+if ((mods and mods["space-age"]) or (script and script.active_mods and script.active_mods["space-age"])) then
+    for k,v in pairs(Gleba_Constants.gleba.categories) do
+        table.insert(spawn_controller.filter, { filter = "name", name = v .. "-wriggler-pentapod" })
+        table.insert(spawn_controller.filter, { filter = "name", name = v .. "-strafer-pentapod" })
+        table.insert(spawn_controller.filter, { filter = "name", name = v .. "-stomper-pentapod" })
+    end
 end
 
 if ((mods and mods["space-age"] and mods["behemoth-enemies"]) or (script and script.active_mods and script.active_mods["space-age"] and script.active_mods["behemoth-enemies"])) then
   table.insert(spawn_controller.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-wriggler-pentapod" })
-  table.insert(spawn_controller.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-strafer-pentapod"})
-  table.insert(spawn_controller.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-stomper-pentapod"})
+  table.insert(spawn_controller.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-strafer-pentapod" })
+  table.insert(spawn_controller.filter, { filter = "name", name = Behemoth_Enemies_Constants.prefix .. "-stomper-pentapod" })
 end
 
 function spawn_controller.do_tick(event)
@@ -121,7 +124,14 @@ function spawn_controller.do_tick(event)
     if (nth_tick_cleanup_complete_data.current and at_capacity < 4) then
       more_enemies_data.do_nth_tick = true
     end
+  end
 
+  for k, planet in pairs(Constants.DEFAULTS.planets) do
+    Log.debug(planet)
+
+    if (Settings_Service.get_do_attack_group(planet.string_val)) then
+      Attack_Group_Service.do_attack_group(planet)
+    end
   end
 end
 
