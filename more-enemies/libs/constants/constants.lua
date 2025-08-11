@@ -73,6 +73,8 @@ constants.time.TICKS_PER_SECOND = 60
 constants.time.SECONDS_PER_MINUTE = 60
 constants.time.TICKS_PER_MINUTE = constants.time.TICKS_PER_SECOND * constants.time.SECONDS_PER_MINUTE
 
+constants.CHUNK_SIZE = 32
+
 constants.more_enemies = true
 
 local _constants = constants

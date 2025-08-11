@@ -30,7 +30,10 @@ function unit_group_controller.unit_group_created(event)
   if (max_num_clones ~= nil and more_enemies_data.clone[surface.name].unit_group > max_num_clones) then
     Log.debug("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
     Log.debug("Currently " .. serpent.block(more_enemies_data.clone[surface.name].unit_group) .. " unit-group clones")
-    return
+    -- return
+    if (not group or not group.valid or not group.is_script_driven) then
+        return
+    end
   end
 
   Unit_Group_Service.unit_group_created({ event = event, more_enemies_data = more_enemies_data })
@@ -55,7 +58,10 @@ function unit_group_controller.unit_group_finished_gathering(event)
   if (max_num_clones ~= nil and more_enemies_data.clone[surface.name].unit_group > max_num_clones) then
     Log.debug("Tried to clone more than the unit limit: " .. serpent.block(max_num_clones))
     Log.debug("Currently " .. serpent.block(more_enemies_data.clone[surface.name].unit_group) .. " unit-group clones")
-    return
+    -- return
+    if (not group or not group.valid or not group.is_script_driven) then
+        return
+    end
   end
 
   Unit_Group_Service.unit_group_finished_gathering({ event = event, more_enemies_data = more_enemies_data })

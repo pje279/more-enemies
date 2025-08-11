@@ -80,8 +80,8 @@ function settings_service.get_max_unit_group_size_startup()
 
   local limit_startup = Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.default_value
 
-  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name]) then
-    limit_startup = settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name].value
+  if (settings and settings.startup and settings.startup[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name]) then
+    limit_startup = settings.startup[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name].value
   end
 
   return limit_startup
@@ -239,6 +239,107 @@ function settings_service.get_short_request_max_steps()
 
   if (settings and settings.startup and settings.startup[Global_Settings_Constants.settings.SHORT_REQUEST_MAX_STEPS.name]) then
     setting = settings.startup[Global_Settings_Constants.settings.SHORT_REQUEST_MAX_STEPS.name].value
+  end
+
+  return setting
+end
+
+-- MINIMUM_ATTACK_GROUP_DELAY
+function settings_service.get_minimum_attack_group_delay()
+  local setting = Global_Settings_Constants.settings.MINIMUM_ATTACK_GROUP_DELAY.default_value
+
+  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MINIMUM_ATTACK_GROUP_DELAY.name]) then
+    setting = settings.global[Global_Settings_Constants.settings.MINIMUM_ATTACK_GROUP_DELAY.name].value
+  end
+
+  return setting
+end
+
+-- MAXIMUM_ATTACK_GROUP_DELAY
+function settings_service.get_maximum_attack_group_delay()
+  local setting = Global_Settings_Constants.settings.MAXIMUM_ATTACK_GROUP_DELAY.default_value
+
+  if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAXIMUM_ATTACK_GROUP_DELAY.name]) then
+    setting = settings.global[Global_Settings_Constants.settings.MAXIMUM_ATTACK_GROUP_DELAY.name].value
+  end
+
+  return setting
+end
+
+-- ATTACK_GROUP_BLACKLIST_NAMES
+function settings_service.get_attack_group_blacklist_names()
+  local setting = Global_Settings_Constants.settings.ATTACK_GROUP_BLACKLIST_NAMES.default_value
+
+  if (settings and settings.startup and settings.startup[Global_Settings_Constants.settings.ATTACK_GROUP_BLACKLIST_NAMES.name]) then
+    setting = settings.startup[Global_Settings_Constants.settings.ATTACK_GROUP_BLACKLIST_NAMES.name].value
+  end
+
+  return setting
+end
+
+-- NAUVIS_DO_ATTACK_GROUP
+-- GLEBA_DO_ATTACK_GROUP
+function settings_service.get_do_attack_group(surface_name)
+  local setting = false
+
+  if (  surface_name == Constants.DEFAULTS.planets.nauvis.string_val
+    and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_ATTACK_GROUP.name])
+  then
+    setting = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_DO_ATTACK_GROUP.name].value
+  elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
+        and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_ATTACK_GROUP.name]) then
+    setting = settings.global[Gleba_Settings_Constants.settings.GLEBA_DO_ATTACK_GROUP.name].value
+  end
+
+  return setting
+end
+
+-- NAUVIS_ATTACK_GROUP_PEACE_TIME
+-- GLEBA_ATTACK_GROUP_PEACE_TIME
+function settings_service.get_attack_group_peace_time(surface_name)
+  local setting = 45
+
+  if (  surface_name == Constants.DEFAULTS.planets.nauvis.string_val
+    and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.NAUVIS_ATTACK_GROUP_PEACE_TIME.name])
+  then
+    setting = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_ATTACK_GROUP_PEACE_TIME.name].value
+  elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
+        and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.GLEBA_ATTACK_GROUP_PEACE_TIME.name]) then
+    setting = settings.global[Gleba_Settings_Constants.settings.GLEBA_ATTACK_GROUP_PEACE_TIME.name].value
+  end
+
+  return setting
+end
+
+-- NAUVIS_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER
+-- GLEBA_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER
+function settings_service.get_spawn_attack_group_probability_modifier(surface_name)
+  local setting = 1
+
+  if (  surface_name == Constants.DEFAULTS.planets.nauvis.string_val
+    and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.NAUVIS_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER.name])
+  then
+    setting = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER.name].value
+  elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
+        and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.GLEBA_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER.name]) then
+    setting = settings.global[Gleba_Settings_Constants.settings.GLEBA_SPAWN_ATTACK_GROUP_PROBABILITY_MODIFIER.name].value
+  end
+
+  return setting
+end
+
+-- NAUVIS_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER
+-- GLEBA_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER
+function settings_service.get_attack_group_require_nearby_spawner(surface_name)
+  local setting = true
+
+  if (  surface_name == Constants.DEFAULTS.planets.nauvis.string_val
+    and settings and settings.global and settings.global[Nauvis_Settings_Constants.settings.NAUVIS_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER.name])
+  then
+    setting = settings.global[Nauvis_Settings_Constants.settings.NAUVIS_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER.name].value
+  elseif (  surface_name == Constants.DEFAULTS.planets.gleba.string_val
+        and settings and settings.global and settings.global[Gleba_Settings_Constants.settings.GLEBA_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER.name]) then
+    setting = settings.global[Gleba_Settings_Constants.settings.GLEBA_ATTACK_GROUP_REQUIRE_NEARBY_SPAWNER.name].value
   end
 
   return setting

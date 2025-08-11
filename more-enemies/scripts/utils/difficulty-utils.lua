@@ -17,6 +17,8 @@ local Settings_Service = require("scripts.service.settings-service")
 local Vanilla_Plus_Difficulty_Data = require("scripts.data.difficulties.vanilla-plus-difficulty-data")
 local Vanilla_Difficulty_Data = require("scripts.data.difficulties.vanilla-difficulty-data")
 
+local locals = {}
+
 local difficulty_utils = {}
 
 function difficulty_utils.get_difficulty(planet, reindex)
@@ -84,12 +86,12 @@ function difficulty_utils.get_difficulty(planet, reindex)
 
   if (selected_difficulty and selected_difficulty.valid) then
     if (reindex) then
-      difficulty = init_difficulty(planet, selected_difficulty)
+      difficulty = locals.init_difficulty(planet, selected_difficulty)
     else
-      difficulty = set_difficulty(planet, selected_difficulty)
+      difficulty = locals.set_difficulty(planet, selected_difficulty)
     end
   else
-    difficulty = init_difficulty(planet)
+    difficulty = locals.init_difficulty(planet)
   end
 
   Log.info(difficulty)
@@ -107,7 +109,7 @@ function difficulty_utils.get_difficulty(planet, reindex)
   return difficulty
 end
 
-function set_difficulty(planet, difficulty_setting)
+function locals.set_difficulty(planet, difficulty_setting)
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
   difficulty_setting = difficulty_setting or Vanilla_Difficulty_Data:new()
@@ -117,8 +119,8 @@ function set_difficulty(planet, difficulty_setting)
     valid = false
   }
 
-  local modifier = 1
-  local cooldown_modifier = 1
+  -- local modifier = 1
+  -- local cooldown_modifier = 1
   local vanilla = false
   local selected_difficulty = nil
 
@@ -138,7 +140,7 @@ function set_difficulty(planet, difficulty_setting)
     Log.error("No difficulty detected")
   end
 
-  difficulty = create_difficulty(planet, selected_difficulty, vanilla)
+  difficulty = locals.create_difficulty(planet, selected_difficulty, vanilla)
 
   if (storage) then
     if (not more_enemies_data.difficulties) then more_enemies_data.difficulties = {} end
@@ -151,7 +153,7 @@ function set_difficulty(planet, difficulty_setting)
   return difficulty
 end
 
-function init_difficulty(planet, difficulty_setting)
+function locals.init_difficulty(planet, difficulty_setting)
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
 
   difficulty_setting = difficulty_setting or Vanilla_Difficulty_Data:new()
@@ -166,7 +168,7 @@ function init_difficulty(planet, difficulty_setting)
     return difficulty
   end
 
-  difficulty = create_difficulty(planet, difficulty_setting)
+  difficulty = locals.create_difficulty(planet, difficulty_setting)
 
   if (storage) then
     if (not more_enemies_data.difficulties) then more_enemies_data.difficulties = More_Enemies_Data:new() end
@@ -177,10 +179,15 @@ function init_difficulty(planet, difficulty_setting)
   return difficulty
 end
 
-function create_difficulty(planet, selected_difficulty, vanilla)
-  modifier = modifier or 1
+function locals.create_difficulty(planet, selected_difficulty, vanilla)
+  Log.debug("create_difficulty")
+  Log.info(planet)
+  Log.info(selected_difficulty)
+  Log.info(vanilla)
+
+  local modifier = modifier or 1
   if (modifier < 0) then modifier = 0 end
-  cooldown_modifier = cooldown_modifier or 1
+  local cooldown_modifier = cooldown_modifier or 1
   if (cooldown_modifier <= 0) then cooldown_modifier = 0.000001 end
 
   local difficulty = {
@@ -278,5 +285,6 @@ end
 
 difficulty_utils.more_enemies = true
 
-_difficulty_utils = difficulty_utils
+local _difficulty_utils = difficulty_utils
+
 return difficulty_utils

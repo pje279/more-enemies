@@ -46,6 +46,34 @@ function settings_utils.is_vanilla(surface_name)
   return return_val
 end
 
+function settings_utils.get_attack_group_blacklist_names()
+    Log.debug("settings_utils.get_attack_group_blacklist_names")
+
+    local return_val = {}
+
+    local raw_setting_string = Settings_Service.get_attack_group_blacklist_names()
+
+    if (mods and mods["more-enemies"]) then
+        log(raw_setting_string)
+    end
+
+    local setting_string_stripped = raw_setting_string:gsub(" ", "")
+
+    local i = setting_string_stripped:find(",", 1, true)
+    local j = 1
+
+    while i ~= nil do
+        local name = setting_string_stripped:sub(j, i - 1)
+        table.insert(return_val, name)
+        j = i + 1
+        i = setting_string_stripped:find(",", i + 1, true)
+    end
+
+    table.insert(return_val, setting_string_stripped:sub(j))
+
+    return return_val
+end
+
 settings_utils.more_enemies = true
 
 local _settings_utils = settings_utils
