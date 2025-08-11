@@ -64,12 +64,17 @@ function settings_utils.get_attack_group_blacklist_names()
 
     while i ~= nil do
         local name = setting_string_stripped:sub(j, i - 1)
-        table.insert(return_val, name)
+        if (type(name) == "string" and #name > 0) then
+            table.insert(return_val, name)
+        end
         j = i + 1
         i = setting_string_stripped:find(",", i + 1, true)
     end
 
-    table.insert(return_val, setting_string_stripped:sub(j))
+    local name = setting_string_stripped:sub(j)
+    if (type(name) == "string" and #name > 0) then
+        table.insert(return_val, name)
+    end
 
     return return_val
 end
