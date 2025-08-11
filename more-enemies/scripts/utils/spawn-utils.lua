@@ -80,12 +80,17 @@ function spawn_utils.duplicate_unit_group(group)
 end
 
 function spawn_utils.clone_entity(default_value, difficulty, entity, optionals)
+  Log.debug("spawn_utils.clone_entity")
+  Log.info(default_value)
+  Log.info(difficulty)
+  Log.info(entity)
+  Log.info(optionals)
+
   local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
 
   if (not more_enemies_data.do_nth_tick) then return end
 
-  Log.info(optionals)
   optionals = optionals or {
     clone_settings = {
       unit = 1,

@@ -3,7 +3,6 @@ if _spawn_service and _spawn_service.more_enemies then
   return _spawn_service
 end
 
--- local Attack_Group_Service = require("scripts.service.attack-group-service")
 local BREAM_Constants = require("libs.constants.mods.BREAM-constants")
 local Clone_Data = require("scripts.data.clone-data")
 local Constants = require("libs.constants.constants")
@@ -59,10 +58,6 @@ function spawn_service.do_nth_tick(event, more_enemies_data)
   for k, planet in pairs(Constants.DEFAULTS.planets) do
   --   Log.info(k)
     Log.debug(planet)
-
-    -- if (Settings_Service.get_do_attack_group(planet.string_val)) then
-    --   Attack_Group_Service.do_attack_group(planet)
-    -- end
 
     if (not more_enemies_data.clone) then more_enemies_data.clone = {} end
     if (not more_enemies_data.clone[planet.string_val]) then more_enemies_data.clone[planet.string_val] = {} end

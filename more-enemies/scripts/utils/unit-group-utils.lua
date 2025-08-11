@@ -6,15 +6,15 @@ end
 local Constants = require("libs.constants.constants")
 local Log = require("libs.log.log")
 
-local locals = {}
-
 local unit_group_utils = {}
 
-function unit_group_utils.get_spawner(group, radius, limit)
-    return locals.get_spawner(group, radius, limit)
-end
+function unit_group_utils.get_spawner(group, radius, limit, depth)
+    Log.debug("unit_group_utils.get_spawner")
+    Log.info(group)
+    Log.info(radius)
+    Log.info(limit)
+    Log.info(depth)
 
-function locals.get_spawner(group, radius, limit, depth)
     if (not limit or limit == nil) then limit = 1 end
     if (not radius or radius == nil) then radius = 1 end
     if (not depth or depth == nil) then depth = 1 end
@@ -30,8 +30,6 @@ function locals.get_spawner(group, radius, limit, depth)
         limit = limit
     })
 
-    Log.error("at spawners")
-    Log.error(spawners)
     if (not spawners or #spawners < 1) then return locals.get_spawner(group, 1.1 * radius + 1, limit, depth + 1) end
 
     return spawners[1]

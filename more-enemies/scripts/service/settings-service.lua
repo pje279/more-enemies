@@ -80,9 +80,6 @@ function settings_service.get_max_unit_group_size_startup()
 
   local limit_startup = Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.default_value
 
---   if (settings and settings.global and settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name]) then
---     limit_startup = settings.global[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name].value
---   end
   if (settings and settings.startup and settings.startup[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name]) then
     limit_startup = settings.startup[Global_Settings_Constants.settings.MAX_UNIT_GROUP_SIZE_STARTUP.name].value
   end
