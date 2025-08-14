@@ -69,9 +69,11 @@ constants.DEFAULTS.planets.gleba = {}
 constants.DEFAULTS.planets.gleba.string_val = "gleba"
 
 constants.time = {}
-constants.time.TICKS_PER_SECOND = 60
 constants.time.SECONDS_PER_MINUTE = 60
+constants.time.MINUTES_PER_HOUR = 60
+constants.time.TICKS_PER_SECOND = 60
 constants.time.TICKS_PER_MINUTE = constants.time.TICKS_PER_SECOND * constants.time.SECONDS_PER_MINUTE
+constants.time.TICKS_PER_HOUR = constants.time.TICKS_PER_MINUTE * constants.time.MINUTES_PER_HOUR
 
 constants.CHUNK_SIZE = 32
 

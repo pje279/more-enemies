@@ -190,16 +190,23 @@ function attack_group_utils.get_enemy(surface, chunk, radius, depth)
     return enemies
 end
 
-function attack_group_utils.get_target_entity(unit_group, radius, depth)
+-- function attack_group_utils.get_target_entity(unit_group, radius, depth)
+function attack_group_utils.get_target_entity(data)
     Log.debug("attack_group_utils.get_target_entity")
-    Log.info(unit_group)
-    Log.info(radius)
-    Log.info(depth)
+    Log.info(data)
+    -- Log.info(unit_group)
+    -- Log.info(radius)
+    -- Log.info(depth)
 
-    if (not unit_group or not unit_group.valid) then return end
-    if (not unit_group.surface or not unit_group.surface.valid) then return end
-    if (not radius or radius == nil) then radius = 1 end
-    if (not depth or depth == nil) then depth = 1 end
+    if (type(data) ~= "table") then return end
+    if (not data.unit_group or not data.unit_group.valid) then return end
+    if (not data.unit_group.surface or not data.unit_group.surface.valid) then return end
+    if (type(data.radius) ~= "number") then data.radius = 1 end
+    if (type(data.depth) ~= "number") then data.depth = 1 end
+
+    local radius = data.radius
+    local depth = data.depth
+    local unit_group = data.unit_group
 
     if (depth > 12) then return end
     if (radius > Constants.CHUNK_SIZE * 16 and depth > 1) then return end
@@ -217,8 +224,21 @@ function attack_group_utils.get_target_entity(unit_group, radius, depth)
 
     local selected_difficulty = Constants.difficulty[Constants.difficulty.difficulties[Settings_Service.get_difficulty(unit_group.surface.name)]]
 
+    local position = unit_group.position
+    local chunk = data.chunk
+
+    if (type(chunk) == "table" and type(chunk.x) == "number" and type(chunk.y) == "number") then
+        Log.error("targeted attack")
+        -- Log.error(chunk)
+        position = {
+            x = chunk.x * 32,
+            y = chunk.y * 32
+        }
+    end
+
     local targets = unit_group.surface.find_entities_filtered({
-        position = unit_group.position,
+        -- position = unit_group.position,
+        position = position,
         radius = 16 * radius * selected_difficulty.radius_modifier + depth,
         name = names,
         type = Attack_Group_Constants.type_blacklist,
@@ -227,7 +247,10 @@ function attack_group_utils.get_target_entity(unit_group, radius, depth)
         invert = true,
     })
 
-    if (not targets or not targets[1]) then return attack_group_utils.get_target_entity(unit_group, 1.1 * radius + selected_difficulty.radius_modifier, depth + 1) end
+    -- if (not targets or not targets[1]) then return attack_group_utils.get_target_entity(unit_group, 1.1 * radius + selected_difficulty.radius_modifier, depth + 1) end
+    data.radius = 1.1 * radius + selected_difficulty.radius_modifier
+    data.depth = depth + 1
+    if (not targets or not targets[1]) then return attack_group_utils.get_target_entity(data) end
 
     Log.debug("found 'em")
     return targets[1]

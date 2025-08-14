@@ -29,10 +29,10 @@ proto_biter_constants.nauvis.spitter_old.MAX_SPAWNING_COOLDOWN = 360
 proto_biter_constants.nauvis.spitter_old.MIN_SPAWNING_COOLDOWN = 150
 
 proto_biter_constants.nauvis.categories = {
-  SMALL = "small",
-  MEDIUM = "medium",
-  BIG = "big",
-  BEHEMOTH = "behemoth"
+    SMALL = { name = "small", value = 0.5 },
+    MEDIUM = { name = "medium", value = 1 },
+    BIG = { name = "big", value = 2 },
+    BEHEMOTH = { name = "behemoth", value = 4 },
 }
 
 proto_biter_constants.more_enemies = true

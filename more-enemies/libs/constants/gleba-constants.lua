@@ -13,9 +13,9 @@ gleba_constants.gleba = {}
 gleba_constants.gleba.string_val = "gleba"
 
 gleba_constants.gleba.categories = {
-  SMALL = "small",
-  MEDIUM = "medium",
-  BIG = "big"
+    SMALL = { name = "small", value = 0.5 },
+    MEDIUM = { name = "medium", value = 1 },
+    BIG = { name = "big", value = 2 },
 }
 
 --

@@ -582,8 +582,6 @@ function spawn_service.entity_died(event)
   Log.debug("spawn_service.entity_died")
   Log.info(event)
 
-  local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
-
   local entity = event.entity
   if (not entity or not entity.valid) then return end
   local surface = entity.surface
@@ -599,6 +597,7 @@ function spawn_service.entity_died(event)
 
   if (not valid_planet) then return end
 
+  local more_enemies_data = More_Enemies_Repository.get_more_enemies_data()
   if (not more_enemies_data.valid) then more_enemies_data = Initialization.reinit() end
 
   local mod_data = Mod_Repository.get_mod_data()

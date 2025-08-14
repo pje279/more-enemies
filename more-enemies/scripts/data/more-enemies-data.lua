@@ -42,6 +42,7 @@ function more_enemies_data:new(obj)
   obj = Data:new(obj) or Data:new()
 
   local defaults = {
+    attack_group = {},
     clones = self.clones,
     clone = self.clone,
     difficulties = self.difficulties,
@@ -50,7 +51,7 @@ function more_enemies_data:new(obj)
     nth_tick_cleanup_complete = self.nth_tick_cleanup_complete,
     nth_tick_complete = self.nth_tick_complete,
     mod = self.mod,
-    overflow_clone_attempts = self.overflow_clone_attempts,
+    overmind = {},
     staged_clone = self.staged_clone,
     staged_clones = self.staged_clones,
     version_data = self.version_data,

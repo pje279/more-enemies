@@ -3,6 +3,7 @@ if _initialization and _initialization.more_enemies then
   return _initialization
 end
 
+local Attack_Goup_Data = require("scripts.data.attack-group-data")
 local Attack_Group_Repository = require("scripts.repositories.attack-group-repository")
 local Constants = require("libs.constants.constants")
 local Entity_Validations = require("scripts.validations.entity-validations")
@@ -13,6 +14,7 @@ local Log_Constants = require("libs.log.log-constants")
 local Mod_Data = require("scripts.data.mod-data")
 local More_Enemies_Data = require("scripts.data.more-enemies-data")
 local Nth_Tick_Data = require("scripts.data.nth-tick-data")
+local Overmind_Data = require("scripts.data.overmind-data")
 local Version_Service = require("scripts.service.version-service")
 
 local initialization = {}
@@ -326,6 +328,12 @@ function locals.initialize(from_scratch, maintain_existing_peace)
   if (not more_enemies_data.mod.clones) then more_enemies_data.mod.clones = {} end
 
   for _, planet in pairs(Constants.DEFAULTS.planets) do
+    if (not more_enemies_data.attack_group) then more_enemies_data.attack_group = {} end
+    if (not more_enemies_data.attack_group[planet.string_val]) then more_enemies_data.attack_group[planet.string_val] = Attack_Goup_Data:new({ surface_name = planet.string_val }) end
+
+    if (not more_enemies_data.overmind) then more_enemies_data.overmind = {} end
+    if (not more_enemies_data.overmind[planet.string_val]) then more_enemies_data.overmind[planet.string_val] = Overmind_Data:new({ surface_name = planet.string_val }) end
+
     if (not more_enemies_data.mod.staged_clone[planet.string_val]) then more_enemies_data.mod.staged_clone[planet.string_val] = {} end
     if (more_enemies_data.mod.staged_clone[planet.string_val].count == nil) then more_enemies_data.mod.staged_clone[planet.string_val].count = 0 end
 
